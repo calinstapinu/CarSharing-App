@@ -1,3 +1,10 @@
+/.idea/
+.idea/vcs.xml
+/.git/
+/.vs/
+/cmake-build-debug/
+CMakeLists.txt
+*.iml
 # Prerequisites
 *.d
 
