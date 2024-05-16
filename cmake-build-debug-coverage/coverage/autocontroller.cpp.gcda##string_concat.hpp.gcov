@@ -1,0 +1,615 @@
+        -:    0:Source:C:/Users/rares/CLionProjects/OOP/Json-test/include/nlohmann/detail/string_concat.hpp
+        -:    0:Graph:C:\Users\rares\CLionProjects\OOP\Json-test\cmake-build-debug-coverage\CMakeFiles\Json_test.dir\Controllers\AutoController\autocontroller.cpp.gcno
+        -:    0:Data:C:\Users\rares\CLionProjects\OOP\Json-test\cmake-build-debug-coverage\CMakeFiles\Json_test.dir\Controllers\AutoController\autocontroller.cpp.gcda
+        -:    0:Runs:1
+        -:    1://     __ _____ _____ _____
+        -:    2://  __|  |   __|     |   | |  JSON for Modern C++
+        -:    3:// |  |  |__   |  |  | | | |  version 3.11.3
+        -:    4:// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+        -:    5://
+        -:    6:// SPDX-FileCopyrightText: 2013-2023 Niels Lohmann <https://nlohmann.me>
+        -:    7:// SPDX-License-Identifier: MIT
+        -:    8:
+        -:    9:#pragma once
+        -:   10:
+        -:   11:#include <cstring> // strlen
+        -:   12:#include <string> // string
+        -:   13:#include <utility> // forward
+        -:   14:
+        -:   15:#include <nlohmann/detail/meta/cpp_future.hpp>
+        -:   16:#include <nlohmann/detail/meta/detected.hpp>
+        -:   17:
+        -:   18:NLOHMANN_JSON_NAMESPACE_BEGIN
+        -:   19:namespace detail
+        -:   20:{
+        -:   21:
+function _ZN8nlohmann16json_abi_v3_11_36detail13concat_lengthEv called 0 returned 0% blocks executed 0%
+    #####:   22:inline std::size_t concat_length()
+        -:   23:{
+    #####:   24:    return 0;
+    %%%%%:   24-block  0
+        -:   25:}
+        -:   26:
+        -:   27:template<typename... Args>
+        -:   28:inline std::size_t concat_length(const char* cstr, const Args& ... rest);
+        -:   29:
+        -:   30:template<typename StringType, typename... Args>
+        -:   31:inline std::size_t concat_length(const StringType& str, const Args& ... rest);
+        -:   32:
+        -:   33:template<typename... Args>
+function _ZN8nlohmann16json_abi_v3_11_36detail13concat_lengthIJNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEA3_cEEEycDpRKT_ called 0 returned 0% blocks executed 0%
+    #####:   34:inline std::size_t concat_length(const char /*c*/, const Args& ... rest)
+        -:   35:{
+    #####:   36:    return 1 + concat_length(rest...);
+    %%%%%:   36-block  0
+call    0 never executed
+        -:   37:}
+        -:   38:
+        -:   39:template<typename... Args>
+    #####:   40:inline std::size_t concat_length(const char* cstr, const Args& ... rest)
+        -:   41:{
+        -:   42:    // cppcheck-suppress ignoredReturnValue
+    #####:   43:    return ::strlen(cstr) + concat_length(rest...);
+        -:   44:}
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail13concat_lengthIJNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEA5_cS8_EEEyPKcDpRKT_:
+function _ZN8nlohmann16json_abi_v3_11_36detail13concat_lengthIJNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEA5_cS8_EEEyPKcDpRKT_ called 0 returned 0% blocks executed 0%
+    #####:   40:inline std::size_t concat_length(const char* cstr, const Args& ... rest)
+        -:   41:{
+        -:   42:    // cppcheck-suppress ignoredReturnValue
+    #####:   43:    return ::strlen(cstr) + concat_length(rest...);
+    %%%%%:   43-block  0
+call    0 never executed
+        -:   44:}
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail13concat_lengthIJEEEyPKcDpRKT_:
+function _ZN8nlohmann16json_abi_v3_11_36detail13concat_lengthIJEEEyPKcDpRKT_ called 0 returned 0% blocks executed 0%
+    #####:   40:inline std::size_t concat_length(const char* cstr, const Args& ... rest)
+        -:   41:{
+        -:   42:    // cppcheck-suppress ignoredReturnValue
+    #####:   43:    return ::strlen(cstr) + concat_length(rest...);
+    %%%%%:   43-block  0
+call    0 never executed
+        -:   44:}
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail13concat_lengthIJPKcEEEyS4_DpRKT_:
+function _ZN8nlohmann16json_abi_v3_11_36detail13concat_lengthIJPKcEEEyS4_DpRKT_ called 0 returned 0% blocks executed 0%
+    #####:   40:inline std::size_t concat_length(const char* cstr, const Args& ... rest)
+        -:   41:{
+        -:   42:    // cppcheck-suppress ignoredReturnValue
+    #####:   43:    return ::strlen(cstr) + concat_length(rest...);
+    %%%%%:   43-block  0
+call    0 never executed
+        -:   44:}
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail13concat_lengthIJNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEEEEyPKcDpRKT_:
+function _ZN8nlohmann16json_abi_v3_11_36detail13concat_lengthIJNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEEEEyPKcDpRKT_ called 0 returned 0% blocks executed 0%
+    #####:   40:inline std::size_t concat_length(const char* cstr, const Args& ... rest)
+        -:   41:{
+        -:   42:    // cppcheck-suppress ignoredReturnValue
+    #####:   43:    return ::strlen(cstr) + concat_length(rest...);
+    %%%%%:   43-block  0
+call    0 never executed
+        -:   44:}
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail13concat_lengthIJNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEcS8_A3_cEEEyPKcDpRKT_:
+function _ZN8nlohmann16json_abi_v3_11_36detail13concat_lengthIJNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEcS8_A3_cEEEyPKcDpRKT_ called 0 returned 0% blocks executed 0%
+    #####:   40:inline std::size_t concat_length(const char* cstr, const Args& ... rest)
+        -:   41:{
+        -:   42:    // cppcheck-suppress ignoredReturnValue
+    #####:   43:    return ::strlen(cstr) + concat_length(rest...);
+    %%%%%:   43-block  0
+call    0 never executed
+        -:   44:}
+------------------
+        -:   45:
+        -:   46:template<typename StringType, typename... Args>
+    #####:   47:inline std::size_t concat_length(const StringType& str, const Args& ... rest)
+        -:   48:{
+    #####:   49:    return str.size() + concat_length(rest...);
+        -:   50:}
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail13concat_lengthINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEJA5_cS8_EEEyRKT_DpRKT0_:
+function _ZN8nlohmann16json_abi_v3_11_36detail13concat_lengthINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEJA5_cS8_EEEyRKT_DpRKT0_ called 0 returned 0% blocks executed 0%
+    #####:   47:inline std::size_t concat_length(const StringType& str, const Args& ... rest)
+        -:   48:{
+    #####:   49:    return str.size() + concat_length(rest...);
+    %%%%%:   49-block  0
+call    0 never executed
+call    1 never executed
+        -:   50:}
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail13concat_lengthINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEJS8_EEEyRKT_DpRKT0_:
+function _ZN8nlohmann16json_abi_v3_11_36detail13concat_lengthINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEJS8_EEEyRKT_DpRKT0_ called 0 returned 0% blocks executed 0%
+    #####:   47:inline std::size_t concat_length(const StringType& str, const Args& ... rest)
+        -:   48:{
+    #####:   49:    return str.size() + concat_length(rest...);
+    %%%%%:   49-block  0
+call    0 never executed
+call    1 never executed
+        -:   50:}
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail13concat_lengthINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEJEEEyRKT_DpRKT0_:
+function _ZN8nlohmann16json_abi_v3_11_36detail13concat_lengthINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEJEEEyRKT_DpRKT0_ called 0 returned 0% blocks executed 0%
+    #####:   47:inline std::size_t concat_length(const StringType& str, const Args& ... rest)
+        -:   48:{
+    #####:   49:    return str.size() + concat_length(rest...);
+    %%%%%:   49-block  0
+call    0 never executed
+call    1 never executed
+        -:   50:}
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail13concat_lengthINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEJA3_cEEEyRKT_DpRKT0_:
+function _ZN8nlohmann16json_abi_v3_11_36detail13concat_lengthINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEJA3_cEEEyRKT_DpRKT0_ called 0 returned 0% blocks executed 0%
+    #####:   47:inline std::size_t concat_length(const StringType& str, const Args& ... rest)
+        -:   48:{
+    #####:   49:    return str.size() + concat_length(rest...);
+    %%%%%:   49-block  0
+call    0 never executed
+call    1 never executed
+        -:   50:}
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail13concat_lengthINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEJS8_S8_EEEyRKT_DpRKT0_:
+function _ZN8nlohmann16json_abi_v3_11_36detail13concat_lengthINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEJS8_S8_EEEyRKT_DpRKT0_ called 0 returned 0% blocks executed 0%
+    #####:   47:inline std::size_t concat_length(const StringType& str, const Args& ... rest)
+        -:   48:{
+    #####:   49:    return str.size() + concat_length(rest...);
+    %%%%%:   49-block  0
+call    0 never executed
+call    1 never executed
+        -:   50:}
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail13concat_lengthINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEJcS8_A3_cEEEyRKT_DpRKT0_:
+function _ZN8nlohmann16json_abi_v3_11_36detail13concat_lengthINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEJcS8_A3_cEEEyRKT_DpRKT0_ called 0 returned 0% blocks executed 0%
+    #####:   47:inline std::size_t concat_length(const StringType& str, const Args& ... rest)
+        -:   48:{
+    #####:   49:    return str.size() + concat_length(rest...);
+    %%%%%:   49-block  0
+call    0 never executed
+call    1 never executed
+        -:   50:}
+------------------
+        -:   51:
+        -:   52:template<typename OutStringType>
+function _ZN8nlohmann16json_abi_v3_11_36detail11concat_intoINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEEEvRT_ called 0 returned 0% blocks executed 0%
+    #####:   53:inline void concat_into(OutStringType& /*out*/)
+    #####:   54:{}
+        -:   55:
+        -:   56:template<typename StringType, typename Arg>
+        -:   57:using string_can_append = decltype(std::declval<StringType&>().append(std::declval < Arg && > ()));
+        -:   58:
+        -:   59:template<typename StringType, typename Arg>
+        -:   60:using detect_string_can_append = is_detected<string_can_append, StringType, Arg>;
+        -:   61:
+        -:   62:template<typename StringType, typename Arg>
+        -:   63:using string_can_append_op = decltype(std::declval<StringType&>() += std::declval < Arg && > ());
+        -:   64:
+        -:   65:template<typename StringType, typename Arg>
+        -:   66:using detect_string_can_append_op = is_detected<string_can_append_op, StringType, Arg>;
+        -:   67:
+        -:   68:template<typename StringType, typename Arg>
+        -:   69:using string_can_append_iter = decltype(std::declval<StringType&>().append(std::declval<const Arg&>().begin(), std::declval<const Arg&>().end()));
+        -:   70:
+        -:   71:template<typename StringType, typename Arg>
+        -:   72:using detect_string_can_append_iter = is_detected<string_can_append_iter, StringType, Arg>;
+        -:   73:
+        -:   74:template<typename StringType, typename Arg>
+        -:   75:using string_can_append_data = decltype(std::declval<StringType&>().append(std::declval<const Arg&>().data(), std::declval<const Arg&>().size()));
+        -:   76:
+        -:   77:template<typename StringType, typename Arg>
+        -:   78:using detect_string_can_append_data = is_detected<string_can_append_data, StringType, Arg>;
+        -:   79:
+        -:   80:template < typename OutStringType, typename Arg, typename... Args,
+        -:   81:           enable_if_t < !detect_string_can_append<OutStringType, Arg>::value
+        -:   82:                         && detect_string_can_append_op<OutStringType, Arg>::value, int > = 0 >
+        -:   83:inline void concat_into(OutStringType& out, Arg && arg, Args && ... rest);
+        -:   84:
+        -:   85:template < typename OutStringType, typename Arg, typename... Args,
+        -:   86:           enable_if_t < !detect_string_can_append<OutStringType, Arg>::value
+        -:   87:                         && !detect_string_can_append_op<OutStringType, Arg>::value
+        -:   88:                         && detect_string_can_append_iter<OutStringType, Arg>::value, int > = 0 >
+        -:   89:inline void concat_into(OutStringType& out, const Arg& arg, Args && ... rest);
+        -:   90:
+        -:   91:template < typename OutStringType, typename Arg, typename... Args,
+        -:   92:           enable_if_t < !detect_string_can_append<OutStringType, Arg>::value
+        -:   93:                         && !detect_string_can_append_op<OutStringType, Arg>::value
+        -:   94:                         && !detect_string_can_append_iter<OutStringType, Arg>::value
+        -:   95:                         && detect_string_can_append_data<OutStringType, Arg>::value, int > = 0 >
+        -:   96:inline void concat_into(OutStringType& out, const Arg& arg, Args && ... rest);
+        -:   97:
+        -:   98:template<typename OutStringType, typename Arg, typename... Args,
+        -:   99:         enable_if_t<detect_string_can_append<OutStringType, Arg>::value, int> = 0>
+    #####:  100:inline void concat_into(OutStringType& out, Arg && arg, Args && ... rest)
+        -:  101:{
+    #####:  102:    out.append(std::forward<Arg>(arg));
+    #####:  103:    concat_into(out, std::forward<Args>(rest)...);
+    #####:  104:}
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail11concat_intoINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERA5_KcJS8_ELi0EEEvRT_OT0_DpOT1_:
+function _ZN8nlohmann16json_abi_v3_11_36detail11concat_intoINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERA5_KcJS8_ELi0EEEvRT_OT0_DpOT1_ called 0 returned 0% blocks executed 0%
+    #####:  100:inline void concat_into(OutStringType& out, Arg && arg, Args && ... rest)
+        -:  101:{
+    #####:  102:    out.append(std::forward<Arg>(arg));
+    %%%%%:  102-block  0
+call    0 never executed
+call    1 never executed
+    #####:  103:    concat_into(out, std::forward<Args>(rest)...);
+call    0 never executed
+call    1 never executed
+    #####:  104:}
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail11concat_intoINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEES8_JRA5_KcS8_ELi0EEEvRT_OT0_DpOT1_:
+function _ZN8nlohmann16json_abi_v3_11_36detail11concat_intoINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEES8_JRA5_KcS8_ELi0EEEvRT_OT0_DpOT1_ called 0 returned 0% blocks executed 0%
+    #####:  100:inline void concat_into(OutStringType& out, Arg && arg, Args && ... rest)
+        -:  101:{
+    #####:  102:    out.append(std::forward<Arg>(arg));
+    %%%%%:  102-block  0
+call    0 never executed
+call    1 never executed
+    #####:  103:    concat_into(out, std::forward<Args>(rest)...);
+call    0 never executed
+call    1 never executed
+call    2 never executed
+    #####:  104:}
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail11concat_intoINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERKS8_JELi0EEEvRT_OT0_DpOT1_:
+function _ZN8nlohmann16json_abi_v3_11_36detail11concat_intoINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERKS8_JELi0EEEvRT_OT0_DpOT1_ called 0 returned 0% blocks executed 0%
+    #####:  100:inline void concat_into(OutStringType& out, Arg && arg, Args && ... rest)
+        -:  101:{
+    #####:  102:    out.append(std::forward<Arg>(arg));
+    %%%%%:  102-block  0
+call    0 never executed
+call    1 never executed
+    #####:  103:    concat_into(out, std::forward<Args>(rest)...);
+call    0 never executed
+    #####:  104:}
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail11concat_intoINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERA3_KcJELi0EEEvRT_OT0_DpOT1_:
+function _ZN8nlohmann16json_abi_v3_11_36detail11concat_intoINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERA3_KcJELi0EEEvRT_OT0_DpOT1_ called 0 returned 0% blocks executed 0%
+    #####:  100:inline void concat_into(OutStringType& out, Arg && arg, Args && ... rest)
+        -:  101:{
+    #####:  102:    out.append(std::forward<Arg>(arg));
+    %%%%%:  102-block  0
+call    0 never executed
+call    1 never executed
+    #####:  103:    concat_into(out, std::forward<Args>(rest)...);
+call    0 never executed
+    #####:  104:}
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail11concat_intoINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERA39_KcJS8_ELi0EEEvRT_OT0_DpOT1_:
+function _ZN8nlohmann16json_abi_v3_11_36detail11concat_intoINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERA39_KcJS8_ELi0EEEvRT_OT0_DpOT1_ called 0 returned 0% blocks executed 0%
+    #####:  100:inline void concat_into(OutStringType& out, Arg && arg, Args && ... rest)
+        -:  101:{
+    #####:  102:    out.append(std::forward<Arg>(arg));
+    %%%%%:  102-block  0
+call    0 never executed
+call    1 never executed
+    #####:  103:    concat_into(out, std::forward<Args>(rest)...);
+call    0 never executed
+call    1 never executed
+    #####:  104:}
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail11concat_intoINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERA29_KcJS8_RA5_S9_S8_ELi0EEEvRT_OT0_DpOT1_:
+function _ZN8nlohmann16json_abi_v3_11_36detail11concat_intoINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERA29_KcJS8_RA5_S9_S8_ELi0EEEvRT_OT0_DpOT1_ called 0 returned 0% blocks executed 0%
+    #####:  100:inline void concat_into(OutStringType& out, Arg && arg, Args && ... rest)
+        -:  101:{
+    #####:  102:    out.append(std::forward<Arg>(arg));
+    %%%%%:  102-block  0
+call    0 never executed
+call    1 never executed
+    #####:  103:    concat_into(out, std::forward<Args>(rest)...);
+call    0 never executed
+call    1 never executed
+call    2 never executed
+call    3 never executed
+    #####:  104:}
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail11concat_intoINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEPKcJELi0EEEvRT_OT0_DpOT1_:
+function _ZN8nlohmann16json_abi_v3_11_36detail11concat_intoINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEPKcJELi0EEEvRT_OT0_DpOT1_ called 0 returned 0% blocks executed 0%
+    #####:  100:inline void concat_into(OutStringType& out, Arg && arg, Args && ... rest)
+        -:  101:{
+    #####:  102:    out.append(std::forward<Arg>(arg));
+    %%%%%:  102-block  0
+call    0 never executed
+call    1 never executed
+    #####:  103:    concat_into(out, std::forward<Args>(rest)...);
+call    0 never executed
+    #####:  104:}
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail11concat_intoINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEES8_JRKS8_ELi0EEEvRT_OT0_DpOT1_:
+function _ZN8nlohmann16json_abi_v3_11_36detail11concat_intoINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEES8_JRKS8_ELi0EEEvRT_OT0_DpOT1_ called 0 returned 0% blocks executed 0%
+    #####:  100:inline void concat_into(OutStringType& out, Arg && arg, Args && ... rest)
+        -:  101:{
+    #####:  102:    out.append(std::forward<Arg>(arg));
+    %%%%%:  102-block  0
+call    0 never executed
+call    1 never executed
+    #####:  103:    concat_into(out, std::forward<Args>(rest)...);
+call    0 never executed
+call    1 never executed
+    #####:  104:}
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail11concat_intoINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEES8_JELi0EEEvRT_OT0_DpOT1_:
+function _ZN8nlohmann16json_abi_v3_11_36detail11concat_intoINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEES8_JELi0EEEvRT_OT0_DpOT1_ called 0 returned 0% blocks executed 0%
+    #####:  100:inline void concat_into(OutStringType& out, Arg && arg, Args && ... rest)
+        -:  101:{
+    #####:  102:    out.append(std::forward<Arg>(arg));
+    %%%%%:  102-block  0
+call    0 never executed
+call    1 never executed
+    #####:  103:    concat_into(out, std::forward<Args>(rest)...);
+call    0 never executed
+    #####:  104:}
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail11concat_intoINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEES8_JRA3_KcELi0EEEvRT_OT0_DpOT1_:
+function _ZN8nlohmann16json_abi_v3_11_36detail11concat_intoINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEES8_JRA3_KcELi0EEEvRT_OT0_DpOT1_ called 0 returned 0% blocks executed 0%
+    #####:  100:inline void concat_into(OutStringType& out, Arg && arg, Args && ... rest)
+        -:  101:{
+    #####:  102:    out.append(std::forward<Arg>(arg));
+    %%%%%:  102-block  0
+call    0 never executed
+call    1 never executed
+    #####:  103:    concat_into(out, std::forward<Args>(rest)...);
+call    0 never executed
+call    1 never executed
+    #####:  104:}
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail11concat_intoINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERA51_KcJPS9_ELi0EEEvRT_OT0_DpOT1_:
+function _ZN8nlohmann16json_abi_v3_11_36detail11concat_intoINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERA51_KcJPS9_ELi0EEEvRT_OT0_DpOT1_ called 0 returned 0% blocks executed 0%
+    #####:  100:inline void concat_into(OutStringType& out, Arg && arg, Args && ... rest)
+        -:  101:{
+    #####:  102:    out.append(std::forward<Arg>(arg));
+    %%%%%:  102-block  0
+call    0 never executed
+call    1 never executed
+    #####:  103:    concat_into(out, std::forward<Args>(rest)...);
+call    0 never executed
+call    1 never executed
+    #####:  104:}
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail11concat_intoINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEES8_JS8_RKS8_ELi0EEEvRT_OT0_DpOT1_:
+function _ZN8nlohmann16json_abi_v3_11_36detail11concat_intoINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEES8_JS8_RKS8_ELi0EEEvRT_OT0_DpOT1_ called 0 returned 0% blocks executed 0%
+    #####:  100:inline void concat_into(OutStringType& out, Arg && arg, Args && ... rest)
+        -:  101:{
+    #####:  102:    out.append(std::forward<Arg>(arg));
+    %%%%%:  102-block  0
+call    0 never executed
+call    1 never executed
+    #####:  103:    concat_into(out, std::forward<Args>(rest)...);
+call    0 never executed
+call    1 never executed
+call    2 never executed
+    #####:  104:}
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail11concat_intoINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERKS8_JcS8_RA3_KcELi0EEEvRT_OT0_DpOT1_:
+function _ZN8nlohmann16json_abi_v3_11_36detail11concat_intoINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERKS8_JcS8_RA3_KcELi0EEEvRT_OT0_DpOT1_ called 0 returned 0% blocks executed 0%
+    #####:  100:inline void concat_into(OutStringType& out, Arg && arg, Args && ... rest)
+        -:  101:{
+    #####:  102:    out.append(std::forward<Arg>(arg));
+    %%%%%:  102-block  0
+call    0 never executed
+call    1 never executed
+    #####:  103:    concat_into(out, std::forward<Args>(rest)...);
+call    0 never executed
+call    1 never executed
+call    2 never executed
+call    3 never executed
+    #####:  104:}
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail11concat_intoINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERA17_KcJRKS8_cS8_RA3_S9_ELi0EEEvRT_OT0_DpOT1_:
+function _ZN8nlohmann16json_abi_v3_11_36detail11concat_intoINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERA17_KcJRKS8_cS8_RA3_S9_ELi0EEEvRT_OT0_DpOT1_ called 0 returned 0% blocks executed 0%
+    #####:  100:inline void concat_into(OutStringType& out, Arg && arg, Args && ... rest)
+        -:  101:{
+    #####:  102:    out.append(std::forward<Arg>(arg));
+    %%%%%:  102-block  0
+call    0 never executed
+call    1 never executed
+    #####:  103:    concat_into(out, std::forward<Args>(rest)...);
+call    0 never executed
+call    1 never executed
+call    2 never executed
+call    3 never executed
+call    4 never executed
+    #####:  104:}
+------------------
+        -:  105:
+        -:  106:template < typename OutStringType, typename Arg, typename... Args,
+        -:  107:           enable_if_t < !detect_string_can_append<OutStringType, Arg>::value
+        -:  108:                         && detect_string_can_append_op<OutStringType, Arg>::value, int > >
+function _ZN8nlohmann16json_abi_v3_11_36detail11concat_intoINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEcJS8_RA3_KcELi0EEEvRT_OT0_DpOT1_ called 0 returned 0% blocks executed 0%
+    #####:  109:inline void concat_into(OutStringType& out, Arg&& arg, Args&& ... rest)
+        -:  110:{
+    #####:  111:    out += std::forward<Arg>(arg);
+    %%%%%:  111-block  0
+call    0 never executed
+call    1 never executed
+    #####:  112:    concat_into(out, std::forward<Args>(rest)...);
+call    0 never executed
+call    1 never executed
+call    2 never executed
+    #####:  113:}
+        -:  114:
+        -:  115:template < typename OutStringType, typename Arg, typename... Args,
+        -:  116:           enable_if_t < !detect_string_can_append<OutStringType, Arg>::value
+        -:  117:                         && !detect_string_can_append_op<OutStringType, Arg>::value
+        -:  118:                         && detect_string_can_append_iter<OutStringType, Arg>::value, int > >
+        -:  119:inline void concat_into(OutStringType& out, const Arg& arg, Args&& ... rest)
+        -:  120:{
+        -:  121:    out.append(arg.begin(), arg.end());
+        -:  122:    concat_into(out, std::forward<Args>(rest)...);
+        -:  123:}
+        -:  124:
+        -:  125:template < typename OutStringType, typename Arg, typename... Args,
+        -:  126:           enable_if_t < !detect_string_can_append<OutStringType, Arg>::value
+        -:  127:                         && !detect_string_can_append_op<OutStringType, Arg>::value
+        -:  128:                         && !detect_string_can_append_iter<OutStringType, Arg>::value
+        -:  129:                         && detect_string_can_append_data<OutStringType, Arg>::value, int > >
+        -:  130:inline void concat_into(OutStringType& out, const Arg& arg, Args&& ... rest)
+        -:  131:{
+        -:  132:    out.append(arg.data(), arg.size());
+        -:  133:    concat_into(out, std::forward<Args>(rest)...);
+        -:  134:}
+        -:  135:
+        -:  136:template<typename OutStringType = std::string, typename... Args>
+    #####:  137:inline OutStringType concat(Args && ... args)
+        -:  138:{
+    #####:  139:    OutStringType str;
+    #####:  140:    str.reserve(concat_length(args...));
+    #####:  141:    concat_into(str, std::forward<Args>(args)...);
+    #####:  142:    return str;
+    =====:  143:}
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail6concatINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEJRA39_KcS8_EEET_DpOT0_:
+function _ZN8nlohmann16json_abi_v3_11_36detail6concatINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEJRA39_KcS8_EEET_DpOT0_ called 0 returned 0% blocks executed 0%
+    #####:  137:inline OutStringType concat(Args && ... args)
+        -:  138:{
+    #####:  139:    OutStringType str;
+    %%%%%:  139-block  0
+call    0 never executed
+    #####:  140:    str.reserve(concat_length(args...));
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  140-block  0
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+    #####:  141:    concat_into(str, std::forward<Args>(args)...);
+    %%%%%:  141-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+branch  3 never executed (fallthrough)
+branch  4 never executed (throw)
+    #####:  142:    return str;
+    %%%%%:  142-block  0
+    %%%%%:  142-block  1
+    =====:  143:}
+    $$$$$:  143-block  0
+call    0 never executed
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail6concatINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEJRA29_KcS8_RA5_S9_S8_EEET_DpOT0_:
+function _ZN8nlohmann16json_abi_v3_11_36detail6concatINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEJRA29_KcS8_RA5_S9_S8_EEET_DpOT0_ called 0 returned 0% blocks executed 0%
+    #####:  137:inline OutStringType concat(Args && ... args)
+        -:  138:{
+    #####:  139:    OutStringType str;
+    %%%%%:  139-block  0
+call    0 never executed
+    #####:  140:    str.reserve(concat_length(args...));
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  140-block  0
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+    #####:  141:    concat_into(str, std::forward<Args>(args)...);
+    %%%%%:  141-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+call    3 never executed
+call    4 never executed
+branch  5 never executed (fallthrough)
+branch  6 never executed (throw)
+    #####:  142:    return str;
+    %%%%%:  142-block  0
+    %%%%%:  142-block  1
+    =====:  143:}
+    $$$$$:  143-block  0
+call    0 never executed
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail6concatINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEJRA51_KcPS9_EEET_DpOT0_:
+function _ZN8nlohmann16json_abi_v3_11_36detail6concatINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEJRA51_KcPS9_EEET_DpOT0_ called 0 returned 0% blocks executed 0%
+    #####:  137:inline OutStringType concat(Args && ... args)
+        -:  138:{
+    #####:  139:    OutStringType str;
+    %%%%%:  139-block  0
+call    0 never executed
+    #####:  140:    str.reserve(concat_length(args...));
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  140-block  0
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+    #####:  141:    concat_into(str, std::forward<Args>(args)...);
+    %%%%%:  141-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+branch  3 never executed (fallthrough)
+branch  4 never executed (throw)
+    #####:  142:    return str;
+    %%%%%:  142-block  0
+    %%%%%:  142-block  1
+    =====:  143:}
+    $$$$$:  143-block  0
+call    0 never executed
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail6concatINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEJS8_S8_RKS8_EEET_DpOT0_:
+function _ZN8nlohmann16json_abi_v3_11_36detail6concatINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEJS8_S8_RKS8_EEET_DpOT0_ called 0 returned 0% blocks executed 0%
+    #####:  137:inline OutStringType concat(Args && ... args)
+        -:  138:{
+    #####:  139:    OutStringType str;
+    %%%%%:  139-block  0
+call    0 never executed
+    #####:  140:    str.reserve(concat_length(args...));
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  140-block  0
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+    #####:  141:    concat_into(str, std::forward<Args>(args)...);
+    %%%%%:  141-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+    #####:  142:    return str;
+    %%%%%:  142-block  0
+    %%%%%:  142-block  1
+    =====:  143:}
+    $$$$$:  143-block  0
+call    0 never executed
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail6concatINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEJRA17_KcRKS8_cS8_RA3_S9_EEET_DpOT0_:
+function _ZN8nlohmann16json_abi_v3_11_36detail6concatINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEJRA17_KcRKS8_cS8_RA3_S9_EEET_DpOT0_ called 0 returned 0% blocks executed 0%
+    #####:  137:inline OutStringType concat(Args && ... args)
+        -:  138:{
+    #####:  139:    OutStringType str;
+    %%%%%:  139-block  0
+call    0 never executed
+    #####:  140:    str.reserve(concat_length(args...));
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  140-block  0
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+    #####:  141:    concat_into(str, std::forward<Args>(args)...);
+    %%%%%:  141-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+call    3 never executed
+call    4 never executed
+call    5 never executed
+branch  6 never executed (fallthrough)
+branch  7 never executed (throw)
+    #####:  142:    return str;
+    %%%%%:  142-block  0
+    %%%%%:  142-block  1
+    =====:  143:}
+    $$$$$:  143-block  0
+call    0 never executed
+------------------
+        -:  144:
+        -:  145:}  // namespace detail
+        -:  146:NLOHMANN_JSON_NAMESPACE_END

@@ -1,0 +1,2933 @@
+        -:    0:Source:C:/Users/rares/CLionProjects/OOP/Json-test/include/nlohmann/detail/input/parser.hpp
+        -:    0:Graph:C:\Users\rares\CLionProjects\OOP\Json-test\cmake-build-debug-coverage\CMakeFiles\Json_test.dir\Repositories\AutoRepo\AutoRepo.cpp.gcno
+        -:    0:Data:C:\Users\rares\CLionProjects\OOP\Json-test\cmake-build-debug-coverage\CMakeFiles\Json_test.dir\Repositories\AutoRepo\AutoRepo.cpp.gcda
+        -:    0:Runs:1
+        -:    1://     __ _____ _____ _____
+        -:    2://  __|  |   __|     |   | |  JSON for Modern C++
+        -:    3:// |  |  |__   |  |  | | | |  version 3.11.3
+        -:    4:// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+        -:    5://
+        -:    6:// SPDX-FileCopyrightText: 2013-2023 Niels Lohmann <https://nlohmann.me>
+        -:    7:// SPDX-License-Identifier: MIT
+        -:    8:
+        -:    9:#pragma once
+        -:   10:
+        -:   11:#include <cmath> // isfinite
+        -:   12:#include <cstdint> // uint8_t
+        -:   13:#include <functional> // function
+        -:   14:#include <string> // string
+        -:   15:#include <utility> // move
+        -:   16:#include <vector> // vector
+        -:   17:
+        -:   18:#include <nlohmann/detail/exceptions.hpp>
+        -:   19:#include <nlohmann/detail/input/input_adapters.hpp>
+        -:   20:#include <nlohmann/detail/input/json_sax.hpp>
+        -:   21:#include <nlohmann/detail/input/lexer.hpp>
+        -:   22:#include <nlohmann/detail/macro_scope.hpp>
+        -:   23:#include <nlohmann/detail/meta/is_sax.hpp>
+        -:   24:#include <nlohmann/detail/string_concat.hpp>
+        -:   25:#include <nlohmann/detail/value_t.hpp>
+        -:   26:
+        -:   27:NLOHMANN_JSON_NAMESPACE_BEGIN
+        -:   28:namespace detail
+        -:   29:{
+        -:   30:////////////
+        -:   31:// parser //
+        -:   32:////////////
+        -:   33:
+        -:   34:enum class parse_event_t : std::uint8_t
+        -:   35:{
+        -:   36:    /// the parser read `{` and started to process a JSON object
+        -:   37:    object_start,
+        -:   38:    /// the parser read `}` and finished processing a JSON object
+        -:   39:    object_end,
+        -:   40:    /// the parser read `[` and started to process a JSON array
+        -:   41:    array_start,
+        -:   42:    /// the parser read `]` and finished processing a JSON array
+        -:   43:    array_end,
+        -:   44:    /// the parser read a key of a value in an object
+        -:   45:    key,
+        -:   46:    /// the parser finished reading a JSON value
+        -:   47:    value
+        -:   48:};
+        -:   49:
+        -:   50:template<typename BasicJsonType>
+        -:   51:using parser_callback_t =
+        -:   52:    std::function<bool(int /*depth*/, parse_event_t /*event*/, BasicJsonType& /*parsed*/)>;
+        -:   53:
+        -:   54:/*!
+        -:   55:@brief syntax analysis
+        -:   56:
+        -:   57:This class implements a recursive descent parser.
+        -:   58:*/
+        -:   59:template<typename BasicJsonType, typename InputAdapterType>
+        -:   60:class parser
+        -:   61:{
+        -:   62:    using number_integer_t = typename BasicJsonType::number_integer_t;
+        -:   63:    using number_unsigned_t = typename BasicJsonType::number_unsigned_t;
+        -:   64:    using number_float_t = typename BasicJsonType::number_float_t;
+        -:   65:    using string_t = typename BasicJsonType::string_t;
+        -:   66:    using lexer_t = lexer<BasicJsonType, InputAdapterType>;
+        -:   67:    using token_type = typename lexer_t::token_type;
+        -:   68:
+        -:   69:  public:
+        -:   70:    /// a parser reading from an input adapter
+function _ZN8nlohmann16json_abi_v3_11_36detail6parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEENS1_20input_stream_adapterEEC1EOSG_St8functionIFbiNS1_13parse_event_tERSF_EEbb called 6 returned 100% blocks executed 67%
+        6:   71:    explicit parser(InputAdapterType&& adapter,
+        -:   72:                    const parser_callback_t<BasicJsonType> cb = nullptr,
+        -:   73:                    const bool allow_exceptions_ = true,
+        -:   74:                    const bool skip_comments = false)
+        6:   75:        : callback(cb)
+        6:   75-block  0
+call    0 returned 6
+        6:   76:        , m_lexer(std::move(adapter), skip_comments)
+call    0 returned 6
+        6:   77:        , allow_exceptions(allow_exceptions_)
+call    0 returned 6
+        -:   78:    {
+        -:   79:        // read first token
+        6:   80:        get_token();
+call    0 returned 6
+branch  1 taken 6 (fallthrough)
+branch  2 taken 0 (throw)
+        6:   81:    }
+        6:   81-block  0
+    $$$$$:   81-block  1
+call    0 never executed
+    $$$$$:   81-block  2
+call    1 never executed
+        -:   82:
+        -:   83:    /*!
+        -:   84:    @brief public parser interface
+        -:   85:
+        -:   86:    @param[in] strict      whether to expect the last token to be EOF
+        -:   87:    @param[in,out] result  parsed JSON value
+        -:   88:
+        -:   89:    @throw parse_error.101 in case of an unexpected token
+        -:   90:    @throw parse_error.102 if to_unicode fails or surrogate error
+        -:   91:    @throw parse_error.103 if to_unicode fails
+        -:   92:    */
+function _ZN8nlohmann16json_abi_v3_11_36detail6parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEENS1_20input_stream_adapterEE5parseEbRSF_ called 6 returned 100% blocks executed 13%
+        6:   93:    void parse(const bool strict, BasicJsonType& result)
+        -:   94:    {
+        6:   95:        if (callback)
+        6:   95-block  0
+call    0 returned 6
+branch  1 taken 0 (fallthrough)
+branch  2 taken 6
+        -:   96:        {
+    #####:   97:            json_sax_dom_callback_parser<BasicJsonType> sdp(result, callback, allow_exceptions);
+    %%%%%:   97-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:   97-block  1
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+    %%%%%:   97-block  2
+call    6 never executed
+    $$$$$:   97-block  3
+call    7 never executed
+    $$$$$:   97-block  4
+    #####:   98:            sax_parse_internal(&sdp);
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+        -:   99:
+        -:  100:            // in strict mode, input must be completely read
+    #####:  101:            if (strict && (get_token() != token_type::end_of_input))
+    %%%%%:  101-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    %%%%%:  101-block  1
+call    2 never executed
+branch  3 never executed (fallthrough)
+branch  4 never executed (throw)
+    %%%%%:  101-block  2
+branch  5 never executed (fallthrough)
+branch  6 never executed
+    %%%%%:  101-block  3
+    %%%%%:  101-block  4
+    %%%%%:  101-block  5
+branch  7 never executed (fallthrough)
+branch  8 never executed
+        -:  102:            {
+    #####:  103:                sdp.parse_error(m_lexer.get_position(),
+    %%%%%:  103-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  103-block  1
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+call    6 never executed
+branch  7 never executed (fallthrough)
+branch  8 never executed (throw)
+    %%%%%:  103-block  2
+call    9 never executed
+branch 10 never executed (fallthrough)
+branch 11 never executed (throw)
+    %%%%%:  103-block  3
+call   12 never executed
+call   13 never executed
+call   14 never executed
+branch 15 never executed (fallthrough)
+branch 16 never executed (throw)
+    %%%%%:  103-block  4
+call   17 never executed
+call   18 never executed
+call   19 never executed
+    $$$$$:  103-block  5
+    $$$$$:  103-block  6
+call   20 never executed
+    $$$$$:  103-block  7
+    $$$$$:  103-block  8
+call   21 never executed
+    $$$$$:  103-block  9
+call   22 never executed
+    $$$$$:  103-block 10
+call   23 never executed
+    $$$$$:  103-block 11
+    $$$$$:  103-block 12
+    $$$$$:  103-block 13
+    $$$$$:  103-block 14
+        -:  104:                                m_lexer.get_token_string(),
+    #####:  105:                                parse_error::create(101, m_lexer.get_position(),
+    %%%%%:  105-block  0
+call    0 never executed
+call    1 never executed
+    $$$$$:  105-block  1
+        -:  106:                                                    exception_message(token_type::end_of_input, "value"), nullptr));
+        -:  107:            }
+        -:  108:
+        -:  109:            // in case of an error, return discarded value
+    #####:  110:            if (sdp.is_errored())
+    %%%%%:  110-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+        -:  111:            {
+    #####:  112:                result = value_t::discarded;
+    %%%%%:  112-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  112-block  1
+call    3 never executed
+call    4 never executed
+    $$$$$:  112-block  2
+    #####:  113:                return;
+        -:  114:            }
+        -:  115:
+        -:  116:            // set top-level value to null if it was discarded by the callback
+        -:  117:            // function
+    #####:  118:            if (result.is_discarded())
+    %%%%%:  118-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+        -:  119:            {
+    #####:  120:                result = nullptr;
+    %%%%%:  120-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+        -:  121:            }
+    #####:  122:        }
+    %%%%%:  122-block  0
+    %%%%%:  122-block  1
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+    $$$$$:  122-block  2
+call    3 never executed
+        -:  123:        else
+        -:  124:        {
+        6:  125:            json_sax_dom_parser<BasicJsonType> sdp(result, allow_exceptions);
+        6:  125-block  0
+call    0 returned 6
+        6:  126:            sax_parse_internal(&sdp);
+call    0 returned 6
+branch  1 taken 6 (fallthrough)
+branch  2 taken 0 (throw)
+        -:  127:
+        -:  128:            // in strict mode, input must be completely read
+       6*:  129:            if (strict && (get_token() != token_type::end_of_input))
+        6:  129-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 6
+    %%%%%:  129-block  1
+call    2 never executed
+branch  3 never executed (fallthrough)
+branch  4 never executed (throw)
+    %%%%%:  129-block  2
+branch  5 never executed (fallthrough)
+branch  6 never executed
+    %%%%%:  129-block  3
+        6:  129-block  4
+        6:  129-block  5
+branch  7 taken 0 (fallthrough)
+branch  8 taken 6
+        -:  130:            {
+    #####:  131:                sdp.parse_error(m_lexer.get_position(),
+    %%%%%:  131-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  131-block  1
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+call    6 never executed
+branch  7 never executed (fallthrough)
+branch  8 never executed (throw)
+    %%%%%:  131-block  2
+call    9 never executed
+branch 10 never executed (fallthrough)
+branch 11 never executed (throw)
+    %%%%%:  131-block  3
+call   12 never executed
+call   13 never executed
+call   14 never executed
+branch 15 never executed (fallthrough)
+branch 16 never executed (throw)
+    %%%%%:  131-block  4
+call   17 never executed
+call   18 never executed
+call   19 never executed
+    $$$$$:  131-block  5
+    $$$$$:  131-block  6
+call   20 never executed
+    $$$$$:  131-block  7
+    $$$$$:  131-block  8
+call   21 never executed
+    $$$$$:  131-block  9
+call   22 never executed
+    $$$$$:  131-block 10
+call   23 never executed
+    $$$$$:  131-block 11
+    $$$$$:  131-block 12
+    $$$$$:  131-block 13
+    $$$$$:  131-block 14
+        -:  132:                                m_lexer.get_token_string(),
+    #####:  133:                                parse_error::create(101, m_lexer.get_position(), exception_message(token_type::end_of_input, "value"), nullptr));
+    %%%%%:  133-block  0
+call    0 never executed
+call    1 never executed
+    $$$$$:  133-block  1
+        -:  134:            }
+        -:  135:
+        -:  136:            // in case of an error, return discarded value
+        6:  137:            if (sdp.is_errored())
+        6:  137-block  0
+call    0 returned 6
+branch  1 taken 0 (fallthrough)
+branch  2 taken 6
+        -:  138:            {
+    #####:  139:                result = value_t::discarded;
+    %%%%%:  139-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  139-block  1
+call    3 never executed
+call    4 never executed
+    $$$$$:  139-block  2
+    #####:  140:                return;
+        -:  141:            }
+        6:  142:        }
+        6:  142-block  0
+        6:  142-block  1
+call    0 returned 6
+branch  1 taken 6 (fallthrough)
+branch  2 taken 0
+    $$$$$:  142-block  2
+call    3 never executed
+        -:  143:
+        6:  144:        result.assert_invariant();
+        6:  144-block  0
+call    0 returned 6
+        -:  145:    }
+        -:  146:
+        -:  147:    /*!
+        -:  148:    @brief public accept interface
+        -:  149:
+        -:  150:    @param[in] strict  whether to expect the last token to be EOF
+        -:  151:    @return whether the input is a proper JSON text
+        -:  152:    */
+        -:  153:    bool accept(const bool strict = true)
+        -:  154:    {
+        -:  155:        json_sax_acceptor<BasicJsonType> sax_acceptor;
+        -:  156:        return sax_parse(&sax_acceptor, strict);
+        -:  157:    }
+        -:  158:
+        -:  159:    template<typename SAX>
+        -:  160:    JSON_HEDLEY_NON_NULL(2)
+        -:  161:    bool sax_parse(SAX* sax, const bool strict = true)
+        -:  162:    {
+        -:  163:        (void)detail::is_sax_static_asserts<SAX, BasicJsonType> {};
+        -:  164:        const bool result = sax_parse_internal(sax);
+        -:  165:
+        -:  166:        // strict mode: next byte must be EOF
+        -:  167:        if (result && strict && (get_token() != token_type::end_of_input))
+        -:  168:        {
+        -:  169:            return sax->parse_error(m_lexer.get_position(),
+        -:  170:                                    m_lexer.get_token_string(),
+        -:  171:                                    parse_error::create(101, m_lexer.get_position(), exception_message(token_type::end_of_input, "value"), nullptr));
+        -:  172:        }
+        -:  173:
+        -:  174:        return result;
+        -:  175:    }
+        -:  176:
+        -:  177:  private:
+        -:  178:    template<typename SAX>
+        -:  179:    JSON_HEDLEY_NON_NULL(2)
+       6*:  180:    bool sax_parse_internal(SAX* sax)
+        -:  181:    {
+        -:  182:        // stack to remember the hierarchy of structured values we are parsing
+        -:  183:        // true = array; false = object
+       6*:  184:        std::vector<bool> states;
+        -:  185:        // value to avoid a goto (see comment where set to true)
+       6*:  186:        bool skip_to_state_evaluation = false;
+        -:  187:
+      85*:  188:        while (true)
+        -:  189:        {
+      91*:  190:            if (!skip_to_state_evaluation)
+        -:  191:            {
+        -:  192:                // invariant: get_token() was called before each iteration
+      84*:  193:                switch (last_token)
+        -:  194:                {
+       6*:  195:                    case token_type::begin_object:
+        -:  196:                    {
+       6*:  197:                        if (JSON_HEDLEY_UNLIKELY(!sax->start_object(static_cast<std::size_t>(-1))))
+        -:  198:                        {
+    #####:  199:                            return false;
+        -:  200:                        }
+        -:  201:
+        -:  202:                        // closing } -> we are done
+       6*:  203:                        if (get_token() == token_type::end_object)
+        -:  204:                        {
+    #####:  205:                            if (JSON_HEDLEY_UNLIKELY(!sax->end_object()))
+        -:  206:                            {
+    #####:  207:                                return false;
+        -:  208:                            }
+    #####:  209:                            break;
+        -:  210:                        }
+        -:  211:
+        -:  212:                        // parse key
+       6*:  213:                        if (JSON_HEDLEY_UNLIKELY(last_token != token_type::value_string))
+        -:  214:                        {
+    #####:  215:                            return sax->parse_error(m_lexer.get_position(),
+        -:  216:                                                    m_lexer.get_token_string(),
+    #####:  217:                                                    parse_error::create(101, m_lexer.get_position(), exception_message(token_type::value_string, "object key"), nullptr));
+        -:  218:                        }
+       6*:  219:                        if (JSON_HEDLEY_UNLIKELY(!sax->key(m_lexer.get_string())))
+        -:  220:                        {
+    #####:  221:                            return false;
+        -:  222:                        }
+        -:  223:
+        -:  224:                        // parse separator (:)
+       6*:  225:                        if (JSON_HEDLEY_UNLIKELY(get_token() != token_type::name_separator))
+        -:  226:                        {
+    #####:  227:                            return sax->parse_error(m_lexer.get_position(),
+        -:  228:                                                    m_lexer.get_token_string(),
+    #####:  229:                                                    parse_error::create(101, m_lexer.get_position(), exception_message(token_type::name_separator, "object separator"), nullptr));
+        -:  230:                        }
+        -:  231:
+        -:  232:                        // remember we are now inside an object
+       6*:  233:                        states.push_back(false);
+        -:  234:
+        -:  235:                        // parse values
+       6*:  236:                        get_token();
+       6*:  237:                        continue;
+        -:  238:                    }
+        -:  239:
+       6*:  240:                    case token_type::begin_array:
+        -:  241:                    {
+       6*:  242:                        if (JSON_HEDLEY_UNLIKELY(!sax->start_array(static_cast<std::size_t>(-1))))
+        -:  243:                        {
+    #####:  244:                            return false;
+        -:  245:                        }
+        -:  246:
+        -:  247:                        // closing ] -> we are done
+       6*:  248:                        if (get_token() == token_type::end_array)
+        -:  249:                        {
+       5*:  250:                            if (JSON_HEDLEY_UNLIKELY(!sax->end_array()))
+        -:  251:                            {
+    #####:  252:                                return false;
+        -:  253:                            }
+       5*:  254:                            break;
+        -:  255:                        }
+        -:  256:
+        -:  257:                        // remember we are now inside an array
+       1*:  258:                        states.push_back(true);
+        -:  259:
+        -:  260:                        // parse values (no need to call get_token)
+       1*:  261:                        continue;
+        -:  262:                    }
+        -:  263:
+       6*:  264:                    case token_type::value_float:
+        -:  265:                    {
+       6*:  266:                        const auto res = m_lexer.get_number_float();
+        -:  267:
+       6*:  268:                        if (JSON_HEDLEY_UNLIKELY(!std::isfinite(res)))
+        -:  269:                        {
+    #####:  270:                            return sax->parse_error(m_lexer.get_position(),
+        -:  271:                                                    m_lexer.get_token_string(),
+    #####:  272:                                                    out_of_range::create(406, concat("number overflow parsing '", m_lexer.get_token_string(), '\''), nullptr));
+        -:  273:                        }
+        -:  274:
+       6*:  275:                        if (JSON_HEDLEY_UNLIKELY(!sax->number_float(res, m_lexer.get_string())))
+        -:  276:                        {
+    #####:  277:                            return false;
+        -:  278:                        }
+        -:  279:
+       6*:  280:                        break;
+        -:  281:                    }
+        -:  282:
+    #####:  283:                    case token_type::literal_false:
+        -:  284:                    {
+    #####:  285:                        if (JSON_HEDLEY_UNLIKELY(!sax->boolean(false)))
+        -:  286:                        {
+    #####:  287:                            return false;
+        -:  288:                        }
+    #####:  289:                        break;
+        -:  290:                    }
+        -:  291:
+    #####:  292:                    case token_type::literal_null:
+        -:  293:                    {
+    #####:  294:                        if (JSON_HEDLEY_UNLIKELY(!sax->null()))
+        -:  295:                        {
+    #####:  296:                            return false;
+        -:  297:                        }
+    #####:  298:                        break;
+        -:  299:                    }
+        -:  300:
+    #####:  301:                    case token_type::literal_true:
+        -:  302:                    {
+    #####:  303:                        if (JSON_HEDLEY_UNLIKELY(!sax->boolean(true)))
+        -:  304:                        {
+    #####:  305:                            return false;
+        -:  306:                        }
+    #####:  307:                        break;
+        -:  308:                    }
+        -:  309:
+    #####:  310:                    case token_type::value_integer:
+        -:  311:                    {
+    #####:  312:                        if (JSON_HEDLEY_UNLIKELY(!sax->number_integer(m_lexer.get_number_integer())))
+        -:  313:                        {
+    #####:  314:                            return false;
+        -:  315:                        }
+    #####:  316:                        break;
+        -:  317:                    }
+        -:  318:
+      54*:  319:                    case token_type::value_string:
+        -:  320:                    {
+      54*:  321:                        if (JSON_HEDLEY_UNLIKELY(!sax->string(m_lexer.get_string())))
+        -:  322:                        {
+    #####:  323:                            return false;
+        -:  324:                        }
+      54*:  325:                        break;
+        -:  326:                    }
+        -:  327:
+      12*:  328:                    case token_type::value_unsigned:
+        -:  329:                    {
+      12*:  330:                        if (JSON_HEDLEY_UNLIKELY(!sax->number_unsigned(m_lexer.get_number_unsigned())))
+        -:  331:                        {
+    #####:  332:                            return false;
+        -:  333:                        }
+      12*:  334:                        break;
+        -:  335:                    }
+        -:  336:
+    #####:  337:                    case token_type::parse_error:
+        -:  338:                    {
+        -:  339:                        // using "uninitialized" to avoid "expected" message
+    #####:  340:                        return sax->parse_error(m_lexer.get_position(),
+        -:  341:                                                m_lexer.get_token_string(),
+    #####:  342:                                                parse_error::create(101, m_lexer.get_position(), exception_message(token_type::uninitialized, "value"), nullptr));
+        -:  343:                    }
+    #####:  344:                    case token_type::end_of_input:
+        -:  345:                    {
+    #####:  346:                        if (JSON_HEDLEY_UNLIKELY(m_lexer.get_position().chars_read_total == 1))
+        -:  347:                        {
+    #####:  348:                            return sax->parse_error(m_lexer.get_position(),
+        -:  349:                                                    m_lexer.get_token_string(),
+    #####:  350:                                                    parse_error::create(101, m_lexer.get_position(),
+    #####:  351:                                                            "attempting to parse an empty input; check that your input string or stream contains the expected JSON", nullptr));
+        -:  352:                        }
+        -:  353:
+    #####:  354:                        return sax->parse_error(m_lexer.get_position(),
+        -:  355:                                                m_lexer.get_token_string(),
+    #####:  356:                                                parse_error::create(101, m_lexer.get_position(), exception_message(token_type::literal_or_value, "value"), nullptr));
+        -:  357:                    }
+    #####:  358:                    case token_type::uninitialized:
+        -:  359:                    case token_type::end_array:
+        -:  360:                    case token_type::end_object:
+        -:  361:                    case token_type::name_separator:
+        -:  362:                    case token_type::value_separator:
+        -:  363:                    case token_type::literal_or_value:
+        -:  364:                    default: // the last token was unexpected
+        -:  365:                    {
+    #####:  366:                        return sax->parse_error(m_lexer.get_position(),
+        -:  367:                                                m_lexer.get_token_string(),
+    #####:  368:                                                parse_error::create(101, m_lexer.get_position(), exception_message(token_type::literal_or_value, "value"), nullptr));
+        -:  369:                    }
+       7*:  370:                }
+        -:  371:            }
+        -:  372:            else
+        -:  373:            {
+       7*:  374:                skip_to_state_evaluation = false;
+        -:  375:            }
+        -:  376:
+        -:  377:            // we reached this line after we successfully parsed a value
+      84*:  378:            if (states.empty())
+        -:  379:            {
+        -:  380:                // empty stack: we reached the end of the hierarchy: done
+       6*:  381:                return true;
+        -:  382:            }
+        -:  383:
+      78*:  384:            if (states.back())  // array
+        -:  385:            {
+        -:  386:                // comma -> next value
+       6*:  387:                if (get_token() == token_type::value_separator)
+        -:  388:                {
+        -:  389:                    // parse a new value
+       5*:  390:                    get_token();
+       5*:  391:                    continue;
+        -:  392:                }
+        -:  393:
+        -:  394:                // closing ]
+       1*:  395:                if (JSON_HEDLEY_LIKELY(last_token == token_type::end_array))
+        -:  396:                {
+       1*:  397:                    if (JSON_HEDLEY_UNLIKELY(!sax->end_array()))
+        -:  398:                    {
+    #####:  399:                        return false;
+        -:  400:                    }
+        -:  401:
+        -:  402:                    // We are done with this array. Before we can parse a
+        -:  403:                    // new value, we need to evaluate the new state first.
+        -:  404:                    // By setting skip_to_state_evaluation to false, we
+        -:  405:                    // are effectively jumping to the beginning of this if.
+       1*:  406:                    JSON_ASSERT(!states.empty());
+       1*:  407:                    states.pop_back();
+       1*:  408:                    skip_to_state_evaluation = true;
+       1*:  409:                    continue;
+        -:  410:                }
+        -:  411:
+    #####:  412:                return sax->parse_error(m_lexer.get_position(),
+        -:  413:                                        m_lexer.get_token_string(),
+    #####:  414:                                        parse_error::create(101, m_lexer.get_position(), exception_message(token_type::end_array, "array"), nullptr));
+        -:  415:            }
+        -:  416:
+        -:  417:            // states.back() is false -> object
+        -:  418:
+        -:  419:            // comma -> next value
+      72*:  420:            if (get_token() == token_type::value_separator)
+        -:  421:            {
+        -:  422:                // parse key
+      66*:  423:                if (JSON_HEDLEY_UNLIKELY(get_token() != token_type::value_string))
+        -:  424:                {
+    #####:  425:                    return sax->parse_error(m_lexer.get_position(),
+        -:  426:                                            m_lexer.get_token_string(),
+    #####:  427:                                            parse_error::create(101, m_lexer.get_position(), exception_message(token_type::value_string, "object key"), nullptr));
+        -:  428:                }
+        -:  429:
+      66*:  430:                if (JSON_HEDLEY_UNLIKELY(!sax->key(m_lexer.get_string())))
+        -:  431:                {
+    #####:  432:                    return false;
+        -:  433:                }
+        -:  434:
+        -:  435:                // parse separator (:)
+      66*:  436:                if (JSON_HEDLEY_UNLIKELY(get_token() != token_type::name_separator))
+        -:  437:                {
+    #####:  438:                    return sax->parse_error(m_lexer.get_position(),
+        -:  439:                                            m_lexer.get_token_string(),
+    #####:  440:                                            parse_error::create(101, m_lexer.get_position(), exception_message(token_type::name_separator, "object separator"), nullptr));
+        -:  441:                }
+        -:  442:
+        -:  443:                // parse values
+      66*:  444:                get_token();
+      66*:  445:                continue;
+        -:  446:            }
+        -:  447:
+        -:  448:            // closing }
+       6*:  449:            if (JSON_HEDLEY_LIKELY(last_token == token_type::end_object))
+        -:  450:            {
+       6*:  451:                if (JSON_HEDLEY_UNLIKELY(!sax->end_object()))
+        -:  452:                {
+    #####:  453:                    return false;
+        -:  454:                }
+        -:  455:
+        -:  456:                // We are done with this object. Before we can parse a
+        -:  457:                // new value, we need to evaluate the new state first.
+        -:  458:                // By setting skip_to_state_evaluation to false, we
+        -:  459:                // are effectively jumping to the beginning of this if.
+       6*:  460:                JSON_ASSERT(!states.empty());
+       6*:  461:                states.pop_back();
+       6*:  462:                skip_to_state_evaluation = true;
+       6*:  463:                continue;
+        -:  464:            }
+        -:  465:
+    #####:  466:            return sax->parse_error(m_lexer.get_position(),
+        -:  467:                                    m_lexer.get_token_string(),
+    #####:  468:                                    parse_error::create(101, m_lexer.get_position(), exception_message(token_type::end_object, "object"), nullptr));
+        -:  469:        }
+       6*:  470:    }
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail6parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEENS1_20input_stream_adapterEE18sax_parse_internalINS1_19json_sax_dom_parserISF_EEEEbPT_:
+function _ZN8nlohmann16json_abi_v3_11_36detail6parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEENS1_20input_stream_adapterEE18sax_parse_internalINS1_19json_sax_dom_parserISF_EEEEbPT_ called 6 returned 100% blocks executed 18%
+        6:  180:    bool sax_parse_internal(SAX* sax)
+        -:  181:    {
+        -:  182:        // stack to remember the hierarchy of structured values we are parsing
+        -:  183:        // true = array; false = object
+        6:  184:        std::vector<bool> states;
+        6:  184-block  0
+call    0 returned 6
+        -:  185:        // value to avoid a goto (see comment where set to true)
+        6:  186:        bool skip_to_state_evaluation = false;
+        -:  187:
+       85:  188:        while (true)
+       85:  188-block  0
+        -:  189:        {
+       91:  190:            if (!skip_to_state_evaluation)
+       91:  190-block  0
+branch  0 taken 84 (fallthrough)
+branch  1 taken 7
+        -:  191:            {
+        -:  192:                // invariant: get_token() was called before each iteration
+       84:  193:                switch (last_token)
+       84:  193-block  0
+branch  0 taken 6
+branch  1 taken 6
+branch  2 taken 6
+branch  3 taken 0
+branch  4 taken 0
+branch  5 taken 0
+branch  6 taken 0
+branch  7 taken 54
+branch  8 taken 12
+branch  9 taken 0
+branch 10 taken 0
+branch 11 taken 0
+        -:  194:                {
+        6:  195:                    case token_type::begin_object:
+        -:  196:                    {
+        6:  197:                        if (JSON_HEDLEY_UNLIKELY(!sax->start_object(static_cast<std::size_t>(-1))))
+        6:  197-block  0
+call    0 returned 6
+branch  1 taken 6 (fallthrough)
+branch  2 taken 0 (throw)
+        6:  197-block  1
+branch  3 taken 0 (fallthrough)
+branch  4 taken 6
+        -:  198:                        {
+    #####:  199:                            return false;
+    %%%%%:  199-block  0
+        -:  200:                        }
+        -:  201:
+        -:  202:                        // closing } -> we are done
+        6:  203:                        if (get_token() == token_type::end_object)
+        6:  203-block  0
+call    0 returned 6
+branch  1 taken 6 (fallthrough)
+branch  2 taken 0 (throw)
+        6:  203-block  1
+branch  3 taken 0 (fallthrough)
+branch  4 taken 6
+        -:  204:                        {
+    #####:  205:                            if (JSON_HEDLEY_UNLIKELY(!sax->end_object()))
+    %%%%%:  205-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  205-block  1
+branch  3 never executed (fallthrough)
+branch  4 never executed
+        -:  206:                            {
+    #####:  207:                                return false;
+    %%%%%:  207-block  0
+        -:  208:                            }
+    #####:  209:                            break;
+    %%%%%:  209-block  0
+        -:  210:                        }
+        -:  211:
+        -:  212:                        // parse key
+        6:  213:                        if (JSON_HEDLEY_UNLIKELY(last_token != token_type::value_string))
+        6:  213-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 6
+        -:  214:                        {
+    #####:  215:                            return sax->parse_error(m_lexer.get_position(),
+    %%%%%:  215-block  0
+    %%%%%:  215-block  1
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  215-block  2
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+call    6 never executed
+branch  7 never executed (fallthrough)
+branch  8 never executed (throw)
+    %%%%%:  215-block  3
+call    9 never executed
+branch 10 never executed (fallthrough)
+branch 11 never executed (throw)
+    %%%%%:  215-block  4
+call   12 never executed
+call   13 never executed
+call   14 never executed
+branch 15 never executed (fallthrough)
+branch 16 never executed (throw)
+    %%%%%:  215-block  5
+call   17 never executed
+call   18 never executed
+call   19 never executed
+    $$$$$:  215-block  6
+    $$$$$:  215-block  7
+call   20 never executed
+    $$$$$:  215-block  8
+    $$$$$:  215-block  9
+call   21 never executed
+    $$$$$:  215-block 10
+call   22 never executed
+    $$$$$:  215-block 11
+call   23 never executed
+    $$$$$:  215-block 12
+    $$$$$:  215-block 13
+    $$$$$:  215-block 14
+    $$$$$:  215-block 15
+        -:  216:                                                    m_lexer.get_token_string(),
+    #####:  217:                                                    parse_error::create(101, m_lexer.get_position(), exception_message(token_type::value_string, "object key"), nullptr));
+    %%%%%:  217-block  0
+call    0 never executed
+    %%%%%:  217-block  1
+call    1 never executed
+    $$$$$:  217-block  2
+        -:  218:                        }
+        6:  219:                        if (JSON_HEDLEY_UNLIKELY(!sax->key(m_lexer.get_string())))
+        6:  219-block  0
+call    0 returned 6
+call    1 returned 6
+branch  2 taken 6 (fallthrough)
+branch  3 taken 0 (throw)
+        6:  219-block  1
+branch  4 taken 0 (fallthrough)
+branch  5 taken 6
+        -:  220:                        {
+    #####:  221:                            return false;
+    %%%%%:  221-block  0
+        -:  222:                        }
+        -:  223:
+        -:  224:                        // parse separator (:)
+        6:  225:                        if (JSON_HEDLEY_UNLIKELY(get_token() != token_type::name_separator))
+        6:  225-block  0
+call    0 returned 6
+branch  1 taken 6 (fallthrough)
+branch  2 taken 0 (throw)
+        6:  225-block  1
+branch  3 taken 0 (fallthrough)
+branch  4 taken 6
+        -:  226:                        {
+    #####:  227:                            return sax->parse_error(m_lexer.get_position(),
+    %%%%%:  227-block  0
+    %%%%%:  227-block  1
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  227-block  2
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+call    6 never executed
+branch  7 never executed (fallthrough)
+branch  8 never executed (throw)
+    %%%%%:  227-block  3
+call    9 never executed
+branch 10 never executed (fallthrough)
+branch 11 never executed (throw)
+    %%%%%:  227-block  4
+call   12 never executed
+call   13 never executed
+call   14 never executed
+branch 15 never executed (fallthrough)
+branch 16 never executed (throw)
+    %%%%%:  227-block  5
+call   17 never executed
+call   18 never executed
+call   19 never executed
+    $$$$$:  227-block  6
+    $$$$$:  227-block  7
+call   20 never executed
+    $$$$$:  227-block  8
+    $$$$$:  227-block  9
+call   21 never executed
+    $$$$$:  227-block 10
+call   22 never executed
+    $$$$$:  227-block 11
+call   23 never executed
+    $$$$$:  227-block 12
+    $$$$$:  227-block 13
+    $$$$$:  227-block 14
+    $$$$$:  227-block 15
+        -:  228:                                                    m_lexer.get_token_string(),
+    #####:  229:                                                    parse_error::create(101, m_lexer.get_position(), exception_message(token_type::name_separator, "object separator"), nullptr));
+    %%%%%:  229-block  0
+call    0 never executed
+    %%%%%:  229-block  1
+call    1 never executed
+    $$$$$:  229-block  2
+        -:  230:                        }
+        -:  231:
+        -:  232:                        // remember we are now inside an object
+        6:  233:                        states.push_back(false);
+        6:  233-block  0
+call    0 returned 6
+branch  1 taken 6 (fallthrough)
+branch  2 taken 0 (throw)
+        -:  234:
+        -:  235:                        // parse values
+        6:  236:                        get_token();
+        6:  236-block  0
+call    0 returned 6
+branch  1 taken 6 (fallthrough)
+branch  2 taken 0 (throw)
+        6:  237:                        continue;
+        -:  238:                    }
+        -:  239:
+        6:  240:                    case token_type::begin_array:
+        -:  241:                    {
+        6:  242:                        if (JSON_HEDLEY_UNLIKELY(!sax->start_array(static_cast<std::size_t>(-1))))
+        6:  242-block  0
+call    0 returned 6
+branch  1 taken 6 (fallthrough)
+branch  2 taken 0 (throw)
+        6:  242-block  1
+branch  3 taken 0 (fallthrough)
+branch  4 taken 6
+        -:  243:                        {
+    #####:  244:                            return false;
+    %%%%%:  244-block  0
+        -:  245:                        }
+        -:  246:
+        -:  247:                        // closing ] -> we are done
+        6:  248:                        if (get_token() == token_type::end_array)
+        6:  248-block  0
+call    0 returned 6
+branch  1 taken 6 (fallthrough)
+branch  2 taken 0 (throw)
+        6:  248-block  1
+branch  3 taken 5 (fallthrough)
+branch  4 taken 1
+        -:  249:                        {
+        5:  250:                            if (JSON_HEDLEY_UNLIKELY(!sax->end_array()))
+        5:  250-block  0
+call    0 returned 5
+branch  1 taken 5 (fallthrough)
+branch  2 taken 0 (throw)
+        5:  250-block  1
+branch  3 taken 0 (fallthrough)
+branch  4 taken 5
+        -:  251:                            {
+    #####:  252:                                return false;
+    %%%%%:  252-block  0
+        -:  253:                            }
+        5:  254:                            break;
+        5:  254-block  0
+        -:  255:                        }
+        -:  256:
+        -:  257:                        // remember we are now inside an array
+        1:  258:                        states.push_back(true);
+        1:  258-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        -:  259:
+        -:  260:                        // parse values (no need to call get_token)
+        1:  261:                        continue;
+        -:  262:                    }
+        -:  263:
+        6:  264:                    case token_type::value_float:
+        -:  265:                    {
+        6:  266:                        const auto res = m_lexer.get_number_float();
+        6:  266-block  0
+call    0 returned 6
+        -:  267:
+        6:  268:                        if (JSON_HEDLEY_UNLIKELY(!std::isfinite(res)))
+call    0 returned 6
+branch  1 taken 0 (fallthrough)
+branch  2 taken 6
+        -:  269:                        {
+    #####:  270:                            return sax->parse_error(m_lexer.get_position(),
+    %%%%%:  270-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  270-block  1
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+    %%%%%:  270-block  2
+call    6 never executed
+branch  7 never executed (fallthrough)
+branch  8 never executed (throw)
+    %%%%%:  270-block  3
+call    9 never executed
+call   10 never executed
+call   11 never executed
+branch 12 never executed (fallthrough)
+branch 13 never executed (throw)
+    %%%%%:  270-block  4
+call   14 never executed
+call   15 never executed
+call   16 never executed
+call   17 never executed
+    $$$$$:  270-block  5
+    $$$$$:  270-block  6
+call   18 never executed
+    $$$$$:  270-block  7
+    $$$$$:  270-block  8
+call   19 never executed
+    $$$$$:  270-block  9
+call   20 never executed
+    $$$$$:  270-block 10
+call   21 never executed
+    $$$$$:  270-block 11
+    $$$$$:  270-block 12
+    $$$$$:  270-block 13
+        -:  271:                                                    m_lexer.get_token_string(),
+    #####:  272:                                                    out_of_range::create(406, concat("number overflow parsing '", m_lexer.get_token_string(), '\''), nullptr));
+    %%%%%:  272-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  272-block  1
+    $$$$$:  272-block  2
+        -:  273:                        }
+        -:  274:
+        6:  275:                        if (JSON_HEDLEY_UNLIKELY(!sax->number_float(res, m_lexer.get_string())))
+        6:  275-block  0
+call    0 returned 6
+call    1 returned 6
+branch  2 taken 6 (fallthrough)
+branch  3 taken 0 (throw)
+        6:  275-block  1
+branch  4 taken 0 (fallthrough)
+branch  5 taken 6
+        -:  276:                        {
+    #####:  277:                            return false;
+    %%%%%:  277-block  0
+        -:  278:                        }
+        -:  279:
+        6:  280:                        break;
+        6:  280-block  0
+        -:  281:                    }
+        -:  282:
+    #####:  283:                    case token_type::literal_false:
+        -:  284:                    {
+    #####:  285:                        if (JSON_HEDLEY_UNLIKELY(!sax->boolean(false)))
+    %%%%%:  285-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  285-block  1
+branch  3 never executed (fallthrough)
+branch  4 never executed
+        -:  286:                        {
+    #####:  287:                            return false;
+    %%%%%:  287-block  0
+        -:  288:                        }
+    #####:  289:                        break;
+    %%%%%:  289-block  0
+        -:  290:                    }
+        -:  291:
+    #####:  292:                    case token_type::literal_null:
+        -:  293:                    {
+    #####:  294:                        if (JSON_HEDLEY_UNLIKELY(!sax->null()))
+    %%%%%:  294-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  294-block  1
+branch  3 never executed (fallthrough)
+branch  4 never executed
+        -:  295:                        {
+    #####:  296:                            return false;
+    %%%%%:  296-block  0
+        -:  297:                        }
+    #####:  298:                        break;
+    %%%%%:  298-block  0
+        -:  299:                    }
+        -:  300:
+    #####:  301:                    case token_type::literal_true:
+        -:  302:                    {
+    #####:  303:                        if (JSON_HEDLEY_UNLIKELY(!sax->boolean(true)))
+    %%%%%:  303-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  303-block  1
+branch  3 never executed (fallthrough)
+branch  4 never executed
+        -:  304:                        {
+    #####:  305:                            return false;
+    %%%%%:  305-block  0
+        -:  306:                        }
+    #####:  307:                        break;
+    %%%%%:  307-block  0
+        -:  308:                    }
+        -:  309:
+    #####:  310:                    case token_type::value_integer:
+        -:  311:                    {
+    #####:  312:                        if (JSON_HEDLEY_UNLIKELY(!sax->number_integer(m_lexer.get_number_integer())))
+    %%%%%:  312-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    %%%%%:  312-block  1
+branch  4 never executed (fallthrough)
+branch  5 never executed
+        -:  313:                        {
+    #####:  314:                            return false;
+    %%%%%:  314-block  0
+        -:  315:                        }
+    #####:  316:                        break;
+    %%%%%:  316-block  0
+        -:  317:                    }
+        -:  318:
+       54:  319:                    case token_type::value_string:
+        -:  320:                    {
+       54:  321:                        if (JSON_HEDLEY_UNLIKELY(!sax->string(m_lexer.get_string())))
+       54:  321-block  0
+call    0 returned 54
+call    1 returned 54
+branch  2 taken 54 (fallthrough)
+branch  3 taken 0 (throw)
+       54:  321-block  1
+branch  4 taken 0 (fallthrough)
+branch  5 taken 54
+        -:  322:                        {
+    #####:  323:                            return false;
+    %%%%%:  323-block  0
+        -:  324:                        }
+       54:  325:                        break;
+       54:  325-block  0
+        -:  326:                    }
+        -:  327:
+       12:  328:                    case token_type::value_unsigned:
+        -:  329:                    {
+       12:  330:                        if (JSON_HEDLEY_UNLIKELY(!sax->number_unsigned(m_lexer.get_number_unsigned())))
+       12:  330-block  0
+call    0 returned 12
+call    1 returned 12
+branch  2 taken 12 (fallthrough)
+branch  3 taken 0 (throw)
+       12:  330-block  1
+branch  4 taken 0 (fallthrough)
+branch  5 taken 12
+        -:  331:                        {
+    #####:  332:                            return false;
+    %%%%%:  332-block  0
+        -:  333:                        }
+       12:  334:                        break;
+       12:  334-block  0
+        -:  335:                    }
+        -:  336:
+    #####:  337:                    case token_type::parse_error:
+        -:  338:                    {
+        -:  339:                        // using "uninitialized" to avoid "expected" message
+    #####:  340:                        return sax->parse_error(m_lexer.get_position(),
+    %%%%%:  340-block  0
+    %%%%%:  340-block  1
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  340-block  2
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+call    6 never executed
+branch  7 never executed (fallthrough)
+branch  8 never executed (throw)
+    %%%%%:  340-block  3
+call    9 never executed
+branch 10 never executed (fallthrough)
+branch 11 never executed (throw)
+    %%%%%:  340-block  4
+call   12 never executed
+call   13 never executed
+call   14 never executed
+branch 15 never executed (fallthrough)
+branch 16 never executed (throw)
+    %%%%%:  340-block  5
+call   17 never executed
+call   18 never executed
+call   19 never executed
+    $$$$$:  340-block  6
+    $$$$$:  340-block  7
+call   20 never executed
+    $$$$$:  340-block  8
+    $$$$$:  340-block  9
+call   21 never executed
+    $$$$$:  340-block 10
+call   22 never executed
+    $$$$$:  340-block 11
+call   23 never executed
+    $$$$$:  340-block 12
+    $$$$$:  340-block 13
+    $$$$$:  340-block 14
+    $$$$$:  340-block 15
+        -:  341:                                                m_lexer.get_token_string(),
+    #####:  342:                                                parse_error::create(101, m_lexer.get_position(), exception_message(token_type::uninitialized, "value"), nullptr));
+    %%%%%:  342-block  0
+call    0 never executed
+    %%%%%:  342-block  1
+call    1 never executed
+    $$$$$:  342-block  2
+        -:  343:                    }
+    #####:  344:                    case token_type::end_of_input:
+        -:  345:                    {
+    #####:  346:                        if (JSON_HEDLEY_UNLIKELY(m_lexer.get_position().chars_read_total == 1))
+    %%%%%:  346-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+        -:  347:                        {
+    #####:  348:                            return sax->parse_error(m_lexer.get_position(),
+    %%%%%:  348-block  0
+    %%%%%:  348-block  1
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+    %%%%%:  348-block  2
+call    6 never executed
+branch  7 never executed (fallthrough)
+branch  8 never executed (throw)
+    %%%%%:  348-block  3
+call    9 never executed
+call   10 never executed
+call   11 never executed
+branch 12 never executed (fallthrough)
+branch 13 never executed (throw)
+    %%%%%:  348-block  4
+call   14 never executed
+call   15 never executed
+    $$$$$:  348-block  5
+    $$$$$:  348-block  6
+call   16 never executed
+    $$$$$:  348-block  7
+    $$$$$:  348-block  8
+call   17 never executed
+    $$$$$:  348-block  9
+call   18 never executed
+    $$$$$:  348-block 10
+    $$$$$:  348-block 11
+    $$$$$:  348-block 12
+        -:  349:                                                    m_lexer.get_token_string(),
+    #####:  350:                                                    parse_error::create(101, m_lexer.get_position(),
+    %%%%%:  350-block  0
+call    0 never executed
+call    1 never executed
+    $$$$$:  350-block  1
+    #####:  351:                                                            "attempting to parse an empty input; check that your input string or stream contains the expected JSON", nullptr));
+    %%%%%:  351-block  0
+        -:  352:                        }
+        -:  353:
+    #####:  354:                        return sax->parse_error(m_lexer.get_position(),
+    %%%%%:  354-block  0
+    %%%%%:  354-block  1
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  354-block  2
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+call    6 never executed
+branch  7 never executed (fallthrough)
+branch  8 never executed (throw)
+    %%%%%:  354-block  3
+call    9 never executed
+branch 10 never executed (fallthrough)
+branch 11 never executed (throw)
+    %%%%%:  354-block  4
+call   12 never executed
+call   13 never executed
+call   14 never executed
+branch 15 never executed (fallthrough)
+branch 16 never executed (throw)
+    %%%%%:  354-block  5
+call   17 never executed
+call   18 never executed
+call   19 never executed
+    $$$$$:  354-block  6
+    $$$$$:  354-block  7
+call   20 never executed
+    $$$$$:  354-block  8
+    $$$$$:  354-block  9
+call   21 never executed
+    $$$$$:  354-block 10
+call   22 never executed
+    $$$$$:  354-block 11
+call   23 never executed
+    $$$$$:  354-block 12
+    $$$$$:  354-block 13
+    $$$$$:  354-block 14
+    $$$$$:  354-block 15
+        -:  355:                                                m_lexer.get_token_string(),
+    #####:  356:                                                parse_error::create(101, m_lexer.get_position(), exception_message(token_type::literal_or_value, "value"), nullptr));
+    %%%%%:  356-block  0
+call    0 never executed
+    %%%%%:  356-block  1
+call    1 never executed
+    $$$$$:  356-block  2
+        -:  357:                    }
+    #####:  358:                    case token_type::uninitialized:
+        -:  359:                    case token_type::end_array:
+        -:  360:                    case token_type::end_object:
+        -:  361:                    case token_type::name_separator:
+        -:  362:                    case token_type::value_separator:
+        -:  363:                    case token_type::literal_or_value:
+        -:  364:                    default: // the last token was unexpected
+        -:  365:                    {
+    #####:  366:                        return sax->parse_error(m_lexer.get_position(),
+    %%%%%:  366-block  0
+    %%%%%:  366-block  1
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  366-block  2
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+call    6 never executed
+branch  7 never executed (fallthrough)
+branch  8 never executed (throw)
+    %%%%%:  366-block  3
+call    9 never executed
+branch 10 never executed (fallthrough)
+branch 11 never executed (throw)
+    %%%%%:  366-block  4
+call   12 never executed
+call   13 never executed
+call   14 never executed
+branch 15 never executed (fallthrough)
+branch 16 never executed (throw)
+    %%%%%:  366-block  5
+call   17 never executed
+call   18 never executed
+call   19 never executed
+    $$$$$:  366-block  6
+    $$$$$:  366-block  7
+call   20 never executed
+    $$$$$:  366-block  8
+    $$$$$:  366-block  9
+call   21 never executed
+    $$$$$:  366-block 10
+call   22 never executed
+    $$$$$:  366-block 11
+call   23 never executed
+    $$$$$:  366-block 12
+    $$$$$:  366-block 13
+    $$$$$:  366-block 14
+    $$$$$:  366-block 15
+        -:  367:                                                m_lexer.get_token_string(),
+    #####:  368:                                                parse_error::create(101, m_lexer.get_position(), exception_message(token_type::literal_or_value, "value"), nullptr));
+    %%%%%:  368-block  0
+call    0 never executed
+    %%%%%:  368-block  1
+call    1 never executed
+    $$$$$:  368-block  2
+        -:  369:                    }
+        7:  370:                }
+        6:  370-block  0
+        1:  370-block  1
+        -:  371:            }
+        -:  372:            else
+        -:  373:            {
+        7:  374:                skip_to_state_evaluation = false;
+        7:  374-block  0
+        -:  375:            }
+        -:  376:
+        -:  377:            // we reached this line after we successfully parsed a value
+       84:  378:            if (states.empty())
+       84:  378-block  0
+call    0 returned 84
+branch  1 taken 6 (fallthrough)
+branch  2 taken 78
+        -:  379:            {
+        -:  380:                // empty stack: we reached the end of the hierarchy: done
+        6:  381:                return true;
+        6:  381-block  0
+        -:  382:            }
+        -:  383:
+       78:  384:            if (states.back())  // array
+       78:  384-block  0
+call    0 returned 78
+call    1 returned 78
+branch  2 taken 6 (fallthrough)
+branch  3 taken 72
+        -:  385:            {
+        -:  386:                // comma -> next value
+        6:  387:                if (get_token() == token_type::value_separator)
+        6:  387-block  0
+call    0 returned 6
+branch  1 taken 6 (fallthrough)
+branch  2 taken 0 (throw)
+        6:  387-block  1
+branch  3 taken 5 (fallthrough)
+branch  4 taken 1
+        -:  388:                {
+        -:  389:                    // parse a new value
+        5:  390:                    get_token();
+        5:  390-block  0
+call    0 returned 5
+branch  1 taken 5 (fallthrough)
+branch  2 taken 0 (throw)
+        5:  391:                    continue;
+        5:  391-block  0
+        -:  392:                }
+        -:  393:
+        -:  394:                // closing ]
+        1:  395:                if (JSON_HEDLEY_LIKELY(last_token == token_type::end_array))
+        1:  395-block  0
+branch  0 taken 1 (fallthrough)
+branch  1 taken 0
+        -:  396:                {
+        1:  397:                    if (JSON_HEDLEY_UNLIKELY(!sax->end_array()))
+        1:  397-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:  397-block  1
+branch  3 taken 0 (fallthrough)
+branch  4 taken 1
+        -:  398:                    {
+    #####:  399:                        return false;
+    %%%%%:  399-block  0
+        -:  400:                    }
+        -:  401:
+        -:  402:                    // We are done with this array. Before we can parse a
+        -:  403:                    // new value, we need to evaluate the new state first.
+        -:  404:                    // By setting skip_to_state_evaluation to false, we
+        -:  405:                    // are effectively jumping to the beginning of this if.
+       1*:  406:                    JSON_ASSERT(!states.empty());
+        1:  406-block  0
+call    0 returned 1
+branch  1 taken 0 (fallthrough)
+branch  2 taken 1
+    %%%%%:  406-block  1
+call    3 never executed
+        1:  406-block  2
+        1:  407:                    states.pop_back();
+        1:  407-block  0
+call    0 returned 1
+        1:  408:                    skip_to_state_evaluation = true;
+        1:  409:                    continue;
+        -:  410:                }
+        -:  411:
+    #####:  412:                return sax->parse_error(m_lexer.get_position(),
+    %%%%%:  412-block  0
+    %%%%%:  412-block  1
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  412-block  2
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+call    6 never executed
+branch  7 never executed (fallthrough)
+branch  8 never executed (throw)
+    %%%%%:  412-block  3
+call    9 never executed
+branch 10 never executed (fallthrough)
+branch 11 never executed (throw)
+    %%%%%:  412-block  4
+call   12 never executed
+call   13 never executed
+call   14 never executed
+branch 15 never executed (fallthrough)
+branch 16 never executed (throw)
+    %%%%%:  412-block  5
+call   17 never executed
+call   18 never executed
+call   19 never executed
+    $$$$$:  412-block  6
+    $$$$$:  412-block  7
+call   20 never executed
+    $$$$$:  412-block  8
+    $$$$$:  412-block  9
+call   21 never executed
+    $$$$$:  412-block 10
+call   22 never executed
+    $$$$$:  412-block 11
+call   23 never executed
+    $$$$$:  412-block 12
+    $$$$$:  412-block 13
+    $$$$$:  412-block 14
+    $$$$$:  412-block 15
+        -:  413:                                        m_lexer.get_token_string(),
+    #####:  414:                                        parse_error::create(101, m_lexer.get_position(), exception_message(token_type::end_array, "array"), nullptr));
+    %%%%%:  414-block  0
+call    0 never executed
+    %%%%%:  414-block  1
+call    1 never executed
+    $$$$$:  414-block  2
+        -:  415:            }
+        -:  416:
+        -:  417:            // states.back() is false -> object
+        -:  418:
+        -:  419:            // comma -> next value
+       72:  420:            if (get_token() == token_type::value_separator)
+       72:  420-block  0
+call    0 returned 72
+branch  1 taken 72 (fallthrough)
+branch  2 taken 0 (throw)
+       72:  420-block  1
+branch  3 taken 66 (fallthrough)
+branch  4 taken 6
+        -:  421:            {
+        -:  422:                // parse key
+       66:  423:                if (JSON_HEDLEY_UNLIKELY(get_token() != token_type::value_string))
+       66:  423-block  0
+call    0 returned 66
+branch  1 taken 66 (fallthrough)
+branch  2 taken 0 (throw)
+       66:  423-block  1
+branch  3 taken 0 (fallthrough)
+branch  4 taken 66
+        -:  424:                {
+    #####:  425:                    return sax->parse_error(m_lexer.get_position(),
+    %%%%%:  425-block  0
+    %%%%%:  425-block  1
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  425-block  2
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+call    6 never executed
+branch  7 never executed (fallthrough)
+branch  8 never executed (throw)
+    %%%%%:  425-block  3
+call    9 never executed
+branch 10 never executed (fallthrough)
+branch 11 never executed (throw)
+    %%%%%:  425-block  4
+call   12 never executed
+call   13 never executed
+call   14 never executed
+branch 15 never executed (fallthrough)
+branch 16 never executed (throw)
+    %%%%%:  425-block  5
+call   17 never executed
+call   18 never executed
+call   19 never executed
+    $$$$$:  425-block  6
+    $$$$$:  425-block  7
+call   20 never executed
+    $$$$$:  425-block  8
+    $$$$$:  425-block  9
+call   21 never executed
+    $$$$$:  425-block 10
+call   22 never executed
+    $$$$$:  425-block 11
+call   23 never executed
+    $$$$$:  425-block 12
+    $$$$$:  425-block 13
+    $$$$$:  425-block 14
+    $$$$$:  425-block 15
+        -:  426:                                            m_lexer.get_token_string(),
+    #####:  427:                                            parse_error::create(101, m_lexer.get_position(), exception_message(token_type::value_string, "object key"), nullptr));
+    %%%%%:  427-block  0
+call    0 never executed
+    %%%%%:  427-block  1
+call    1 never executed
+    $$$$$:  427-block  2
+        -:  428:                }
+        -:  429:
+       66:  430:                if (JSON_HEDLEY_UNLIKELY(!sax->key(m_lexer.get_string())))
+       66:  430-block  0
+call    0 returned 66
+call    1 returned 66
+branch  2 taken 66 (fallthrough)
+branch  3 taken 0 (throw)
+       66:  430-block  1
+branch  4 taken 0 (fallthrough)
+branch  5 taken 66
+        -:  431:                {
+    #####:  432:                    return false;
+    %%%%%:  432-block  0
+        -:  433:                }
+        -:  434:
+        -:  435:                // parse separator (:)
+       66:  436:                if (JSON_HEDLEY_UNLIKELY(get_token() != token_type::name_separator))
+       66:  436-block  0
+call    0 returned 66
+branch  1 taken 66 (fallthrough)
+branch  2 taken 0 (throw)
+       66:  436-block  1
+branch  3 taken 0 (fallthrough)
+branch  4 taken 66
+        -:  437:                {
+    #####:  438:                    return sax->parse_error(m_lexer.get_position(),
+    %%%%%:  438-block  0
+    %%%%%:  438-block  1
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  438-block  2
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+call    6 never executed
+branch  7 never executed (fallthrough)
+branch  8 never executed (throw)
+    %%%%%:  438-block  3
+call    9 never executed
+branch 10 never executed (fallthrough)
+branch 11 never executed (throw)
+    %%%%%:  438-block  4
+call   12 never executed
+call   13 never executed
+call   14 never executed
+branch 15 never executed (fallthrough)
+branch 16 never executed (throw)
+    %%%%%:  438-block  5
+call   17 never executed
+call   18 never executed
+call   19 never executed
+    $$$$$:  438-block  6
+    $$$$$:  438-block  7
+call   20 never executed
+    $$$$$:  438-block  8
+    $$$$$:  438-block  9
+call   21 never executed
+    $$$$$:  438-block 10
+call   22 never executed
+    $$$$$:  438-block 11
+call   23 never executed
+    $$$$$:  438-block 12
+    $$$$$:  438-block 13
+    $$$$$:  438-block 14
+    $$$$$:  438-block 15
+        -:  439:                                            m_lexer.get_token_string(),
+    #####:  440:                                            parse_error::create(101, m_lexer.get_position(), exception_message(token_type::name_separator, "object separator"), nullptr));
+    %%%%%:  440-block  0
+call    0 never executed
+    %%%%%:  440-block  1
+call    1 never executed
+    $$$$$:  440-block  2
+        -:  441:                }
+        -:  442:
+        -:  443:                // parse values
+       66:  444:                get_token();
+       66:  444-block  0
+call    0 returned 66
+branch  1 taken 66 (fallthrough)
+branch  2 taken 0 (throw)
+       66:  445:                continue;
+       66:  445-block  0
+        -:  446:            }
+        -:  447:
+        -:  448:            // closing }
+        6:  449:            if (JSON_HEDLEY_LIKELY(last_token == token_type::end_object))
+        6:  449-block  0
+branch  0 taken 6 (fallthrough)
+branch  1 taken 0
+        -:  450:            {
+        6:  451:                if (JSON_HEDLEY_UNLIKELY(!sax->end_object()))
+        6:  451-block  0
+call    0 returned 6
+branch  1 taken 6 (fallthrough)
+branch  2 taken 0 (throw)
+        6:  451-block  1
+branch  3 taken 0 (fallthrough)
+branch  4 taken 6
+        -:  452:                {
+    #####:  453:                    return false;
+    %%%%%:  453-block  0
+        -:  454:                }
+        -:  455:
+        -:  456:                // We are done with this object. Before we can parse a
+        -:  457:                // new value, we need to evaluate the new state first.
+        -:  458:                // By setting skip_to_state_evaluation to false, we
+        -:  459:                // are effectively jumping to the beginning of this if.
+       6*:  460:                JSON_ASSERT(!states.empty());
+        6:  460-block  0
+call    0 returned 6
+branch  1 taken 0 (fallthrough)
+branch  2 taken 6
+    %%%%%:  460-block  1
+call    3 never executed
+        6:  460-block  2
+        6:  461:                states.pop_back();
+        6:  461-block  0
+call    0 returned 6
+        6:  462:                skip_to_state_evaluation = true;
+        6:  463:                continue;
+        -:  464:            }
+        -:  465:
+    #####:  466:            return sax->parse_error(m_lexer.get_position(),
+    %%%%%:  466-block  0
+    %%%%%:  466-block  1
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  466-block  2
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+call    6 never executed
+branch  7 never executed (fallthrough)
+branch  8 never executed (throw)
+    %%%%%:  466-block  3
+call    9 never executed
+branch 10 never executed (fallthrough)
+branch 11 never executed (throw)
+    %%%%%:  466-block  4
+call   12 never executed
+call   13 never executed
+call   14 never executed
+branch 15 never executed (fallthrough)
+branch 16 never executed (throw)
+    %%%%%:  466-block  5
+call   17 never executed
+call   18 never executed
+call   19 never executed
+    $$$$$:  466-block  6
+    $$$$$:  466-block  7
+call   20 never executed
+    $$$$$:  466-block  8
+    $$$$$:  466-block  9
+call   21 never executed
+    $$$$$:  466-block 10
+call   22 never executed
+    $$$$$:  466-block 11
+call   23 never executed
+    $$$$$:  466-block 12
+    $$$$$:  466-block 13
+    $$$$$:  466-block 14
+    $$$$$:  466-block 15
+        -:  467:                                    m_lexer.get_token_string(),
+    #####:  468:                                    parse_error::create(101, m_lexer.get_position(), exception_message(token_type::end_object, "object"), nullptr));
+    %%%%%:  468-block  0
+call    0 never executed
+    %%%%%:  468-block  1
+call    1 never executed
+    $$$$$:  468-block  2
+        -:  469:        }
+        6:  470:    }
+        6:  470-block  0
+call    0 returned 6
+    $$$$$:  470-block  1
+call    1 never executed
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail6parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEENS1_20input_stream_adapterEE18sax_parse_internalINS1_28json_sax_dom_callback_parserISF_EEEEbPT_:
+function _ZN8nlohmann16json_abi_v3_11_36detail6parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEENS1_20input_stream_adapterEE18sax_parse_internalINS1_28json_sax_dom_callback_parserISF_EEEEbPT_ called 0 returned 0% blocks executed 0%
+    #####:  180:    bool sax_parse_internal(SAX* sax)
+        -:  181:    {
+        -:  182:        // stack to remember the hierarchy of structured values we are parsing
+        -:  183:        // true = array; false = object
+    #####:  184:        std::vector<bool> states;
+    %%%%%:  184-block  0
+call    0 never executed
+        -:  185:        // value to avoid a goto (see comment where set to true)
+    #####:  186:        bool skip_to_state_evaluation = false;
+        -:  187:
+    #####:  188:        while (true)
+    %%%%%:  188-block  0
+        -:  189:        {
+    #####:  190:            if (!skip_to_state_evaluation)
+    %%%%%:  190-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  191:            {
+        -:  192:                // invariant: get_token() was called before each iteration
+    #####:  193:                switch (last_token)
+    %%%%%:  193-block  0
+branch  0 never executed
+branch  1 never executed
+branch  2 never executed
+branch  3 never executed
+branch  4 never executed
+branch  5 never executed
+branch  6 never executed
+branch  7 never executed
+branch  8 never executed
+branch  9 never executed
+branch 10 never executed
+branch 11 never executed
+        -:  194:                {
+    #####:  195:                    case token_type::begin_object:
+        -:  196:                    {
+    #####:  197:                        if (JSON_HEDLEY_UNLIKELY(!sax->start_object(static_cast<std::size_t>(-1))))
+    %%%%%:  197-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  197-block  1
+branch  3 never executed (fallthrough)
+branch  4 never executed
+        -:  198:                        {
+    #####:  199:                            return false;
+    %%%%%:  199-block  0
+        -:  200:                        }
+        -:  201:
+        -:  202:                        // closing } -> we are done
+    #####:  203:                        if (get_token() == token_type::end_object)
+    %%%%%:  203-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  203-block  1
+branch  3 never executed (fallthrough)
+branch  4 never executed
+        -:  204:                        {
+    #####:  205:                            if (JSON_HEDLEY_UNLIKELY(!sax->end_object()))
+    %%%%%:  205-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  205-block  1
+branch  3 never executed (fallthrough)
+branch  4 never executed
+        -:  206:                            {
+    #####:  207:                                return false;
+    %%%%%:  207-block  0
+        -:  208:                            }
+    #####:  209:                            break;
+    %%%%%:  209-block  0
+        -:  210:                        }
+        -:  211:
+        -:  212:                        // parse key
+    #####:  213:                        if (JSON_HEDLEY_UNLIKELY(last_token != token_type::value_string))
+    %%%%%:  213-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  214:                        {
+    #####:  215:                            return sax->parse_error(m_lexer.get_position(),
+    %%%%%:  215-block  0
+    %%%%%:  215-block  1
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  215-block  2
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+call    6 never executed
+branch  7 never executed (fallthrough)
+branch  8 never executed (throw)
+    %%%%%:  215-block  3
+call    9 never executed
+branch 10 never executed (fallthrough)
+branch 11 never executed (throw)
+    %%%%%:  215-block  4
+call   12 never executed
+call   13 never executed
+call   14 never executed
+branch 15 never executed (fallthrough)
+branch 16 never executed (throw)
+    %%%%%:  215-block  5
+call   17 never executed
+call   18 never executed
+call   19 never executed
+    $$$$$:  215-block  6
+    $$$$$:  215-block  7
+call   20 never executed
+    $$$$$:  215-block  8
+    $$$$$:  215-block  9
+call   21 never executed
+    $$$$$:  215-block 10
+call   22 never executed
+    $$$$$:  215-block 11
+call   23 never executed
+    $$$$$:  215-block 12
+    $$$$$:  215-block 13
+    $$$$$:  215-block 14
+    $$$$$:  215-block 15
+        -:  216:                                                    m_lexer.get_token_string(),
+    #####:  217:                                                    parse_error::create(101, m_lexer.get_position(), exception_message(token_type::value_string, "object key"), nullptr));
+    %%%%%:  217-block  0
+call    0 never executed
+    %%%%%:  217-block  1
+call    1 never executed
+    $$$$$:  217-block  2
+        -:  218:                        }
+    #####:  219:                        if (JSON_HEDLEY_UNLIKELY(!sax->key(m_lexer.get_string())))
+    %%%%%:  219-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    %%%%%:  219-block  1
+branch  4 never executed (fallthrough)
+branch  5 never executed
+        -:  220:                        {
+    #####:  221:                            return false;
+    %%%%%:  221-block  0
+        -:  222:                        }
+        -:  223:
+        -:  224:                        // parse separator (:)
+    #####:  225:                        if (JSON_HEDLEY_UNLIKELY(get_token() != token_type::name_separator))
+    %%%%%:  225-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  225-block  1
+branch  3 never executed (fallthrough)
+branch  4 never executed
+        -:  226:                        {
+    #####:  227:                            return sax->parse_error(m_lexer.get_position(),
+    %%%%%:  227-block  0
+    %%%%%:  227-block  1
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  227-block  2
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+call    6 never executed
+branch  7 never executed (fallthrough)
+branch  8 never executed (throw)
+    %%%%%:  227-block  3
+call    9 never executed
+branch 10 never executed (fallthrough)
+branch 11 never executed (throw)
+    %%%%%:  227-block  4
+call   12 never executed
+call   13 never executed
+call   14 never executed
+branch 15 never executed (fallthrough)
+branch 16 never executed (throw)
+    %%%%%:  227-block  5
+call   17 never executed
+call   18 never executed
+call   19 never executed
+    $$$$$:  227-block  6
+    $$$$$:  227-block  7
+call   20 never executed
+    $$$$$:  227-block  8
+    $$$$$:  227-block  9
+call   21 never executed
+    $$$$$:  227-block 10
+call   22 never executed
+    $$$$$:  227-block 11
+call   23 never executed
+    $$$$$:  227-block 12
+    $$$$$:  227-block 13
+    $$$$$:  227-block 14
+    $$$$$:  227-block 15
+        -:  228:                                                    m_lexer.get_token_string(),
+    #####:  229:                                                    parse_error::create(101, m_lexer.get_position(), exception_message(token_type::name_separator, "object separator"), nullptr));
+    %%%%%:  229-block  0
+call    0 never executed
+    %%%%%:  229-block  1
+call    1 never executed
+    $$$$$:  229-block  2
+        -:  230:                        }
+        -:  231:
+        -:  232:                        // remember we are now inside an object
+    #####:  233:                        states.push_back(false);
+    %%%%%:  233-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+        -:  234:
+        -:  235:                        // parse values
+    #####:  236:                        get_token();
+    %%%%%:  236-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    #####:  237:                        continue;
+        -:  238:                    }
+        -:  239:
+    #####:  240:                    case token_type::begin_array:
+        -:  241:                    {
+    #####:  242:                        if (JSON_HEDLEY_UNLIKELY(!sax->start_array(static_cast<std::size_t>(-1))))
+    %%%%%:  242-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  242-block  1
+branch  3 never executed (fallthrough)
+branch  4 never executed
+        -:  243:                        {
+    #####:  244:                            return false;
+    %%%%%:  244-block  0
+        -:  245:                        }
+        -:  246:
+        -:  247:                        // closing ] -> we are done
+    #####:  248:                        if (get_token() == token_type::end_array)
+    %%%%%:  248-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  248-block  1
+branch  3 never executed (fallthrough)
+branch  4 never executed
+        -:  249:                        {
+    #####:  250:                            if (JSON_HEDLEY_UNLIKELY(!sax->end_array()))
+    %%%%%:  250-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  250-block  1
+branch  3 never executed (fallthrough)
+branch  4 never executed
+        -:  251:                            {
+    #####:  252:                                return false;
+    %%%%%:  252-block  0
+        -:  253:                            }
+    #####:  254:                            break;
+    %%%%%:  254-block  0
+        -:  255:                        }
+        -:  256:
+        -:  257:                        // remember we are now inside an array
+    #####:  258:                        states.push_back(true);
+    %%%%%:  258-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+        -:  259:
+        -:  260:                        // parse values (no need to call get_token)
+    #####:  261:                        continue;
+        -:  262:                    }
+        -:  263:
+    #####:  264:                    case token_type::value_float:
+        -:  265:                    {
+    #####:  266:                        const auto res = m_lexer.get_number_float();
+    %%%%%:  266-block  0
+call    0 never executed
+        -:  267:
+    #####:  268:                        if (JSON_HEDLEY_UNLIKELY(!std::isfinite(res)))
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+        -:  269:                        {
+    #####:  270:                            return sax->parse_error(m_lexer.get_position(),
+    %%%%%:  270-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  270-block  1
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+    %%%%%:  270-block  2
+call    6 never executed
+branch  7 never executed (fallthrough)
+branch  8 never executed (throw)
+    %%%%%:  270-block  3
+call    9 never executed
+call   10 never executed
+call   11 never executed
+branch 12 never executed (fallthrough)
+branch 13 never executed (throw)
+    %%%%%:  270-block  4
+call   14 never executed
+call   15 never executed
+call   16 never executed
+call   17 never executed
+    $$$$$:  270-block  5
+    $$$$$:  270-block  6
+call   18 never executed
+    $$$$$:  270-block  7
+    $$$$$:  270-block  8
+call   19 never executed
+    $$$$$:  270-block  9
+call   20 never executed
+    $$$$$:  270-block 10
+call   21 never executed
+    $$$$$:  270-block 11
+    $$$$$:  270-block 12
+    $$$$$:  270-block 13
+        -:  271:                                                    m_lexer.get_token_string(),
+    #####:  272:                                                    out_of_range::create(406, concat("number overflow parsing '", m_lexer.get_token_string(), '\''), nullptr));
+    %%%%%:  272-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  272-block  1
+    $$$$$:  272-block  2
+        -:  273:                        }
+        -:  274:
+    #####:  275:                        if (JSON_HEDLEY_UNLIKELY(!sax->number_float(res, m_lexer.get_string())))
+    %%%%%:  275-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    %%%%%:  275-block  1
+branch  4 never executed (fallthrough)
+branch  5 never executed
+        -:  276:                        {
+    #####:  277:                            return false;
+    %%%%%:  277-block  0
+        -:  278:                        }
+        -:  279:
+    #####:  280:                        break;
+    %%%%%:  280-block  0
+        -:  281:                    }
+        -:  282:
+    #####:  283:                    case token_type::literal_false:
+        -:  284:                    {
+    #####:  285:                        if (JSON_HEDLEY_UNLIKELY(!sax->boolean(false)))
+    %%%%%:  285-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  285-block  1
+branch  3 never executed (fallthrough)
+branch  4 never executed
+        -:  286:                        {
+    #####:  287:                            return false;
+    %%%%%:  287-block  0
+        -:  288:                        }
+    #####:  289:                        break;
+    %%%%%:  289-block  0
+        -:  290:                    }
+        -:  291:
+    #####:  292:                    case token_type::literal_null:
+        -:  293:                    {
+    #####:  294:                        if (JSON_HEDLEY_UNLIKELY(!sax->null()))
+    %%%%%:  294-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  294-block  1
+branch  3 never executed (fallthrough)
+branch  4 never executed
+        -:  295:                        {
+    #####:  296:                            return false;
+    %%%%%:  296-block  0
+        -:  297:                        }
+    #####:  298:                        break;
+    %%%%%:  298-block  0
+        -:  299:                    }
+        -:  300:
+    #####:  301:                    case token_type::literal_true:
+        -:  302:                    {
+    #####:  303:                        if (JSON_HEDLEY_UNLIKELY(!sax->boolean(true)))
+    %%%%%:  303-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  303-block  1
+branch  3 never executed (fallthrough)
+branch  4 never executed
+        -:  304:                        {
+    #####:  305:                            return false;
+    %%%%%:  305-block  0
+        -:  306:                        }
+    #####:  307:                        break;
+    %%%%%:  307-block  0
+        -:  308:                    }
+        -:  309:
+    #####:  310:                    case token_type::value_integer:
+        -:  311:                    {
+    #####:  312:                        if (JSON_HEDLEY_UNLIKELY(!sax->number_integer(m_lexer.get_number_integer())))
+    %%%%%:  312-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    %%%%%:  312-block  1
+branch  4 never executed (fallthrough)
+branch  5 never executed
+        -:  313:                        {
+    #####:  314:                            return false;
+    %%%%%:  314-block  0
+        -:  315:                        }
+    #####:  316:                        break;
+    %%%%%:  316-block  0
+        -:  317:                    }
+        -:  318:
+    #####:  319:                    case token_type::value_string:
+        -:  320:                    {
+    #####:  321:                        if (JSON_HEDLEY_UNLIKELY(!sax->string(m_lexer.get_string())))
+    %%%%%:  321-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    %%%%%:  321-block  1
+branch  4 never executed (fallthrough)
+branch  5 never executed
+        -:  322:                        {
+    #####:  323:                            return false;
+    %%%%%:  323-block  0
+        -:  324:                        }
+    #####:  325:                        break;
+    %%%%%:  325-block  0
+        -:  326:                    }
+        -:  327:
+    #####:  328:                    case token_type::value_unsigned:
+        -:  329:                    {
+    #####:  330:                        if (JSON_HEDLEY_UNLIKELY(!sax->number_unsigned(m_lexer.get_number_unsigned())))
+    %%%%%:  330-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    %%%%%:  330-block  1
+branch  4 never executed (fallthrough)
+branch  5 never executed
+        -:  331:                        {
+    #####:  332:                            return false;
+    %%%%%:  332-block  0
+        -:  333:                        }
+    #####:  334:                        break;
+    %%%%%:  334-block  0
+        -:  335:                    }
+        -:  336:
+    #####:  337:                    case token_type::parse_error:
+        -:  338:                    {
+        -:  339:                        // using "uninitialized" to avoid "expected" message
+    #####:  340:                        return sax->parse_error(m_lexer.get_position(),
+    %%%%%:  340-block  0
+    %%%%%:  340-block  1
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  340-block  2
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+call    6 never executed
+branch  7 never executed (fallthrough)
+branch  8 never executed (throw)
+    %%%%%:  340-block  3
+call    9 never executed
+branch 10 never executed (fallthrough)
+branch 11 never executed (throw)
+    %%%%%:  340-block  4
+call   12 never executed
+call   13 never executed
+call   14 never executed
+branch 15 never executed (fallthrough)
+branch 16 never executed (throw)
+    %%%%%:  340-block  5
+call   17 never executed
+call   18 never executed
+call   19 never executed
+    $$$$$:  340-block  6
+    $$$$$:  340-block  7
+call   20 never executed
+    $$$$$:  340-block  8
+    $$$$$:  340-block  9
+call   21 never executed
+    $$$$$:  340-block 10
+call   22 never executed
+    $$$$$:  340-block 11
+call   23 never executed
+    $$$$$:  340-block 12
+    $$$$$:  340-block 13
+    $$$$$:  340-block 14
+    $$$$$:  340-block 15
+        -:  341:                                                m_lexer.get_token_string(),
+    #####:  342:                                                parse_error::create(101, m_lexer.get_position(), exception_message(token_type::uninitialized, "value"), nullptr));
+    %%%%%:  342-block  0
+call    0 never executed
+    %%%%%:  342-block  1
+call    1 never executed
+    $$$$$:  342-block  2
+        -:  343:                    }
+    #####:  344:                    case token_type::end_of_input:
+        -:  345:                    {
+    #####:  346:                        if (JSON_HEDLEY_UNLIKELY(m_lexer.get_position().chars_read_total == 1))
+    %%%%%:  346-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+        -:  347:                        {
+    #####:  348:                            return sax->parse_error(m_lexer.get_position(),
+    %%%%%:  348-block  0
+    %%%%%:  348-block  1
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+    %%%%%:  348-block  2
+call    6 never executed
+branch  7 never executed (fallthrough)
+branch  8 never executed (throw)
+    %%%%%:  348-block  3
+call    9 never executed
+call   10 never executed
+call   11 never executed
+branch 12 never executed (fallthrough)
+branch 13 never executed (throw)
+    %%%%%:  348-block  4
+call   14 never executed
+call   15 never executed
+    $$$$$:  348-block  5
+    $$$$$:  348-block  6
+call   16 never executed
+    $$$$$:  348-block  7
+    $$$$$:  348-block  8
+call   17 never executed
+    $$$$$:  348-block  9
+call   18 never executed
+    $$$$$:  348-block 10
+    $$$$$:  348-block 11
+    $$$$$:  348-block 12
+        -:  349:                                                    m_lexer.get_token_string(),
+    #####:  350:                                                    parse_error::create(101, m_lexer.get_position(),
+    %%%%%:  350-block  0
+call    0 never executed
+call    1 never executed
+    $$$$$:  350-block  1
+    #####:  351:                                                            "attempting to parse an empty input; check that your input string or stream contains the expected JSON", nullptr));
+    %%%%%:  351-block  0
+        -:  352:                        }
+        -:  353:
+    #####:  354:                        return sax->parse_error(m_lexer.get_position(),
+    %%%%%:  354-block  0
+    %%%%%:  354-block  1
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  354-block  2
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+call    6 never executed
+branch  7 never executed (fallthrough)
+branch  8 never executed (throw)
+    %%%%%:  354-block  3
+call    9 never executed
+branch 10 never executed (fallthrough)
+branch 11 never executed (throw)
+    %%%%%:  354-block  4
+call   12 never executed
+call   13 never executed
+call   14 never executed
+branch 15 never executed (fallthrough)
+branch 16 never executed (throw)
+    %%%%%:  354-block  5
+call   17 never executed
+call   18 never executed
+call   19 never executed
+    $$$$$:  354-block  6
+    $$$$$:  354-block  7
+call   20 never executed
+    $$$$$:  354-block  8
+    $$$$$:  354-block  9
+call   21 never executed
+    $$$$$:  354-block 10
+call   22 never executed
+    $$$$$:  354-block 11
+call   23 never executed
+    $$$$$:  354-block 12
+    $$$$$:  354-block 13
+    $$$$$:  354-block 14
+    $$$$$:  354-block 15
+        -:  355:                                                m_lexer.get_token_string(),
+    #####:  356:                                                parse_error::create(101, m_lexer.get_position(), exception_message(token_type::literal_or_value, "value"), nullptr));
+    %%%%%:  356-block  0
+call    0 never executed
+    %%%%%:  356-block  1
+call    1 never executed
+    $$$$$:  356-block  2
+        -:  357:                    }
+    #####:  358:                    case token_type::uninitialized:
+        -:  359:                    case token_type::end_array:
+        -:  360:                    case token_type::end_object:
+        -:  361:                    case token_type::name_separator:
+        -:  362:                    case token_type::value_separator:
+        -:  363:                    case token_type::literal_or_value:
+        -:  364:                    default: // the last token was unexpected
+        -:  365:                    {
+    #####:  366:                        return sax->parse_error(m_lexer.get_position(),
+    %%%%%:  366-block  0
+    %%%%%:  366-block  1
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  366-block  2
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+call    6 never executed
+branch  7 never executed (fallthrough)
+branch  8 never executed (throw)
+    %%%%%:  366-block  3
+call    9 never executed
+branch 10 never executed (fallthrough)
+branch 11 never executed (throw)
+    %%%%%:  366-block  4
+call   12 never executed
+call   13 never executed
+call   14 never executed
+branch 15 never executed (fallthrough)
+branch 16 never executed (throw)
+    %%%%%:  366-block  5
+call   17 never executed
+call   18 never executed
+call   19 never executed
+    $$$$$:  366-block  6
+    $$$$$:  366-block  7
+call   20 never executed
+    $$$$$:  366-block  8
+    $$$$$:  366-block  9
+call   21 never executed
+    $$$$$:  366-block 10
+call   22 never executed
+    $$$$$:  366-block 11
+call   23 never executed
+    $$$$$:  366-block 12
+    $$$$$:  366-block 13
+    $$$$$:  366-block 14
+    $$$$$:  366-block 15
+        -:  367:                                                m_lexer.get_token_string(),
+    #####:  368:                                                parse_error::create(101, m_lexer.get_position(), exception_message(token_type::literal_or_value, "value"), nullptr));
+    %%%%%:  368-block  0
+call    0 never executed
+    %%%%%:  368-block  1
+call    1 never executed
+    $$$$$:  368-block  2
+        -:  369:                    }
+    #####:  370:                }
+    %%%%%:  370-block  0
+    %%%%%:  370-block  1
+        -:  371:            }
+        -:  372:            else
+        -:  373:            {
+    #####:  374:                skip_to_state_evaluation = false;
+    %%%%%:  374-block  0
+        -:  375:            }
+        -:  376:
+        -:  377:            // we reached this line after we successfully parsed a value
+    #####:  378:            if (states.empty())
+    %%%%%:  378-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+        -:  379:            {
+        -:  380:                // empty stack: we reached the end of the hierarchy: done
+    #####:  381:                return true;
+    %%%%%:  381-block  0
+        -:  382:            }
+        -:  383:
+    #####:  384:            if (states.back())  // array
+    %%%%%:  384-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed
+        -:  385:            {
+        -:  386:                // comma -> next value
+    #####:  387:                if (get_token() == token_type::value_separator)
+    %%%%%:  387-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  387-block  1
+branch  3 never executed (fallthrough)
+branch  4 never executed
+        -:  388:                {
+        -:  389:                    // parse a new value
+    #####:  390:                    get_token();
+    %%%%%:  390-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    #####:  391:                    continue;
+    %%%%%:  391-block  0
+        -:  392:                }
+        -:  393:
+        -:  394:                // closing ]
+    #####:  395:                if (JSON_HEDLEY_LIKELY(last_token == token_type::end_array))
+    %%%%%:  395-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  396:                {
+    #####:  397:                    if (JSON_HEDLEY_UNLIKELY(!sax->end_array()))
+    %%%%%:  397-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  397-block  1
+branch  3 never executed (fallthrough)
+branch  4 never executed
+        -:  398:                    {
+    #####:  399:                        return false;
+    %%%%%:  399-block  0
+        -:  400:                    }
+        -:  401:
+        -:  402:                    // We are done with this array. Before we can parse a
+        -:  403:                    // new value, we need to evaluate the new state first.
+        -:  404:                    // By setting skip_to_state_evaluation to false, we
+        -:  405:                    // are effectively jumping to the beginning of this if.
+    #####:  406:                    JSON_ASSERT(!states.empty());
+    %%%%%:  406-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+    %%%%%:  406-block  1
+call    3 never executed
+    %%%%%:  406-block  2
+    #####:  407:                    states.pop_back();
+    %%%%%:  407-block  0
+call    0 never executed
+    #####:  408:                    skip_to_state_evaluation = true;
+    #####:  409:                    continue;
+        -:  410:                }
+        -:  411:
+    #####:  412:                return sax->parse_error(m_lexer.get_position(),
+    %%%%%:  412-block  0
+    %%%%%:  412-block  1
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  412-block  2
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+call    6 never executed
+branch  7 never executed (fallthrough)
+branch  8 never executed (throw)
+    %%%%%:  412-block  3
+call    9 never executed
+branch 10 never executed (fallthrough)
+branch 11 never executed (throw)
+    %%%%%:  412-block  4
+call   12 never executed
+call   13 never executed
+call   14 never executed
+branch 15 never executed (fallthrough)
+branch 16 never executed (throw)
+    %%%%%:  412-block  5
+call   17 never executed
+call   18 never executed
+call   19 never executed
+    $$$$$:  412-block  6
+    $$$$$:  412-block  7
+call   20 never executed
+    $$$$$:  412-block  8
+    $$$$$:  412-block  9
+call   21 never executed
+    $$$$$:  412-block 10
+call   22 never executed
+    $$$$$:  412-block 11
+call   23 never executed
+    $$$$$:  412-block 12
+    $$$$$:  412-block 13
+    $$$$$:  412-block 14
+    $$$$$:  412-block 15
+        -:  413:                                        m_lexer.get_token_string(),
+    #####:  414:                                        parse_error::create(101, m_lexer.get_position(), exception_message(token_type::end_array, "array"), nullptr));
+    %%%%%:  414-block  0
+call    0 never executed
+    %%%%%:  414-block  1
+call    1 never executed
+    $$$$$:  414-block  2
+        -:  415:            }
+        -:  416:
+        -:  417:            // states.back() is false -> object
+        -:  418:
+        -:  419:            // comma -> next value
+    #####:  420:            if (get_token() == token_type::value_separator)
+    %%%%%:  420-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  420-block  1
+branch  3 never executed (fallthrough)
+branch  4 never executed
+        -:  421:            {
+        -:  422:                // parse key
+    #####:  423:                if (JSON_HEDLEY_UNLIKELY(get_token() != token_type::value_string))
+    %%%%%:  423-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  423-block  1
+branch  3 never executed (fallthrough)
+branch  4 never executed
+        -:  424:                {
+    #####:  425:                    return sax->parse_error(m_lexer.get_position(),
+    %%%%%:  425-block  0
+    %%%%%:  425-block  1
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  425-block  2
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+call    6 never executed
+branch  7 never executed (fallthrough)
+branch  8 never executed (throw)
+    %%%%%:  425-block  3
+call    9 never executed
+branch 10 never executed (fallthrough)
+branch 11 never executed (throw)
+    %%%%%:  425-block  4
+call   12 never executed
+call   13 never executed
+call   14 never executed
+branch 15 never executed (fallthrough)
+branch 16 never executed (throw)
+    %%%%%:  425-block  5
+call   17 never executed
+call   18 never executed
+call   19 never executed
+    $$$$$:  425-block  6
+    $$$$$:  425-block  7
+call   20 never executed
+    $$$$$:  425-block  8
+    $$$$$:  425-block  9
+call   21 never executed
+    $$$$$:  425-block 10
+call   22 never executed
+    $$$$$:  425-block 11
+call   23 never executed
+    $$$$$:  425-block 12
+    $$$$$:  425-block 13
+    $$$$$:  425-block 14
+    $$$$$:  425-block 15
+        -:  426:                                            m_lexer.get_token_string(),
+    #####:  427:                                            parse_error::create(101, m_lexer.get_position(), exception_message(token_type::value_string, "object key"), nullptr));
+    %%%%%:  427-block  0
+call    0 never executed
+    %%%%%:  427-block  1
+call    1 never executed
+    $$$$$:  427-block  2
+        -:  428:                }
+        -:  429:
+    #####:  430:                if (JSON_HEDLEY_UNLIKELY(!sax->key(m_lexer.get_string())))
+    %%%%%:  430-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    %%%%%:  430-block  1
+branch  4 never executed (fallthrough)
+branch  5 never executed
+        -:  431:                {
+    #####:  432:                    return false;
+    %%%%%:  432-block  0
+        -:  433:                }
+        -:  434:
+        -:  435:                // parse separator (:)
+    #####:  436:                if (JSON_HEDLEY_UNLIKELY(get_token() != token_type::name_separator))
+    %%%%%:  436-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  436-block  1
+branch  3 never executed (fallthrough)
+branch  4 never executed
+        -:  437:                {
+    #####:  438:                    return sax->parse_error(m_lexer.get_position(),
+    %%%%%:  438-block  0
+    %%%%%:  438-block  1
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  438-block  2
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+call    6 never executed
+branch  7 never executed (fallthrough)
+branch  8 never executed (throw)
+    %%%%%:  438-block  3
+call    9 never executed
+branch 10 never executed (fallthrough)
+branch 11 never executed (throw)
+    %%%%%:  438-block  4
+call   12 never executed
+call   13 never executed
+call   14 never executed
+branch 15 never executed (fallthrough)
+branch 16 never executed (throw)
+    %%%%%:  438-block  5
+call   17 never executed
+call   18 never executed
+call   19 never executed
+    $$$$$:  438-block  6
+    $$$$$:  438-block  7
+call   20 never executed
+    $$$$$:  438-block  8
+    $$$$$:  438-block  9
+call   21 never executed
+    $$$$$:  438-block 10
+call   22 never executed
+    $$$$$:  438-block 11
+call   23 never executed
+    $$$$$:  438-block 12
+    $$$$$:  438-block 13
+    $$$$$:  438-block 14
+    $$$$$:  438-block 15
+        -:  439:                                            m_lexer.get_token_string(),
+    #####:  440:                                            parse_error::create(101, m_lexer.get_position(), exception_message(token_type::name_separator, "object separator"), nullptr));
+    %%%%%:  440-block  0
+call    0 never executed
+    %%%%%:  440-block  1
+call    1 never executed
+    $$$$$:  440-block  2
+        -:  441:                }
+        -:  442:
+        -:  443:                // parse values
+    #####:  444:                get_token();
+    %%%%%:  444-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    #####:  445:                continue;
+    %%%%%:  445-block  0
+        -:  446:            }
+        -:  447:
+        -:  448:            // closing }
+    #####:  449:            if (JSON_HEDLEY_LIKELY(last_token == token_type::end_object))
+    %%%%%:  449-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  450:            {
+    #####:  451:                if (JSON_HEDLEY_UNLIKELY(!sax->end_object()))
+    %%%%%:  451-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  451-block  1
+branch  3 never executed (fallthrough)
+branch  4 never executed
+        -:  452:                {
+    #####:  453:                    return false;
+    %%%%%:  453-block  0
+        -:  454:                }
+        -:  455:
+        -:  456:                // We are done with this object. Before we can parse a
+        -:  457:                // new value, we need to evaluate the new state first.
+        -:  458:                // By setting skip_to_state_evaluation to false, we
+        -:  459:                // are effectively jumping to the beginning of this if.
+    #####:  460:                JSON_ASSERT(!states.empty());
+    %%%%%:  460-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+    %%%%%:  460-block  1
+call    3 never executed
+    %%%%%:  460-block  2
+    #####:  461:                states.pop_back();
+    %%%%%:  461-block  0
+call    0 never executed
+    #####:  462:                skip_to_state_evaluation = true;
+    #####:  463:                continue;
+        -:  464:            }
+        -:  465:
+    #####:  466:            return sax->parse_error(m_lexer.get_position(),
+    %%%%%:  466-block  0
+    %%%%%:  466-block  1
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  466-block  2
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+call    6 never executed
+branch  7 never executed (fallthrough)
+branch  8 never executed (throw)
+    %%%%%:  466-block  3
+call    9 never executed
+branch 10 never executed (fallthrough)
+branch 11 never executed (throw)
+    %%%%%:  466-block  4
+call   12 never executed
+call   13 never executed
+call   14 never executed
+branch 15 never executed (fallthrough)
+branch 16 never executed (throw)
+    %%%%%:  466-block  5
+call   17 never executed
+call   18 never executed
+call   19 never executed
+    $$$$$:  466-block  6
+    $$$$$:  466-block  7
+call   20 never executed
+    $$$$$:  466-block  8
+    $$$$$:  466-block  9
+call   21 never executed
+    $$$$$:  466-block 10
+call   22 never executed
+    $$$$$:  466-block 11
+call   23 never executed
+    $$$$$:  466-block 12
+    $$$$$:  466-block 13
+    $$$$$:  466-block 14
+    $$$$$:  466-block 15
+        -:  467:                                    m_lexer.get_token_string(),
+    #####:  468:                                    parse_error::create(101, m_lexer.get_position(), exception_message(token_type::end_object, "object"), nullptr));
+    %%%%%:  468-block  0
+call    0 never executed
+    %%%%%:  468-block  1
+call    1 never executed
+    $$$$$:  468-block  2
+        -:  469:        }
+    #####:  470:    }
+    %%%%%:  470-block  0
+call    0 never executed
+    $$$$$:  470-block  1
+call    1 never executed
+------------------
+        -:  471:
+        -:  472:    /// get next token from lexer
+function _ZN8nlohmann16json_abi_v3_11_36detail6parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEENS1_20input_stream_adapterEE9get_tokenEv called 311 returned 100% blocks executed 100%
+      311:  473:    token_type get_token()
+        -:  474:    {
+      311:  475:        return last_token = m_lexer.scan();
+      311:  475-block  0
+call    0 returned 311
+        -:  476:    }
+        -:  477:
+function _ZN8nlohmann16json_abi_v3_11_36detail6parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEENS1_20input_stream_adapterEE17exception_messageENS1_10lexer_baseISF_E10token_typeERKSB_ called 0 returned 0% blocks executed 0%
+    #####:  478:    std::string exception_message(const token_type expected, const std::string& context)
+    %%%%%:  478-block  0
+        -:  479:    {
+    #####:  480:        std::string error_msg = "syntax error ";
+    %%%%%:  480-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    $$$$$:  480-block  1
+call    3 never executed
+        -:  481:
+    #####:  482:        if (!context.empty())
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+        -:  483:        {
+    #####:  484:            error_msg += concat("while parsing ", context, ' ');
+    %%%%%:  484-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  484-block  1
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+    %%%%%:  484-block  2
+call    6 never executed
+    $$$$$:  484-block  3
+call    7 never executed
+    $$$$$:  484-block  4
+    $$$$$:  484-block  5
+        -:  485:        }
+        -:  486:
+    #####:  487:        error_msg += "- ";
+    %%%%%:  487-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+        -:  488:
+    #####:  489:        if (last_token == token_type::parse_error)
+    %%%%%:  489-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  490:        {
+    #####:  491:            error_msg += concat(m_lexer.get_error_message(), "; last read: '",
+    %%%%%:  491-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    %%%%%:  491-block  1
+call    4 never executed
+branch  5 never executed (fallthrough)
+branch  6 never executed (throw)
+    %%%%%:  491-block  2
+call    7 never executed
+call    8 never executed
+    $$$$$:  491-block  3
+call    9 never executed
+    $$$$$:  491-block  4
+    $$$$$:  491-block  5
+call   10 never executed
+    $$$$$:  491-block  6
+    $$$$$:  491-block  7
+    #####:  492:                                m_lexer.get_token_string(), '\'');
+    %%%%%:  492-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    $$$$$:  492-block  1
+        -:  493:        }
+        -:  494:        else
+        -:  495:        {
+    #####:  496:            error_msg += concat("unexpected ", lexer_t::token_type_name(last_token));
+    %%%%%:  496-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  496-block  1
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+    %%%%%:  496-block  2
+call    6 never executed
+    $$$$$:  496-block  3
+call    7 never executed
+    $$$$$:  496-block  4
+    $$$$$:  496-block  5
+        -:  497:        }
+        -:  498:
+    #####:  499:        if (expected != token_type::uninitialized)
+    %%%%%:  499-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  500:        {
+    #####:  501:            error_msg += concat("; expected ", lexer_t::token_type_name(expected));
+    %%%%%:  501-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  501-block  1
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+    %%%%%:  501-block  2
+call    6 never executed
+    $$$$$:  501-block  3
+call    7 never executed
+    $$$$$:  501-block  4
+    $$$$$:  501-block  5
+        -:  502:        }
+        -:  503:
+    #####:  504:        return error_msg;
+    %%%%%:  504-block  0
+    %%%%%:  504-block  1
+    =====:  505:    }
+    $$$$$:  505-block  0
+call    0 never executed
+        -:  506:
+        -:  507:  private:
+        -:  508:    /// callback function
+        -:  509:    const parser_callback_t<BasicJsonType> callback = nullptr;
+        -:  510:    /// the type of the last read token
+        -:  511:    token_type last_token = token_type::uninitialized;
+        -:  512:    /// the lexer
+        -:  513:    lexer_t m_lexer;
+        -:  514:    /// whether to throw exceptions in case of errors
+        -:  515:    const bool allow_exceptions = true;
+        -:  516:};
+        -:  517:
+        -:  518:}  // namespace detail
+        -:  519:NLOHMANN_JSON_NAMESPACE_END

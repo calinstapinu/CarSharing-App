@@ -1,0 +1,204 @@
+        -:    0:Source:C:/Users/rares/CLionProjects/OOP/Json-test/include/nlohmann/adl_serializer.hpp
+        -:    0:Graph:C:\Users\rares\CLionProjects\OOP\Json-test\cmake-build-debug-coverage\CMakeFiles\Json_test.dir\Repositories\AutoRepo\AutoRepo.cpp.gcno
+        -:    0:Data:C:\Users\rares\CLionProjects\OOP\Json-test\cmake-build-debug-coverage\CMakeFiles\Json_test.dir\Repositories\AutoRepo\AutoRepo.cpp.gcda
+        -:    0:Runs:1
+        -:    1://     __ _____ _____ _____
+        -:    2://  __|  |   __|     |   | |  JSON for Modern C++
+        -:    3:// |  |  |__   |  |  | | | |  version 3.11.3
+        -:    4:// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+        -:    5://
+        -:    6:// SPDX-FileCopyrightText: 2013-2023 Niels Lohmann <https://nlohmann.me>
+        -:    7:// SPDX-License-Identifier: MIT
+        -:    8:
+        -:    9:#pragma once
+        -:   10:
+        -:   11:#include <utility>
+        -:   12:
+        -:   13:#include <nlohmann/detail/abi_macros.hpp>
+        -:   14:#include <nlohmann/detail/conversions/from_json.hpp>
+        -:   15:#include <nlohmann/detail/conversions/to_json.hpp>
+        -:   16:#include <nlohmann/detail/meta/identity_tag.hpp>
+        -:   17:
+        -:   18:NLOHMANN_JSON_NAMESPACE_BEGIN
+        -:   19:
+        -:   20:/// @sa https://json.nlohmann.me/api/adl_serializer/
+        -:   21:template<typename ValueType, typename>
+        -:   22:struct adl_serializer
+        -:   23:{
+        -:   24:    /// @brief convert a JSON value to any value type
+        -:   25:    /// @sa https://json.nlohmann.me/api/adl_serializer/from_json/
+        -:   26:    template<typename BasicJsonType, typename TargetType = ValueType>
+        -:   27:    static auto from_json(BasicJsonType && j, TargetType& val) noexcept(
+        -:   28:        noexcept(::nlohmann::from_json(std::forward<BasicJsonType>(j), val)))
+        -:   29:    -> decltype(::nlohmann::from_json(std::forward<BasicJsonType>(j), val), void())
+        -:   30:    {
+        -:   31:        ::nlohmann::from_json(std::forward<BasicJsonType>(j), val);
+        -:   32:    }
+        -:   33:
+        -:   34:    /// @brief convert a JSON value to any value type
+        -:   35:    /// @sa https://json.nlohmann.me/api/adl_serializer/from_json/
+        -:   36:    template<typename BasicJsonType, typename TargetType = ValueType>
+        -:   37:    static auto from_json(BasicJsonType && j) noexcept(
+        -:   38:    noexcept(::nlohmann::from_json(std::forward<BasicJsonType>(j), detail::identity_tag<TargetType> {})))
+        -:   39:    -> decltype(::nlohmann::from_json(std::forward<BasicJsonType>(j), detail::identity_tag<TargetType> {}))
+        -:   40:    {
+        -:   41:        return ::nlohmann::from_json(std::forward<BasicJsonType>(j), detail::identity_tag<TargetType> {});
+        -:   42:    }
+        -:   43:
+        -:   44:    /// @brief convert any value type to a JSON value
+        -:   45:    /// @sa https://json.nlohmann.me/api/adl_serializer/to_json/
+        -:   46:    template<typename BasicJsonType, typename TargetType = ValueType>
+     244*:   47:    static auto to_json(BasicJsonType& j, TargetType && val) noexcept(
+        -:   48:        noexcept(::nlohmann::to_json(j, std::forward<TargetType>(val))))
+        -:   49:    -> decltype(::nlohmann::to_json(j, std::forward<TargetType>(val)), void())
+        -:   50:    {
+     244*:   51:        ::nlohmann::to_json(j, std::forward<TargetType>(val));
+     244*:   52:    }
+------------------
+_ZN8nlohmann16json_abi_v3_11_314adl_serializerIyvE7to_jsonINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaS1_S6_IhSaIhEEvEERyEEDTcmclL_ZNS0_7to_jsonEEfp_cl7forwardIT0_Efp0_EEcvv_EERT_OSH_:
+function _ZN8nlohmann16json_abi_v3_11_314adl_serializerIyvE7to_jsonINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaS1_S6_IhSaIhEEvEERyEEDTcmclL_ZNS0_7to_jsonEEfp_cl7forwardIT0_Efp0_EEcvv_EERT_OSH_ called 12 returned 100% blocks executed 100%
+       12:   47:    static auto to_json(BasicJsonType& j, TargetType && val) noexcept(
+        -:   48:        noexcept(::nlohmann::to_json(j, std::forward<TargetType>(val))))
+        -:   49:    -> decltype(::nlohmann::to_json(j, std::forward<TargetType>(val)), void())
+        -:   50:    {
+       12:   51:        ::nlohmann::to_json(j, std::forward<TargetType>(val));
+       12:   51-block  0
+call    0 returned 12
+call    1 returned 12
+       12:   52:    }
+------------------
+_ZN8nlohmann16json_abi_v3_11_314adl_serializerIxvE7to_jsonINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaS1_S6_IhSaIhEEvEERxEEDTcmclL_ZNS0_7to_jsonEEfp_cl7forwardIT0_Efp0_EEcvv_EERT_OSH_:
+function _ZN8nlohmann16json_abi_v3_11_314adl_serializerIxvE7to_jsonINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaS1_S6_IhSaIhEEvEERxEEDTcmclL_ZNS0_7to_jsonEEfp_cl7forwardIT0_Efp0_EEcvv_EERT_OSH_ called 0 returned 0% blocks executed 0%
+    #####:   47:    static auto to_json(BasicJsonType& j, TargetType && val) noexcept(
+        -:   48:        noexcept(::nlohmann::to_json(j, std::forward<TargetType>(val))))
+        -:   49:    -> decltype(::nlohmann::to_json(j, std::forward<TargetType>(val)), void())
+        -:   50:    {
+    #####:   51:        ::nlohmann::to_json(j, std::forward<TargetType>(val));
+    %%%%%:   51-block  0
+call    0 never executed
+call    1 never executed
+    #####:   52:    }
+------------------
+_ZN8nlohmann16json_abi_v3_11_314adl_serializerIbvE7to_jsonINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaS1_S6_IhSaIhEEvEERbEEDTcmclL_ZNS0_7to_jsonEEfp_cl7forwardIT0_Efp0_EEcvv_EERT_OSH_:
+function _ZN8nlohmann16json_abi_v3_11_314adl_serializerIbvE7to_jsonINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaS1_S6_IhSaIhEEvEERbEEDTcmclL_ZNS0_7to_jsonEEfp_cl7forwardIT0_Efp0_EEcvv_EERT_OSH_ called 0 returned 0% blocks executed 0%
+    #####:   47:    static auto to_json(BasicJsonType& j, TargetType && val) noexcept(
+        -:   48:        noexcept(::nlohmann::to_json(j, std::forward<TargetType>(val))))
+        -:   49:    -> decltype(::nlohmann::to_json(j, std::forward<TargetType>(val)), void())
+        -:   50:    {
+    #####:   51:        ::nlohmann::to_json(j, std::forward<TargetType>(val));
+    %%%%%:   51-block  0
+call    0 never executed
+call    1 never executed
+    #####:   52:    }
+------------------
+_ZN8nlohmann16json_abi_v3_11_314adl_serializerIdvE7to_jsonINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaS1_S6_IhSaIhEEvEERdEEDTcmclL_ZNS0_7to_jsonEEfp_cl7forwardIT0_Efp0_EEcvv_EERT_OSH_:
+function _ZN8nlohmann16json_abi_v3_11_314adl_serializerIdvE7to_jsonINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaS1_S6_IhSaIhEEvEERdEEDTcmclL_ZNS0_7to_jsonEEfp_cl7forwardIT0_Efp0_EEcvv_EERT_OSH_ called 6 returned 100% blocks executed 100%
+        6:   47:    static auto to_json(BasicJsonType& j, TargetType && val) noexcept(
+        -:   48:        noexcept(::nlohmann::to_json(j, std::forward<TargetType>(val))))
+        -:   49:    -> decltype(::nlohmann::to_json(j, std::forward<TargetType>(val)), void())
+        -:   50:    {
+        6:   51:        ::nlohmann::to_json(j, std::forward<TargetType>(val));
+        6:   51-block  0
+call    0 returned 6
+call    1 returned 6
+        6:   52:    }
+------------------
+_ZN8nlohmann16json_abi_v3_11_314adl_serializerIPKcvE7to_jsonINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaS1_S8_IhSaIhEEvEERS3_EEDTcmclL_ZNS0_7to_jsonEEfp_cl7forwardIT0_Efp0_EEcvv_EERT_OSJ_:
+function _ZN8nlohmann16json_abi_v3_11_314adl_serializerIPKcvE7to_jsonINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaS1_S8_IhSaIhEEvEERS3_EEDTcmclL_ZNS0_7to_jsonEEfp_cl7forwardIT0_Efp0_EEcvv_EERT_OSJ_ called 29 returned 100% blocks executed 100%
+       29:   47:    static auto to_json(BasicJsonType& j, TargetType && val) noexcept(
+        -:   48:        noexcept(::nlohmann::to_json(j, std::forward<TargetType>(val))))
+        -:   49:    -> decltype(::nlohmann::to_json(j, std::forward<TargetType>(val)), void())
+        -:   50:    {
+       29:   51:        ::nlohmann::to_json(j, std::forward<TargetType>(val));
+       29:   51-block  0
+call    0 returned 29
+call    1 returned 29
+       29:   52:    }
+------------------
+_ZN8nlohmann16json_abi_v3_11_314adl_serializerINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEvE7to_jsonINS0_10basic_jsonISt3mapSt6vectorS7_bxydSaS1_SC_IhSaIhEEvEERKS7_EEDTcmclL_ZNS0_7to_jsonEEfp_cl7forwardIT0_Efp0_EEcvv_EERT_OSI_:
+function _ZN8nlohmann16json_abi_v3_11_314adl_serializerINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEvE7to_jsonINS0_10basic_jsonISt3mapSt6vectorS7_bxydSaS1_SC_IhSaIhEEvEERKS7_EEDTcmclL_ZNS0_7to_jsonEEfp_cl7forwardIT0_Efp0_EEcvv_EERT_OSI_ called 25 returned 100% blocks executed 100%
+       25:   47:    static auto to_json(BasicJsonType& j, TargetType && val) noexcept(
+        -:   48:        noexcept(::nlohmann::to_json(j, std::forward<TargetType>(val))))
+        -:   49:    -> decltype(::nlohmann::to_json(j, std::forward<TargetType>(val)), void())
+        -:   50:    {
+       25:   51:        ::nlohmann::to_json(j, std::forward<TargetType>(val));
+       25:   51-block  0
+call    0 returned 25
+call    1 returned 25
+       25:   52:    }
+------------------
+_ZN8nlohmann16json_abi_v3_11_314adl_serializerINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEvE7to_jsonINS0_10basic_jsonISt3mapSt6vectorS7_bxydSaS1_SC_IhSaIhEEvEERS7_EEDTcmclL_ZNS0_7to_jsonEEfp_cl7forwardIT0_Efp0_EEcvv_EERT_OSH_:
+function _ZN8nlohmann16json_abi_v3_11_314adl_serializerINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEvE7to_jsonINS0_10basic_jsonISt3mapSt6vectorS7_bxydSaS1_SC_IhSaIhEEvEERS7_EEDTcmclL_ZNS0_7to_jsonEEfp_cl7forwardIT0_Efp0_EEcvv_EERT_OSH_ called 75 returned 100% blocks executed 100%
+       75:   47:    static auto to_json(BasicJsonType& j, TargetType && val) noexcept(
+        -:   48:        noexcept(::nlohmann::to_json(j, std::forward<TargetType>(val))))
+        -:   49:    -> decltype(::nlohmann::to_json(j, std::forward<TargetType>(val)), void())
+        -:   50:    {
+       75:   51:        ::nlohmann::to_json(j, std::forward<TargetType>(val));
+       75:   51-block  0
+call    0 returned 75
+call    1 returned 75
+       75:   52:    }
+------------------
+_ZN8nlohmann16json_abi_v3_11_314adl_serializerIA5_cvE7to_jsonINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaS1_S7_IhSaIhEEvEERA5_KcEEDTcmclL_ZNS0_7to_jsonEEfp_cl7forwardIT0_Efp0_EEcvv_EERT_OSK_:
+function _ZN8nlohmann16json_abi_v3_11_314adl_serializerIA5_cvE7to_jsonINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaS1_S7_IhSaIhEEvEERA5_KcEEDTcmclL_ZNS0_7to_jsonEEfp_cl7forwardIT0_Efp0_EEcvv_EERT_OSK_ called 8 returned 100% blocks executed 100%
+        8:   47:    static auto to_json(BasicJsonType& j, TargetType && val) noexcept(
+        -:   48:        noexcept(::nlohmann::to_json(j, std::forward<TargetType>(val))))
+        -:   49:    -> decltype(::nlohmann::to_json(j, std::forward<TargetType>(val)), void())
+        -:   50:    {
+        8:   51:        ::nlohmann::to_json(j, std::forward<TargetType>(val));
+        8:   51-block  0
+call    0 returned 8
+call    1 returned 8
+        8:   52:    }
+------------------
+_ZN8nlohmann16json_abi_v3_11_314adl_serializerIA3_cvE7to_jsonINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaS1_S7_IhSaIhEEvEERA3_KcEEDTcmclL_ZNS0_7to_jsonEEfp_cl7forwardIT0_Efp0_EEcvv_EERT_OSK_:
+function _ZN8nlohmann16json_abi_v3_11_314adl_serializerIA3_cvE7to_jsonINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaS1_S7_IhSaIhEEvEERA3_KcEEDTcmclL_ZNS0_7to_jsonEEfp_cl7forwardIT0_Efp0_EEcvv_EERT_OSK_ called 8 returned 100% blocks executed 100%
+        8:   47:    static auto to_json(BasicJsonType& j, TargetType && val) noexcept(
+        -:   48:        noexcept(::nlohmann::to_json(j, std::forward<TargetType>(val))))
+        -:   49:    -> decltype(::nlohmann::to_json(j, std::forward<TargetType>(val)), void())
+        -:   50:    {
+        8:   51:        ::nlohmann::to_json(j, std::forward<TargetType>(val));
+        8:   51-block  0
+call    0 returned 8
+call    1 returned 8
+        8:   52:    }
+------------------
+_ZN8nlohmann16json_abi_v3_11_314adl_serializerIdvE7to_jsonINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaS1_S6_IhSaIhEEvEEdEEDTcmclL_ZNS0_7to_jsonEEfp_cl7forwardIT0_Efp0_EEcvv_EERT_OSG_:
+function _ZN8nlohmann16json_abi_v3_11_314adl_serializerIdvE7to_jsonINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaS1_S6_IhSaIhEEvEEdEEDTcmclL_ZNS0_7to_jsonEEfp_cl7forwardIT0_Efp0_EEcvv_EERT_OSG_ called 8 returned 100% blocks executed 100%
+        8:   47:    static auto to_json(BasicJsonType& j, TargetType && val) noexcept(
+        -:   48:        noexcept(::nlohmann::to_json(j, std::forward<TargetType>(val))))
+        -:   49:    -> decltype(::nlohmann::to_json(j, std::forward<TargetType>(val)), void())
+        -:   50:    {
+        8:   51:        ::nlohmann::to_json(j, std::forward<TargetType>(val));
+        8:   51-block  0
+call    0 returned 8
+call    1 returned 8
+        8:   52:    }
+------------------
+_ZN8nlohmann16json_abi_v3_11_314adl_serializerIivE7to_jsonINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaS1_S6_IhSaIhEEvEEiEEDTcmclL_ZNS0_7to_jsonEEfp_cl7forwardIT0_Efp0_EEcvv_EERT_OSG_:
+function _ZN8nlohmann16json_abi_v3_11_314adl_serializerIivE7to_jsonINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaS1_S6_IhSaIhEEvEEiEEDTcmclL_ZNS0_7to_jsonEEfp_cl7forwardIT0_Efp0_EEcvv_EERT_OSG_ called 17 returned 100% blocks executed 100%
+       17:   47:    static auto to_json(BasicJsonType& j, TargetType && val) noexcept(
+        -:   48:        noexcept(::nlohmann::to_json(j, std::forward<TargetType>(val))))
+        -:   49:    -> decltype(::nlohmann::to_json(j, std::forward<TargetType>(val)), void())
+        -:   50:    {
+       17:   51:        ::nlohmann::to_json(j, std::forward<TargetType>(val));
+       17:   51-block  0
+call    0 returned 17
+call    1 returned 17
+       17:   52:    }
+------------------
+_ZN8nlohmann16json_abi_v3_11_314adl_serializerINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEvE7to_jsonINS0_10basic_jsonISt3mapSt6vectorS7_bxydSaS1_SC_IhSaIhEEvEES7_EEDTcmclL_ZNS0_7to_jsonEEfp_cl7forwardIT0_Efp0_EEcvv_EERT_OSG_:
+function _ZN8nlohmann16json_abi_v3_11_314adl_serializerINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEvE7to_jsonINS0_10basic_jsonISt3mapSt6vectorS7_bxydSaS1_SC_IhSaIhEEvEES7_EEDTcmclL_ZNS0_7to_jsonEEfp_cl7forwardIT0_Efp0_EEcvv_EERT_OSG_ called 56 returned 100% blocks executed 100%
+       56:   47:    static auto to_json(BasicJsonType& j, TargetType && val) noexcept(
+        -:   48:        noexcept(::nlohmann::to_json(j, std::forward<TargetType>(val))))
+        -:   49:    -> decltype(::nlohmann::to_json(j, std::forward<TargetType>(val)), void())
+        -:   50:    {
+       56:   51:        ::nlohmann::to_json(j, std::forward<TargetType>(val));
+       56:   51-block  0
+call    0 returned 56
+call    1 returned 56
+       56:   52:    }
+------------------
+        -:   53:};
+        -:   54:
+        -:   55:NLOHMANN_JSON_NAMESPACE_END

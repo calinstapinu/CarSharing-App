@@ -1,0 +1,173 @@
+        -:    0:Source:C:/Users/rares/CLionProjects/OOP/Json-test/include/nlohmann/detail/output/output_adapters.hpp
+        -:    0:Graph:C:\Users\rares\CLionProjects\OOP\Json-test\cmake-build-debug-coverage\CMakeFiles\Json_test.dir\Repositories\AutoRepo\AutoRepo.cpp.gcno
+        -:    0:Data:C:\Users\rares\CLionProjects\OOP\Json-test\cmake-build-debug-coverage\CMakeFiles\Json_test.dir\Repositories\AutoRepo\AutoRepo.cpp.gcda
+        -:    0:Runs:1
+        -:    1://     __ _____ _____ _____
+        -:    2://  __|  |   __|     |   | |  JSON for Modern C++
+        -:    3:// |  |  |__   |  |  | | | |  version 3.11.3
+        -:    4:// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+        -:    5://
+        -:    6:// SPDX-FileCopyrightText: 2013-2023 Niels Lohmann <https://nlohmann.me>
+        -:    7:// SPDX-License-Identifier: MIT
+        -:    8:
+        -:    9:#pragma once
+        -:   10:
+        -:   11:#include <algorithm> // copy
+        -:   12:#include <cstddef> // size_t
+        -:   13:#include <iterator> // back_inserter
+        -:   14:#include <memory> // shared_ptr, make_shared
+        -:   15:#include <string> // basic_string
+        -:   16:#include <vector> // vector
+        -:   17:
+        -:   18:#ifndef JSON_NO_IO
+        -:   19:    #include <ios>      // streamsize
+        -:   20:    #include <ostream>  // basic_ostream
+        -:   21:#endif  // JSON_NO_IO
+        -:   22:
+        -:   23:#include <nlohmann/detail/macro_scope.hpp>
+        -:   24:
+        -:   25:NLOHMANN_JSON_NAMESPACE_BEGIN
+        -:   26:namespace detail
+        -:   27:{
+        -:   28:
+        -:   29:/// abstract output adapter interface
+        -:   30:template<typename CharType> struct output_adapter_protocol
+        -:   31:{
+        -:   32:    virtual void write_character(CharType c) = 0;
+        -:   33:    virtual void write_characters(const CharType* s, std::size_t length) = 0;
+function _ZN8nlohmann16json_abi_v3_11_36detail23output_adapter_protocolIcED2Ev called 89 returned 100% blocks executed 100%
+       89:   34:    virtual ~output_adapter_protocol() = default;
+        -:   35:
+function _ZN8nlohmann16json_abi_v3_11_36detail23output_adapter_protocolIcEC2Ev called 89 returned 100% blocks executed 100%
+       89:   36:    output_adapter_protocol() = default;
+        -:   37:    output_adapter_protocol(const output_adapter_protocol&) = default;
+        -:   38:    output_adapter_protocol(output_adapter_protocol&&) noexcept = default;
+        -:   39:    output_adapter_protocol& operator=(const output_adapter_protocol&) = default;
+        -:   40:    output_adapter_protocol& operator=(output_adapter_protocol&&) noexcept = default;
+        -:   41:};
+        -:   42:
+        -:   43:/// a type to simplify interfaces
+        -:   44:template<typename CharType>
+        -:   45:using output_adapter_t = std::shared_ptr<output_adapter_protocol<CharType>>;
+        -:   46:
+        -:   47:/// output adapter for byte vectors
+        -:   48:template<typename CharType, typename AllocatorType = std::allocator<CharType>>
+        -:   49:class output_vector_adapter : public output_adapter_protocol<CharType>
+        -:   50:{
+        -:   51:  public:
+        -:   52:    explicit output_vector_adapter(std::vector<CharType, AllocatorType>& vec) noexcept
+        -:   53:        : v(vec)
+        -:   54:    {}
+        -:   55:
+        -:   56:    void write_character(CharType c) override
+        -:   57:    {
+        -:   58:        v.push_back(c);
+        -:   59:    }
+        -:   60:
+        -:   61:    JSON_HEDLEY_NON_NULL(2)
+        -:   62:    void write_characters(const CharType* s, std::size_t length) override
+        -:   63:    {
+        -:   64:        v.insert(v.end(), s, s + length);
+        -:   65:    }
+        -:   66:
+        -:   67:  private:
+        -:   68:    std::vector<CharType, AllocatorType>& v;
+        -:   69:};
+        -:   70:
+        -:   71:#ifndef JSON_NO_IO
+        -:   72:/// output adapter for output streams
+        -:   73:template<typename CharType>
+        -:   74:class output_stream_adapter : public output_adapter_protocol<CharType>
+        -:   75:{
+        -:   76:  public:
+        -:   77:    explicit output_stream_adapter(std::basic_ostream<CharType>& s) noexcept
+        -:   78:        : stream(s)
+        -:   79:    {}
+        -:   80:
+        -:   81:    void write_character(CharType c) override
+        -:   82:    {
+        -:   83:        stream.put(c);
+        -:   84:    }
+        -:   85:
+        -:   86:    JSON_HEDLEY_NON_NULL(2)
+        -:   87:    void write_characters(const CharType* s, std::size_t length) override
+        -:   88:    {
+        -:   89:        stream.write(s, static_cast<std::streamsize>(length));
+        -:   90:    }
+        -:   91:
+        -:   92:  private:
+        -:   93:    std::basic_ostream<CharType>& stream;
+        -:   94:};
+        -:   95:#endif  // JSON_NO_IO
+        -:   96:
+        -:   97:/// output adapter for basic_string
+        -:   98:template<typename CharType, typename StringType = std::basic_string<CharType>>
+        -:   99:class output_string_adapter : public output_adapter_protocol<CharType>
+        -:  100:{
+        -:  101:  public:
+function _ZN8nlohmann16json_abi_v3_11_36detail21output_string_adapterIcNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEEC1ERS8_ called 23 returned 100% blocks executed 100%
+       23:  102:    explicit output_string_adapter(StringType& s) noexcept
+       23:  103:        : str(s)
+       23:  103-block  0
+call    0 returned 23
+       23:  104:    {}
+        -:  105:
+function _ZN8nlohmann16json_abi_v3_11_36detail21output_string_adapterIcNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEE15write_characterEc called 932 returned 100% blocks executed 100%
+      932:  106:    void write_character(CharType c) override
+        -:  107:    {
+      932:  108:        str.push_back(c);
+      932:  108-block  0
+call    0 returned 932
+      932:  109:    }
+        -:  110:
+        -:  111:    JSON_HEDLEY_NON_NULL(2)
+function _ZN8nlohmann16json_abi_v3_11_36detail21output_string_adapterIcNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEE16write_charactersEPKcy called 1766 returned 100% blocks executed 100%
+     1766:  112:    void write_characters(const CharType* s, std::size_t length) override
+        -:  113:    {
+     1766:  114:        str.append(s, length);
+     1766:  114-block  0
+call    0 returned 1766
+     1766:  115:    }
+        -:  116:
+        -:  117:  private:
+        -:  118:    StringType& str;
+        -:  119:};
+        -:  120:
+        -:  121:template<typename CharType, typename StringType = std::basic_string<CharType>>
+        -:  122:class output_adapter
+        -:  123:{
+        -:  124:  public:
+        -:  125:    template<typename AllocatorType = std::allocator<CharType>>
+        -:  126:    output_adapter(std::vector<CharType, AllocatorType>& vec)
+        -:  127:        : oa(std::make_shared<output_vector_adapter<CharType, AllocatorType>>(vec)) {}
+        -:  128:
+        -:  129:#ifndef JSON_NO_IO
+        -:  130:    output_adapter(std::basic_ostream<CharType>& s)
+        -:  131:        : oa(std::make_shared<output_stream_adapter<CharType>>(s)) {}
+        -:  132:#endif  // JSON_NO_IO
+        -:  133:
+function _ZN8nlohmann16json_abi_v3_11_36detail14output_adapterIcNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEEC1ERS8_ called 23 returned 100% blocks executed 100%
+       23:  134:    output_adapter(StringType& s)
+       23:  135:        : oa(std::make_shared<output_string_adapter<CharType, StringType>>(s)) {}
+       23:  135-block  0
+call    0 returned 23
+branch  1 taken 23 (fallthrough)
+branch  2 taken 0 (throw)
+       23:  135-block  1
+call    3 returned 23
+call    4 returned 23
+        -:  136:
+function _ZN8nlohmann16json_abi_v3_11_36detail14output_adapterIcNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEEcvSt10shared_ptrINS1_23output_adapter_protocolIcEEEEv called 89 returned 100% blocks executed 100%
+       89:  137:    operator output_adapter_t<CharType>()
+        -:  138:    {
+       89:  139:        return oa;
+       89:  139-block  0
+call    0 returned 89
+        -:  140:    }
+        -:  141:
+        -:  142:  private:
+        -:  143:    output_adapter_t<CharType> oa = nullptr;
+        -:  144:};
+        -:  145:
+        -:  146:}  // namespace detail
+        -:  147:NLOHMANN_JSON_NAMESPACE_END

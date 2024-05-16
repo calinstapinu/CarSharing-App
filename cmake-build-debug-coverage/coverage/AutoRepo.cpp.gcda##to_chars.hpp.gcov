@@ -1,0 +1,1590 @@
+        -:    0:Source:C:/Users/rares/CLionProjects/OOP/Json-test/include/nlohmann/detail/conversions/to_chars.hpp
+        -:    0:Graph:C:\Users\rares\CLionProjects\OOP\Json-test\cmake-build-debug-coverage\CMakeFiles\Json_test.dir\Repositories\AutoRepo\AutoRepo.cpp.gcno
+        -:    0:Data:C:\Users\rares\CLionProjects\OOP\Json-test\cmake-build-debug-coverage\CMakeFiles\Json_test.dir\Repositories\AutoRepo\AutoRepo.cpp.gcda
+        -:    0:Runs:1
+        -:    1://     __ _____ _____ _____
+        -:    2://  __|  |   __|     |   | |  JSON for Modern C++
+        -:    3:// |  |  |__   |  |  | | | |  version 3.11.3
+        -:    4:// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+        -:    5://
+        -:    6:// SPDX-FileCopyrightText: 2009 Florian Loitsch <https://florian.loitsch.com/>
+        -:    7:// SPDX-FileCopyrightText: 2013-2023 Niels Lohmann <https://nlohmann.me>
+        -:    8:// SPDX-License-Identifier: MIT
+        -:    9:
+        -:   10:#pragma once
+        -:   11:
+        -:   12:#include <array> // array
+        -:   13:#include <cmath>   // signbit, isfinite
+        -:   14:#include <cstdint> // intN_t, uintN_t
+        -:   15:#include <cstring> // memcpy, memmove
+        -:   16:#include <limits> // numeric_limits
+        -:   17:#include <type_traits> // conditional
+        -:   18:
+        -:   19:#include <nlohmann/detail/macro_scope.hpp>
+        -:   20:
+        -:   21:NLOHMANN_JSON_NAMESPACE_BEGIN
+        -:   22:namespace detail
+        -:   23:{
+        -:   24:
+        -:   25:/*!
+        -:   26:@brief implements the Grisu2 algorithm for binary to decimal floating-point
+        -:   27:conversion.
+        -:   28:
+        -:   29:This implementation is a slightly modified version of the reference
+        -:   30:implementation which may be obtained from
+        -:   31:http://florian.loitsch.com/publications (bench.tar.gz).
+        -:   32:
+        -:   33:The code is distributed under the MIT license, Copyright (c) 2009 Florian Loitsch.
+        -:   34:
+        -:   35:For a detailed description of the algorithm see:
+        -:   36:
+        -:   37:[1] Loitsch, "Printing Floating-Point Numbers Quickly and Accurately with
+        -:   38:    Integers", Proceedings of the ACM SIGPLAN 2010 Conference on Programming
+        -:   39:    Language Design and Implementation, PLDI 2010
+        -:   40:[2] Burger, Dybvig, "Printing Floating-Point Numbers Quickly and Accurately",
+        -:   41:    Proceedings of the ACM SIGPLAN 1996 Conference on Programming Language
+        -:   42:    Design and Implementation, PLDI 1996
+        -:   43:*/
+        -:   44:namespace dtoa_impl
+        -:   45:{
+        -:   46:
+        -:   47:template<typename Target, typename Source>
+function _ZN8nlohmann16json_abi_v3_11_36detail9dtoa_impl16reinterpret_bitsIydEET_T0_ called 34 returned 100% blocks executed 100%
+       34:   48:Target reinterpret_bits(const Source source)
+        -:   49:{
+        -:   50:    static_assert(sizeof(Target) == sizeof(Source), "size mismatch");
+        -:   51:
+        -:   52:    Target target;
+       34:   53:    std::memcpy(&target, &source, sizeof(Source));
+       34:   54:    return target;
+       34:   54-block  0
+        -:   55:}
+        -:   56:
+        -:   57:struct diyfp // f * 2^e
+        -:   58:{
+        -:   59:    static constexpr int kPrecision = 64; // = q
+        -:   60:
+        -:   61:    std::uint64_t f = 0;
+        -:   62:    int e = 0;
+        -:   63:
+function _ZN8nlohmann16json_abi_v3_11_36detail9dtoa_impl5diyfpC1Eyi called 442 returned 100% blocks executed 100%
+      442:   64:    constexpr diyfp(std::uint64_t f_, int e_) noexcept : f(f_), e(e_) {}
+        -:   65:
+        -:   66:    /*!
+        -:   67:    @brief returns x - y
+        -:   68:    @pre x.e == y.e and x.f >= y.f
+        -:   69:    */
+function _ZN8nlohmann16json_abi_v3_11_36detail9dtoa_impl5diyfp3subERKS3_S5_ called 68 returned 100% blocks executed 75%
+       68:   70:    static diyfp sub(const diyfp& x, const diyfp& y) noexcept
+        -:   71:    {
+      68*:   72:        JSON_ASSERT(x.e == y.e);
+       68:   72-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 68
+    %%%%%:   72-block  1
+call    2 never executed
+       68:   72-block  2
+      68*:   73:        JSON_ASSERT(x.f >= y.f);
+       68:   73-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 68
+    %%%%%:   73-block  1
+call    2 never executed
+       68:   73-block  2
+        -:   74:
+       68:   75:        return {x.f - y.f, x.e};
+       68:   75-block  0
+call    0 returned 68
+        -:   76:    }
+        -:   77:
+        -:   78:    /*!
+        -:   79:    @brief returns x * y
+        -:   80:    @note The result is rounded. (Only the upper q bits are returned.)
+        -:   81:    */
+function _ZN8nlohmann16json_abi_v3_11_36detail9dtoa_impl5diyfp3mulERKS3_S5_ called 102 returned 100% blocks executed 100%
+      102:   82:    static diyfp mul(const diyfp& x, const diyfp& y) noexcept
+        -:   83:    {
+        -:   84:        static_assert(kPrecision == 64, "internal error");
+        -:   85:
+        -:   86:        // Computes:
+        -:   87:        //  f = round((x.f * y.f) / 2^q)
+        -:   88:        //  e = x.e + y.e + q
+        -:   89:
+        -:   90:        // Emulate the 64-bit * 64-bit multiplication:
+        -:   91:        //
+        -:   92:        // p = u * v
+        -:   93:        //   = (u_lo + 2^32 u_hi) (v_lo + 2^32 v_hi)
+        -:   94:        //   = (u_lo v_lo         ) + 2^32 ((u_lo v_hi         ) + (u_hi v_lo         )) + 2^64 (u_hi v_hi         )
+        -:   95:        //   = (p0                ) + 2^32 ((p1                ) + (p2                )) + 2^64 (p3                )
+        -:   96:        //   = (p0_lo + 2^32 p0_hi) + 2^32 ((p1_lo + 2^32 p1_hi) + (p2_lo + 2^32 p2_hi)) + 2^64 (p3                )
+        -:   97:        //   = (p0_lo             ) + 2^32 (p0_hi + p1_lo + p2_lo                      ) + 2^64 (p1_hi + p2_hi + p3)
+        -:   98:        //   = (p0_lo             ) + 2^32 (Q                                          ) + 2^64 (H                 )
+        -:   99:        //   = (p0_lo             ) + 2^32 (Q_lo + 2^32 Q_hi                           ) + 2^64 (H                 )
+        -:  100:        //
+        -:  101:        // (Since Q might be larger than 2^32 - 1)
+        -:  102:        //
+        -:  103:        //   = (p0_lo + 2^32 Q_lo) + 2^64 (Q_hi + H)
+        -:  104:        //
+        -:  105:        // (Q_hi + H does not overflow a 64-bit int)
+        -:  106:        //
+        -:  107:        //   = p_lo + 2^64 p_hi
+        -:  108:
+      102:  109:        const std::uint64_t u_lo = x.f & 0xFFFFFFFFu;
+      102:  110:        const std::uint64_t u_hi = x.f >> 32u;
+      102:  111:        const std::uint64_t v_lo = y.f & 0xFFFFFFFFu;
+      102:  112:        const std::uint64_t v_hi = y.f >> 32u;
+        -:  113:
+      102:  114:        const std::uint64_t p0 = u_lo * v_lo;
+      102:  115:        const std::uint64_t p1 = u_lo * v_hi;
+      102:  116:        const std::uint64_t p2 = u_hi * v_lo;
+      102:  117:        const std::uint64_t p3 = u_hi * v_hi;
+        -:  118:
+      102:  119:        const std::uint64_t p0_hi = p0 >> 32u;
+      102:  120:        const std::uint64_t p1_lo = p1 & 0xFFFFFFFFu;
+      102:  121:        const std::uint64_t p1_hi = p1 >> 32u;
+      102:  122:        const std::uint64_t p2_lo = p2 & 0xFFFFFFFFu;
+      102:  123:        const std::uint64_t p2_hi = p2 >> 32u;
+        -:  124:
+      102:  125:        std::uint64_t Q = p0_hi + p1_lo + p2_lo;
+        -:  126:
+        -:  127:        // The full product might now be computed as
+        -:  128:        //
+        -:  129:        // p_hi = p3 + p2_hi + p1_hi + (Q >> 32)
+        -:  130:        // p_lo = p0_lo + (Q << 32)
+        -:  131:        //
+        -:  132:        // But in this particular case here, the full p_lo is not required.
+        -:  133:        // Effectively we only need to add the highest bit in p_lo to p_hi (and
+        -:  134:        // Q_hi + 1 does not overflow).
+        -:  135:
+      102:  136:        Q += std::uint64_t{1} << (64u - 32u - 1u); // round, ties up
+        -:  137:
+      102:  138:        const std::uint64_t h = p3 + p2_hi + p1_hi + (Q >> 32u);
+        -:  139:
+      102:  140:        return {h, x.e + y.e + 64};
+      102:  140-block  0
+call    0 returned 102
+        -:  141:    }
+        -:  142:
+        -:  143:    /*!
+        -:  144:    @brief normalize x such that the significand is >= 2^(q-1)
+        -:  145:    @pre x.f != 0
+        -:  146:    */
+function _ZN8nlohmann16json_abi_v3_11_36detail9dtoa_impl5diyfp9normalizeES3_ called 68 returned 100% blocks executed 88%
+       68:  147:    static diyfp normalize(diyfp x) noexcept
+        -:  148:    {
+      68*:  149:        JSON_ASSERT(x.f != 0);
+       68:  149-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 68
+    %%%%%:  149-block  1
+call    2 never executed
+       68:  149-block  2
+        -:  150:
+      782:  151:        while ((x.f >> 63u) == 0)
+       68:  151-block  0
+      782:  151-block  1
+branch  0 taken 714
+branch  1 taken 68 (fallthrough)
+        -:  152:        {
+      714:  153:            x.f <<= 1u;
+      714:  154:            x.e--;
+      714:  154-block  0
+        -:  155:        }
+        -:  156:
+       68:  157:        return x;
+       68:  157-block  0
+        -:  158:    }
+        -:  159:
+        -:  160:    /*!
+        -:  161:    @brief normalize x such that the result has the exponent E
+        -:  162:    @pre e >= x.e and the upper e - x.e bits of x.f must be zero.
+        -:  163:    */
+function _ZN8nlohmann16json_abi_v3_11_36detail9dtoa_impl5diyfp12normalize_toERKS3_i called 34 returned 100% blocks executed 75%
+       34:  164:    static diyfp normalize_to(const diyfp& x, const int target_exponent) noexcept
+        -:  165:    {
+       34:  166:        const int delta = x.e - target_exponent;
+        -:  167:
+      34*:  168:        JSON_ASSERT(delta >= 0);
+       34:  168-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 34
+    %%%%%:  168-block  1
+call    2 never executed
+       34:  168-block  2
+      34*:  169:        JSON_ASSERT(((x.f << delta) >> delta) == x.f);
+       34:  169-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 34
+    %%%%%:  169-block  1
+call    2 never executed
+       34:  169-block  2
+        -:  170:
+       34:  171:        return {x.f << delta, target_exponent};
+       34:  171-block  0
+call    0 returned 34
+        -:  172:    }
+        -:  173:};
+        -:  174:
+        -:  175:struct boundaries
+        -:  176:{
+        -:  177:    diyfp w;
+        -:  178:    diyfp minus;
+        -:  179:    diyfp plus;
+        -:  180:};
+        -:  181:
+        -:  182:/*!
+        -:  183:Compute the (normalized) diyfp representing the input number 'value' and its
+        -:  184:boundaries.
+        -:  185:
+        -:  186:@pre value must be finite and positive
+        -:  187:*/
+        -:  188:template<typename FloatType>
+function _ZN8nlohmann16json_abi_v3_11_36detail9dtoa_impl18compute_boundariesIdEENS2_10boundariesET_ called 34 returned 100% blocks executed 77%
+       34:  189:boundaries compute_boundaries(FloatType value)
+        -:  190:{
+      34*:  191:    JSON_ASSERT(std::isfinite(value));
+       34:  191-block  0
+call    0 returned 34
+branch  1 taken 0 (fallthrough)
+branch  2 taken 34
+    %%%%%:  191-block  1
+call    3 never executed
+       34:  191-block  2
+      34*:  192:    JSON_ASSERT(value > 0);
+       34:  192-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 34
+    %%%%%:  192-block  1
+call    2 never executed
+       34:  192-block  2
+        -:  193:
+        -:  194:    // Convert the IEEE representation into a diyfp.
+        -:  195:    //
+        -:  196:    // If v is denormal:
+        -:  197:    //      value = 0.F * 2^(1 - bias) = (          F) * 2^(1 - bias - (p-1))
+        -:  198:    // If v is normalized:
+        -:  199:    //      value = 1.F * 2^(E - bias) = (2^(p-1) + F) * 2^(E - bias - (p-1))
+        -:  200:
+        -:  201:    static_assert(std::numeric_limits<FloatType>::is_iec559,
+        -:  202:                  "internal error: dtoa_short requires an IEEE-754 floating-point implementation");
+        -:  203:
+       34:  204:    constexpr int      kPrecision = std::numeric_limits<FloatType>::digits; // = p (includes the hidden bit)
+       34:  205:    constexpr int      kBias      = std::numeric_limits<FloatType>::max_exponent - 1 + (kPrecision - 1);
+       34:  206:    constexpr int      kMinExp    = 1 - kBias;
+       34:  207:    constexpr std::uint64_t kHiddenBit = std::uint64_t{1} << (kPrecision - 1); // = 2^(p-1)
+        -:  208:
+        -:  209:    using bits_type = typename std::conditional<kPrecision == 24, std::uint32_t, std::uint64_t >::type;
+        -:  210:
+       34:  211:    const auto bits = static_cast<std::uint64_t>(reinterpret_bits<bits_type>(value));
+       34:  211-block  0
+call    0 returned 34
+       34:  212:    const std::uint64_t E = bits >> (kPrecision - 1);
+       34:  213:    const std::uint64_t F = bits & (kHiddenBit - 1);
+        -:  214:
+       34:  215:    const bool is_denormal = E == 0;
+      34*:  216:    const diyfp v = is_denormal
+    %%%%%:  216-block  0
+call    0 never executed
+       34:  216-block  1
+call    1 returned 34
+       34:  217:                    ? diyfp(F, kMinExp)
+branch  0 taken 0 (fallthrough)
+branch  1 taken 34
+        -:  218:                    : diyfp(F + kHiddenBit, static_cast<int>(E) - kBias);
+        -:  219:
+        -:  220:    // Compute the boundaries m- and m+ of the floating-point value
+        -:  221:    // v = f * 2^e.
+        -:  222:    //
+        -:  223:    // Determine v- and v+, the floating-point predecessor and successor if v,
+        -:  224:    // respectively.
+        -:  225:    //
+        -:  226:    //      v- = v - 2^e        if f != 2^(p-1) or e == e_min                (A)
+        -:  227:    //         = v - 2^(e-1)    if f == 2^(p-1) and e > e_min                (B)
+        -:  228:    //
+        -:  229:    //      v+ = v + 2^e
+        -:  230:    //
+        -:  231:    // Let m- = (v- + v) / 2 and m+ = (v + v+) / 2. All real numbers _strictly_
+        -:  232:    // between m- and m+ round to v, regardless of how the input rounding
+        -:  233:    // algorithm breaks ties.
+        -:  234:    //
+        -:  235:    //      ---+-------------+-------------+-------------+-------------+---  (A)
+        -:  236:    //         v-            m-            v             m+            v+
+        -:  237:    //
+        -:  238:    //      -----------------+------+------+-------------+-------------+---  (B)
+        -:  239:    //                       v-     m-     v             m+            v+
+        -:  240:
+      34*:  241:    const bool lower_boundary_is_closer = F == 0 && E > 1;
+       34:  241-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 34
+    %%%%%:  241-block  1
+branch  2 never executed (fallthrough)
+branch  3 never executed
+    %%%%%:  241-block  2
+       34:  241-block  3
+       34:  242:    const diyfp m_plus = diyfp(2 * v.f + 1, v.e - 1);
+       34:  242-block  0
+call    0 returned 34
+      34*:  243:    const diyfp m_minus = lower_boundary_is_closer
+      34*:  244:                          ? diyfp(4 * v.f - 1, v.e - 2)  // (B)
+branch  0 taken 0 (fallthrough)
+branch  1 taken 34
+    %%%%%:  244-block  0
+call    2 never executed
+       34:  245:                          : diyfp(2 * v.f - 1, v.e - 1); // (A)
+       34:  245-block  0
+call    0 returned 34
+        -:  246:
+        -:  247:    // Determine the normalized w+ = m+.
+       34:  248:    const diyfp w_plus = diyfp::normalize(m_plus);
+       34:  248-block  0
+call    0 returned 34
+        -:  249:
+        -:  250:    // Determine w- = m- such that e_(w-) = e_(w+).
+       34:  251:    const diyfp w_minus = diyfp::normalize_to(m_minus, w_plus.e);
+call    0 returned 34
+        -:  252:
+       68:  253:    return {diyfp::normalize(v), w_minus, w_plus};
+call    0 returned 34
+       34:  253-block  0
+        -:  254:}
+        -:  255:
+        -:  256:// Given normalized diyfp w, Grisu needs to find a (normalized) cached
+        -:  257:// power-of-ten c, such that the exponent of the product c * w = f * 2^e lies
+        -:  258:// within a certain range [alpha, gamma] (Definition 3.2 from [1])
+        -:  259://
+        -:  260://      alpha <= e = e_c + e_w + q <= gamma
+        -:  261://
+        -:  262:// or
+        -:  263://
+        -:  264://      f_c * f_w * 2^alpha <= f_c 2^(e_c) * f_w 2^(e_w) * 2^q
+        -:  265://                          <= f_c * f_w * 2^gamma
+        -:  266://
+        -:  267:// Since c and w are normalized, i.e. 2^(q-1) <= f < 2^q, this implies
+        -:  268://
+        -:  269://      2^(q-1) * 2^(q-1) * 2^alpha <= c * w * 2^q < 2^q * 2^q * 2^gamma
+        -:  270://
+        -:  271:// or
+        -:  272://
+        -:  273://      2^(q - 2 + alpha) <= c * w < 2^(q + gamma)
+        -:  274://
+        -:  275:// The choice of (alpha,gamma) determines the size of the table and the form of
+        -:  276:// the digit generation procedure. Using (alpha,gamma)=(-60,-32) works out well
+        -:  277:// in practice:
+        -:  278://
+        -:  279:// The idea is to cut the number c * w = f * 2^e into two parts, which can be
+        -:  280:// processed independently: An integral part p1, and a fractional part p2:
+        -:  281://
+        -:  282://      f * 2^e = ( (f div 2^-e) * 2^-e + (f mod 2^-e) ) * 2^e
+        -:  283://              = (f div 2^-e) + (f mod 2^-e) * 2^e
+        -:  284://              = p1 + p2 * 2^e
+        -:  285://
+        -:  286:// The conversion of p1 into decimal form requires a series of divisions and
+        -:  287:// modulos by (a power of) 10. These operations are faster for 32-bit than for
+        -:  288:// 64-bit integers, so p1 should ideally fit into a 32-bit integer. This can be
+        -:  289:// achieved by choosing
+        -:  290://
+        -:  291://      -e >= 32   or   e <= -32 := gamma
+        -:  292://
+        -:  293:// In order to convert the fractional part
+        -:  294://
+        -:  295://      p2 * 2^e = p2 / 2^-e = d[-1] / 10^1 + d[-2] / 10^2 + ...
+        -:  296://
+        -:  297:// into decimal form, the fraction is repeatedly multiplied by 10 and the digits
+        -:  298:// d[-i] are extracted in order:
+        -:  299://
+        -:  300://      (10 * p2) div 2^-e = d[-1]
+        -:  301://      (10 * p2) mod 2^-e = d[-2] / 10^1 + ...
+        -:  302://
+        -:  303:// The multiplication by 10 must not overflow. It is sufficient to choose
+        -:  304://
+        -:  305://      10 * p2 < 16 * p2 = 2^4 * p2 <= 2^64.
+        -:  306://
+        -:  307:// Since p2 = f mod 2^-e < 2^-e,
+        -:  308://
+        -:  309://      -e <= 60   or   e >= -60 := alpha
+        -:  310:
+        -:  311:constexpr int kAlpha = -60;
+        -:  312:constexpr int kGamma = -32;
+        -:  313:
+        -:  314:struct cached_power // c = f * 2^e ~= 10^k
+        -:  315:{
+        -:  316:    std::uint64_t f;
+        -:  317:    int e;
+        -:  318:    int k;
+        -:  319:};
+        -:  320:
+        -:  321:/*!
+        -:  322:For a normalized diyfp w = f * 2^e, this function returns a (normalized) cached
+        -:  323:power-of-ten c = f_c * 2^e_c, such that the exponent of the product w * c
+        -:  324:satisfies (Definition 3.2 from [1])
+        -:  325:
+        -:  326:     alpha <= e_c + e + q <= gamma.
+        -:  327:*/
+function _ZN8nlohmann16json_abi_v3_11_36detail9dtoa_impl36get_cached_power_for_binary_exponentEi called 34 returned 100% blocks executed 74%
+       34:  328:inline cached_power get_cached_power_for_binary_exponent(int e)
+        -:  329:{
+        -:  330:    // Now
+        -:  331:    //
+        -:  332:    //      alpha <= e_c + e + q <= gamma                                    (1)
+        -:  333:    //      ==> f_c * 2^alpha <= c * 2^e * 2^q
+        -:  334:    //
+        -:  335:    // and since the c's are normalized, 2^(q-1) <= f_c,
+        -:  336:    //
+        -:  337:    //      ==> 2^(q - 1 + alpha) <= c * 2^(e + q)
+        -:  338:    //      ==> 2^(alpha - e - 1) <= c
+        -:  339:    //
+        -:  340:    // If c were an exact power of ten, i.e. c = 10^k, one may determine k as
+        -:  341:    //
+        -:  342:    //      k = ceil( log_10( 2^(alpha - e - 1) ) )
+        -:  343:    //        = ceil( (alpha - e - 1) * log_10(2) )
+        -:  344:    //
+        -:  345:    // From the paper:
+        -:  346:    // "In theory the result of the procedure could be wrong since c is rounded,
+        -:  347:    //  and the computation itself is approximated [...]. In practice, however,
+        -:  348:    //  this simple function is sufficient."
+        -:  349:    //
+        -:  350:    // For IEEE double precision floating-point numbers converted into
+        -:  351:    // normalized diyfp's w = f * 2^e, with q = 64,
+        -:  352:    //
+        -:  353:    //      e >= -1022      (min IEEE exponent)
+        -:  354:    //           -52        (p - 1)
+        -:  355:    //           -52        (p - 1, possibly normalize denormal IEEE numbers)
+        -:  356:    //           -11        (normalize the diyfp)
+        -:  357:    //         = -1137
+        -:  358:    //
+        -:  359:    // and
+        -:  360:    //
+        -:  361:    //      e <= +1023      (max IEEE exponent)
+        -:  362:    //           -52        (p - 1)
+        -:  363:    //           -11        (normalize the diyfp)
+        -:  364:    //         = 960
+        -:  365:    //
+        -:  366:    // This binary exponent range [-1137,960] results in a decimal exponent
+        -:  367:    // range [-307,324]. One does not need to store a cached power for each
+        -:  368:    // k in this range. For each such k it suffices to find a cached power
+        -:  369:    // such that the exponent of the product lies in [alpha,gamma].
+        -:  370:    // This implies that the difference of the decimal exponents of adjacent
+        -:  371:    // table entries must be less than or equal to
+        -:  372:    //
+        -:  373:    //      floor( (gamma - alpha) * log_10(2) ) = 8.
+        -:  374:    //
+        -:  375:    // (A smaller distance gamma-alpha would require a larger table.)
+        -:  376:
+        -:  377:    // NB:
+        -:  378:    // Actually this function returns c, such that -60 <= e_c + e + 64 <= -34.
+        -:  379:
+       34:  380:    constexpr int kCachedPowersMinDecExp = -300;
+       34:  381:    constexpr int kCachedPowersDecStep = 8;
+        -:  382:
+        -:  383:    static constexpr std::array<cached_power, 79> kCachedPowers =
+        -:  384:    {
+        -:  385:        {
+        -:  386:            { 0xAB70FE17C79AC6CA, -1060, -300 },
+        -:  387:            { 0xFF77B1FCBEBCDC4F, -1034, -292 },
+        -:  388:            { 0xBE5691EF416BD60C, -1007, -284 },
+        -:  389:            { 0x8DD01FAD907FFC3C,  -980, -276 },
+        -:  390:            { 0xD3515C2831559A83,  -954, -268 },
+        -:  391:            { 0x9D71AC8FADA6C9B5,  -927, -260 },
+        -:  392:            { 0xEA9C227723EE8BCB,  -901, -252 },
+        -:  393:            { 0xAECC49914078536D,  -874, -244 },
+        -:  394:            { 0x823C12795DB6CE57,  -847, -236 },
+        -:  395:            { 0xC21094364DFB5637,  -821, -228 },
+        -:  396:            { 0x9096EA6F3848984F,  -794, -220 },
+        -:  397:            { 0xD77485CB25823AC7,  -768, -212 },
+        -:  398:            { 0xA086CFCD97BF97F4,  -741, -204 },
+        -:  399:            { 0xEF340A98172AACE5,  -715, -196 },
+        -:  400:            { 0xB23867FB2A35B28E,  -688, -188 },
+        -:  401:            { 0x84C8D4DFD2C63F3B,  -661, -180 },
+        -:  402:            { 0xC5DD44271AD3CDBA,  -635, -172 },
+        -:  403:            { 0x936B9FCEBB25C996,  -608, -164 },
+        -:  404:            { 0xDBAC6C247D62A584,  -582, -156 },
+        -:  405:            { 0xA3AB66580D5FDAF6,  -555, -148 },
+        -:  406:            { 0xF3E2F893DEC3F126,  -529, -140 },
+        -:  407:            { 0xB5B5ADA8AAFF80B8,  -502, -132 },
+        -:  408:            { 0x87625F056C7C4A8B,  -475, -124 },
+        -:  409:            { 0xC9BCFF6034C13053,  -449, -116 },
+        -:  410:            { 0x964E858C91BA2655,  -422, -108 },
+        -:  411:            { 0xDFF9772470297EBD,  -396, -100 },
+        -:  412:            { 0xA6DFBD9FB8E5B88F,  -369,  -92 },
+        -:  413:            { 0xF8A95FCF88747D94,  -343,  -84 },
+        -:  414:            { 0xB94470938FA89BCF,  -316,  -76 },
+        -:  415:            { 0x8A08F0F8BF0F156B,  -289,  -68 },
+        -:  416:            { 0xCDB02555653131B6,  -263,  -60 },
+        -:  417:            { 0x993FE2C6D07B7FAC,  -236,  -52 },
+        -:  418:            { 0xE45C10C42A2B3B06,  -210,  -44 },
+        -:  419:            { 0xAA242499697392D3,  -183,  -36 },
+        -:  420:            { 0xFD87B5F28300CA0E,  -157,  -28 },
+        -:  421:            { 0xBCE5086492111AEB,  -130,  -20 },
+        -:  422:            { 0x8CBCCC096F5088CC,  -103,  -12 },
+        -:  423:            { 0xD1B71758E219652C,   -77,   -4 },
+        -:  424:            { 0x9C40000000000000,   -50,    4 },
+        -:  425:            { 0xE8D4A51000000000,   -24,   12 },
+        -:  426:            { 0xAD78EBC5AC620000,     3,   20 },
+        -:  427:            { 0x813F3978F8940984,    30,   28 },
+        -:  428:            { 0xC097CE7BC90715B3,    56,   36 },
+        -:  429:            { 0x8F7E32CE7BEA5C70,    83,   44 },
+        -:  430:            { 0xD5D238A4ABE98068,   109,   52 },
+        -:  431:            { 0x9F4F2726179A2245,   136,   60 },
+        -:  432:            { 0xED63A231D4C4FB27,   162,   68 },
+        -:  433:            { 0xB0DE65388CC8ADA8,   189,   76 },
+        -:  434:            { 0x83C7088E1AAB65DB,   216,   84 },
+        -:  435:            { 0xC45D1DF942711D9A,   242,   92 },
+        -:  436:            { 0x924D692CA61BE758,   269,  100 },
+        -:  437:            { 0xDA01EE641A708DEA,   295,  108 },
+        -:  438:            { 0xA26DA3999AEF774A,   322,  116 },
+        -:  439:            { 0xF209787BB47D6B85,   348,  124 },
+        -:  440:            { 0xB454E4A179DD1877,   375,  132 },
+        -:  441:            { 0x865B86925B9BC5C2,   402,  140 },
+        -:  442:            { 0xC83553C5C8965D3D,   428,  148 },
+        -:  443:            { 0x952AB45CFA97A0B3,   455,  156 },
+        -:  444:            { 0xDE469FBD99A05FE3,   481,  164 },
+        -:  445:            { 0xA59BC234DB398C25,   508,  172 },
+        -:  446:            { 0xF6C69A72A3989F5C,   534,  180 },
+        -:  447:            { 0xB7DCBF5354E9BECE,   561,  188 },
+        -:  448:            { 0x88FCF317F22241E2,   588,  196 },
+        -:  449:            { 0xCC20CE9BD35C78A5,   614,  204 },
+        -:  450:            { 0x98165AF37B2153DF,   641,  212 },
+        -:  451:            { 0xE2A0B5DC971F303A,   667,  220 },
+        -:  452:            { 0xA8D9D1535CE3B396,   694,  228 },
+        -:  453:            { 0xFB9B7CD9A4A7443C,   720,  236 },
+        -:  454:            { 0xBB764C4CA7A44410,   747,  244 },
+        -:  455:            { 0x8BAB8EEFB6409C1A,   774,  252 },
+        -:  456:            { 0xD01FEF10A657842C,   800,  260 },
+        -:  457:            { 0x9B10A4E5E9913129,   827,  268 },
+        -:  458:            { 0xE7109BFBA19C0C9D,   853,  276 },
+        -:  459:            { 0xAC2820D9623BF429,   880,  284 },
+        -:  460:            { 0x80444B5E7AA7CF85,   907,  292 },
+        -:  461:            { 0xBF21E44003ACDD2D,   933,  300 },
+        -:  462:            { 0x8E679C2F5E44FF8F,   960,  308 },
+        -:  463:            { 0xD433179D9C8CB841,   986,  316 },
+        -:  464:            { 0x9E19DB92B4E31BA9,  1013,  324 },
+        -:  465:        }
+        -:  466:    };
+        -:  467:
+        -:  468:    // This computation gives exactly the same results for k as
+        -:  469:    //      k = ceil((kAlpha - e - 1) * 0.30102999566398114)
+        -:  470:    // for |e| <= 1500, but doesn't require floating-point operations.
+        -:  471:    // NB: log_10(2) ~= 78913 / 2^18
+      34*:  472:    JSON_ASSERT(e >= -1500);
+       34:  472-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 34
+    %%%%%:  472-block  1
+call    2 never executed
+       34:  472-block  2
+      34*:  473:    JSON_ASSERT(e <=  1500);
+       34:  473-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 34
+    %%%%%:  473-block  1
+call    2 never executed
+       34:  473-block  2
+       34:  474:    const int f = kAlpha - e - 1;
+       34:  475:    const int k = (f * 78913) / (1 << 18) + static_cast<int>(f > 0);
+        -:  476:
+       34:  477:    const int index = (-kCachedPowersMinDecExp + k + (kCachedPowersDecStep - 1)) / kCachedPowersDecStep;
+      34*:  478:    JSON_ASSERT(index >= 0);
+       34:  478-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 34
+    %%%%%:  478-block  1
+call    2 never executed
+       34:  478-block  2
+      68*:  479:    JSON_ASSERT(static_cast<std::size_t>(index) < kCachedPowers.size());
+       34:  479-block  0
+       34:  479-block  1
+branch  0 taken 0 (fallthrough)
+branch  1 taken 34
+    %%%%%:  479-block  2
+call    2 never executed
+       34:  479-block  3
+        -:  480:
+       34:  481:    const cached_power cached = kCachedPowers[static_cast<std::size_t>(index)];
+       34:  481-block  0
+call    0 returned 34
+      34*:  482:    JSON_ASSERT(kAlpha <= cached.e + e + 64);
+branch  0 taken 0 (fallthrough)
+branch  1 taken 34
+    %%%%%:  482-block  0
+call    2 never executed
+       34:  482-block  1
+      34*:  483:    JSON_ASSERT(kGamma >= cached.e + e + 64);
+       34:  483-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 34
+    %%%%%:  483-block  1
+call    2 never executed
+       34:  483-block  2
+        -:  484:
+       34:  485:    return cached;
+       34:  485-block  0
+        -:  486:}
+        -:  487:
+        -:  488:/*!
+        -:  489:For n != 0, returns k, such that pow10 := 10^(k-1) <= n < 10^k.
+        -:  490:For n == 0, returns 1 and sets pow10 := 1.
+        -:  491:*/
+function _ZN8nlohmann16json_abi_v3_11_36detail9dtoa_impl18find_largest_pow10EjRj called 34 returned 100% blocks executed 70%
+       34:  492:inline int find_largest_pow10(const std::uint32_t n, std::uint32_t& pow10)
+        -:  493:{
+        -:  494:    // LCOV_EXCL_START
+       34:  495:    if (n >= 1000000000)
+       34:  495-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 34
+        -:  496:    {
+    #####:  497:        pow10 = 1000000000;
+    #####:  498:        return 10;
+    %%%%%:  498-block  0
+        -:  499:    }
+        -:  500:    // LCOV_EXCL_STOP
+       34:  501:    if (n >= 100000000)
+       34:  501-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 34
+        -:  502:    {
+    #####:  503:        pow10 = 100000000;
+    #####:  504:        return  9;
+    %%%%%:  504-block  0
+        -:  505:    }
+       34:  506:    if (n >= 10000000)
+       34:  506-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 34
+        -:  507:    {
+    #####:  508:        pow10 = 10000000;
+    #####:  509:        return  8;
+    %%%%%:  509-block  0
+        -:  510:    }
+       34:  511:    if (n >= 1000000)
+       34:  511-block  0
+branch  0 taken 22 (fallthrough)
+branch  1 taken 12
+        -:  512:    {
+       22:  513:        pow10 = 1000000;
+       22:  514:        return  7;
+       22:  514-block  0
+        -:  515:    }
+       12:  516:    if (n >= 100000)
+       12:  516-block  0
+branch  0 taken 2 (fallthrough)
+branch  1 taken 10
+        -:  517:    {
+        2:  518:        pow10 = 100000;
+        2:  519:        return  6;
+        2:  519-block  0
+        -:  520:    }
+       10:  521:    if (n >= 10000)
+       10:  521-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 10
+        -:  522:    {
+    #####:  523:        pow10 = 10000;
+    #####:  524:        return  5;
+    %%%%%:  524-block  0
+        -:  525:    }
+       10:  526:    if (n >= 1000)
+       10:  526-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 10
+        -:  527:    {
+    #####:  528:        pow10 = 1000;
+    #####:  529:        return  4;
+    %%%%%:  529-block  0
+        -:  530:    }
+       10:  531:    if (n >= 100)
+       10:  531-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 10
+        -:  532:    {
+    #####:  533:        pow10 = 100;
+    #####:  534:        return  3;
+    %%%%%:  534-block  0
+        -:  535:    }
+       10:  536:    if (n >= 10)
+       10:  536-block  0
+branch  0 taken 8 (fallthrough)
+branch  1 taken 2
+        -:  537:    {
+        8:  538:        pow10 = 10;
+        8:  539:        return  2;
+        8:  539-block  0
+        -:  540:    }
+        -:  541:
+        2:  542:    pow10 = 1;
+        2:  543:    return 1;
+        2:  543-block  0
+        -:  544:}
+        -:  545:
+function _ZN8nlohmann16json_abi_v3_11_36detail9dtoa_impl12grisu2_roundEPciyyyy called 34 returned 100% blocks executed 50%
+       34:  546:inline void grisu2_round(char* buf, int len, std::uint64_t dist, std::uint64_t delta,
+        -:  547:                         std::uint64_t rest, std::uint64_t ten_k)
+        -:  548:{
+      34*:  549:    JSON_ASSERT(len >= 1);
+       34:  549-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 34
+    %%%%%:  549-block  1
+call    2 never executed
+       34:  549-block  2
+      34*:  550:    JSON_ASSERT(dist <= delta);
+       34:  550-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 34
+    %%%%%:  550-block  1
+call    2 never executed
+       34:  550-block  2
+      34*:  551:    JSON_ASSERT(rest <= delta);
+       34:  551-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 34
+    %%%%%:  551-block  1
+call    2 never executed
+       34:  551-block  2
+      34*:  552:    JSON_ASSERT(ten_k > 0);
+       34:  552-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 34
+    %%%%%:  552-block  1
+call    2 never executed
+       34:  552-block  2
+        -:  553:
+        -:  554:    //               <--------------------------- delta ---->
+        -:  555:    //                                  <---- dist --------->
+        -:  556:    // --------------[------------------+-------------------]--------------
+        -:  557:    //               M-                 w                   M+
+        -:  558:    //
+        -:  559:    //                                  ten_k
+        -:  560:    //                                <------>
+        -:  561:    //                                       <---- rest ---->
+        -:  562:    // --------------[------------------+----+--------------]--------------
+        -:  563:    //                                  w    V
+        -:  564:    //                                       = buf * 10^k
+        -:  565:    //
+        -:  566:    // ten_k represents a unit-in-the-last-place in the decimal representation
+        -:  567:    // stored in buf.
+        -:  568:    // Decrement buf by ten_k while this takes buf closer to w.
+        -:  569:
+        -:  570:    // The tests are written in this order to avoid overflow in unsigned
+        -:  571:    // integer arithmetic.
+        -:  572:
+       34:  573:    while (rest < dist
+       34:  573-block  0
+    #####:  574:            && delta - rest >= ten_k
+    %%%%%:  574-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+      34*:  575:            && (rest + ten_k < dist || dist - rest > rest + ten_k - dist))
+       34:  575-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 34
+    %%%%%:  575-block  1
+branch  2 never executed
+branch  3 never executed (fallthrough)
+    %%%%%:  575-block  2
+branch  4 never executed
+branch  5 never executed (fallthrough)
+        -:  576:    {
+    #####:  577:        JSON_ASSERT(buf[len - 1] != '0');
+    %%%%%:  577-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    %%%%%:  577-block  1
+call    2 never executed
+    %%%%%:  577-block  2
+    #####:  578:        buf[len - 1]--;
+    #####:  579:        rest += ten_k;
+    %%%%%:  579-block  0
+        -:  580:    }
+       34:  581:}
+        -:  582:
+        -:  583:/*!
+        -:  584:Generates V = buffer * 10^decimal_exponent, such that M- <= V <= M+.
+        -:  585:M- and M+ must be normalized and share the same exponent -60 <= e <= -32.
+        -:  586:*/
+function _ZN8nlohmann16json_abi_v3_11_36detail9dtoa_impl16grisu2_digit_genEPcRiS4_NS2_5diyfpES5_S5_ called 34 returned 100% blocks executed 80%
+       34:  587:inline void grisu2_digit_gen(char* buffer, int& length, int& decimal_exponent,
+        -:  588:                             diyfp M_minus, diyfp w, diyfp M_plus)
+        -:  589:{
+        -:  590:    static_assert(kAlpha >= -60, "internal error");
+        -:  591:    static_assert(kGamma <= -32, "internal error");
+        -:  592:
+        -:  593:    // Generates the digits (and the exponent) of a decimal floating-point
+        -:  594:    // number V = buffer * 10^decimal_exponent in the range [M-, M+]. The diyfp's
+        -:  595:    // w, M- and M+ share the same exponent e, which satisfies alpha <= e <= gamma.
+        -:  596:    //
+        -:  597:    //               <--------------------------- delta ---->
+        -:  598:    //                                  <---- dist --------->
+        -:  599:    // --------------[------------------+-------------------]--------------
+        -:  600:    //               M-                 w                   M+
+        -:  601:    //
+        -:  602:    // Grisu2 generates the digits of M+ from left to right and stops as soon as
+        -:  603:    // V is in [M-,M+].
+        -:  604:
+      34*:  605:    JSON_ASSERT(M_plus.e >= kAlpha);
+       34:  605-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 34
+    %%%%%:  605-block  1
+call    2 never executed
+       34:  605-block  2
+      34*:  606:    JSON_ASSERT(M_plus.e <= kGamma);
+       34:  606-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 34
+    %%%%%:  606-block  1
+call    2 never executed
+       34:  606-block  2
+        -:  607:
+       34:  608:    std::uint64_t delta = diyfp::sub(M_plus, M_minus).f; // (significand of (M+ - M-), implicit exponent is e)
+       34:  608-block  0
+call    0 returned 34
+       34:  609:    std::uint64_t dist  = diyfp::sub(M_plus, w      ).f; // (significand of (M+ - w ), implicit exponent is e)
+call    0 returned 34
+        -:  610:
+        -:  611:    // Split M+ = f * 2^e into two parts p1 and p2 (note: e < 0):
+        -:  612:    //
+        -:  613:    //      M+ = f * 2^e
+        -:  614:    //         = ((f div 2^-e) * 2^-e + (f mod 2^-e)) * 2^e
+        -:  615:    //         = ((p1        ) * 2^-e + (p2        )) * 2^e
+        -:  616:    //         = p1 + p2 * 2^e
+        -:  617:
+       34:  618:    const diyfp one(std::uint64_t{1} << -M_plus.e, M_plus.e);
+call    0 returned 34
+        -:  619:
+       34:  620:    auto p1 = static_cast<std::uint32_t>(M_plus.f >> -one.e); // p1 = f div 2^-e (Since -e >= 32, p1 fits into a 32-bit int.)
+       34:  621:    std::uint64_t p2 = M_plus.f & (one.f - 1);                    // p2 = f mod 2^-e
+        -:  622:
+        -:  623:    // 1)
+        -:  624:    //
+        -:  625:    // Generate the digits of the integral part p1 = d[n-1]...d[1]d[0]
+        -:  626:
+      34*:  627:    JSON_ASSERT(p1 > 0);
+branch  0 taken 0 (fallthrough)
+branch  1 taken 34
+    %%%%%:  627-block  0
+call    2 never executed
+       34:  627-block  1
+        -:  628:
+       34:  629:    std::uint32_t pow10{};
+       34:  630:    const int k = find_largest_pow10(p1, pow10);
+       34:  630-block  0
+call    0 returned 34
+        -:  631:
+        -:  632:    //      10^(k-1) <= p1 < 10^k, pow10 = 10^(k-1)
+        -:  633:    //
+        -:  634:    //      p1 = (p1 div 10^(k-1)) * 10^(k-1) + (p1 mod 10^(k-1))
+        -:  635:    //         = (d[k-1]         ) * 10^(k-1) + (p1 mod 10^(k-1))
+        -:  636:    //
+        -:  637:    //      M+ = p1                                             + p2 * 2^e
+        -:  638:    //         = d[k-1] * 10^(k-1) + (p1 mod 10^(k-1))          + p2 * 2^e
+        -:  639:    //         = d[k-1] * 10^(k-1) + ((p1 mod 10^(k-1)) * 2^-e + p2) * 2^e
+        -:  640:    //         = d[k-1] * 10^(k-1) + (                         rest) * 2^e
+        -:  641:    //
+        -:  642:    // Now generate the digits d[n] of p1 from left to right (n = k-1,...,0)
+        -:  643:    //
+        -:  644:    //      p1 = d[k-1]...d[n] * 10^n + d[n-1]...d[0]
+        -:  645:    //
+        -:  646:    // but stop as soon as
+        -:  647:    //
+        -:  648:    //      rest * 2^e = (d[n-1]...d[0] * 2^-e + p2) * 2^e <= delta * 2^e
+        -:  649:
+       34:  650:    int n = k;
+       54:  651:    while (n > 0)
+       54:  651-block  0
+branch  0 taken 52
+branch  1 taken 2 (fallthrough)
+        -:  652:    {
+        -:  653:        // Invariants:
+        -:  654:        //      M+ = buffer * 10^n + (p1 + p2 * 2^e)    (buffer = 0 for n = k)
+        -:  655:        //      pow10 = 10^(n-1) <= p1 < 10^n
+        -:  656:        //
+       52:  657:        const std::uint32_t d = p1 / pow10;  // d = p1 div 10^(n-1)
+       52:  658:        const std::uint32_t r = p1 % pow10;  // r = p1 mod 10^(n-1)
+        -:  659:        //
+        -:  660:        //      M+ = buffer * 10^n + (d * 10^(n-1) + r) + p2 * 2^e
+        -:  661:        //         = (buffer * 10 + d) * 10^(n-1) + (r + p2 * 2^e)
+        -:  662:        //
+      52*:  663:        JSON_ASSERT(d <= 9);
+       52:  663-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 52
+    %%%%%:  663-block  1
+call    2 never executed
+       52:  663-block  2
+       52:  664:        buffer[length++] = static_cast<char>('0' + d); // buffer := buffer * 10 + d
+        -:  665:        //
+        -:  666:        //      M+ = buffer * 10^(n-1) + (r + p2 * 2^e)
+        -:  667:        //
+       52:  668:        p1 = r;
+       52:  669:        n--;
+        -:  670:        //
+        -:  671:        //      M+ = buffer * 10^n + (p1 + p2 * 2^e)
+        -:  672:        //      pow10 = 10^n
+        -:  673:        //
+        -:  674:
+        -:  675:        // Now check if enough digits have been generated.
+        -:  676:        // Compute
+        -:  677:        //
+        -:  678:        //      p1 + p2 * 2^e = (p1 * 2^-e + p2) * 2^e = rest * 2^e
+        -:  679:        //
+        -:  680:        // Note:
+        -:  681:        // Since rest and delta share the same exponent e, it suffices to
+        -:  682:        // compare the significands.
+       52:  683:        const std::uint64_t rest = (std::uint64_t{p1} << -one.e) + p2;
+       52:  684:        if (rest <= delta)
+       52:  684-block  0
+branch  0 taken 32 (fallthrough)
+branch  1 taken 20
+        -:  685:        {
+        -:  686:            // V = buffer * 10^n, with M- <= V <= M+.
+        -:  687:
+       32:  688:            decimal_exponent += n;
+        -:  689:
+        -:  690:            // We may now just stop. But instead look if the buffer could be
+        -:  691:            // decremented to bring V closer to w.
+        -:  692:            //
+        -:  693:            // pow10 = 10^n is now 1 ulp in the decimal representation V.
+        -:  694:            // The rounding procedure works with diyfp's with an implicit
+        -:  695:            // exponent of e.
+        -:  696:            //
+        -:  697:            //      10^n = (10^n * 2^-e) * 2^e = ulp * 2^e
+        -:  698:            //
+       32:  699:            const std::uint64_t ten_n = std::uint64_t{pow10} << -one.e;
+       32:  700:            grisu2_round(buffer, length, dist, delta, rest, ten_n);
+       32:  700-block  0
+call    0 returned 32
+branch  1 taken 32 (fallthrough)
+branch  2 taken 0 (throw)
+        -:  701:
+       32:  702:            return;
+       32:  702-block  0
+        -:  703:        }
+        -:  704:
+       20:  705:        pow10 /= 10;
+       20:  705-block  0
+        -:  706:        //
+        -:  707:        //      pow10 = 10^(n-1) <= p1 < 10^n
+        -:  708:        // Invariants restored.
+        -:  709:    }
+        -:  710:
+        -:  711:    // 2)
+        -:  712:    //
+        -:  713:    // The digits of the integral part have been generated:
+        -:  714:    //
+        -:  715:    //      M+ = d[k-1]...d[1]d[0] + p2 * 2^e
+        -:  716:    //         = buffer            + p2 * 2^e
+        -:  717:    //
+        -:  718:    // Now generate the digits of the fractional part p2 * 2^e.
+        -:  719:    //
+        -:  720:    // Note:
+        -:  721:    // No decimal point is generated: the exponent is adjusted instead.
+        -:  722:    //
+        -:  723:    // p2 actually represents the fraction
+        -:  724:    //
+        -:  725:    //      p2 * 2^e
+        -:  726:    //          = p2 / 2^-e
+        -:  727:    //          = d[-1] / 10^1 + d[-2] / 10^2 + ...
+        -:  728:    //
+        -:  729:    // Now generate the digits d[-m] of p1 from left to right (m = 1,2,...)
+        -:  730:    //
+        -:  731:    //      p2 * 2^e = d[-1]d[-2]...d[-m] * 10^-m
+        -:  732:    //                      + 10^-m * (d[-m-1] / 10^1 + d[-m-2] / 10^2 + ...)
+        -:  733:    //
+        -:  734:    // using
+        -:  735:    //
+        -:  736:    //      10^m * p2 = ((10^m * p2) div 2^-e) * 2^-e + ((10^m * p2) mod 2^-e)
+        -:  737:    //                = (                   d) * 2^-e + (                   r)
+        -:  738:    //
+        -:  739:    // or
+        -:  740:    //      10^m * p2 * 2^e = d + r * 2^e
+        -:  741:    //
+        -:  742:    // i.e.
+        -:  743:    //
+        -:  744:    //      M+ = buffer + p2 * 2^e
+        -:  745:    //         = buffer + 10^-m * (d + r * 2^e)
+        -:  746:    //         = (buffer * 10^m + d) * 10^-m + 10^-m * r * 2^e
+        -:  747:    //
+        -:  748:    // and stop as soon as 10^-m * r * 2^e <= delta * 2^e
+        -:  749:
+       2*:  750:    JSON_ASSERT(p2 > delta);
+        2:  750-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 2
+    %%%%%:  750-block  1
+call    2 never executed
+        2:  750-block  2
+        -:  751:
+        2:  752:    int m = 0;
+        2:  752-block  0
+        -:  753:    for (;;)
+        -:  754:    {
+        -:  755:        // Invariant:
+        -:  756:        //      M+ = buffer * 10^-m + 10^-m * (d[-m-1] / 10 + d[-m-2] / 10^2 + ...) * 2^e
+        -:  757:        //         = buffer * 10^-m + 10^-m * (p2                                 ) * 2^e
+        -:  758:        //         = buffer * 10^-m + 10^-m * (1/10 * (10 * p2)                   ) * 2^e
+        -:  759:        //         = buffer * 10^-m + 10^-m * (1/10 * ((10*p2 div 2^-e) * 2^-e + (10*p2 mod 2^-e)) * 2^e
+        -:  760:        //
+       2*:  761:        JSON_ASSERT(p2 <= (std::numeric_limits<std::uint64_t>::max)() / 10);
+        2:  761-block  0
+call    0 returned 2
+branch  1 taken 0 (fallthrough)
+branch  2 taken 2
+    %%%%%:  761-block  1
+call    3 never executed
+        2:  761-block  2
+        2:  762:        p2 *= 10;
+        2:  763:        const std::uint64_t d = p2 >> -one.e;     // d = (10 * p2) div 2^-e
+        2:  764:        const std::uint64_t r = p2 & (one.f - 1); // r = (10 * p2) mod 2^-e
+        -:  765:        //
+        -:  766:        //      M+ = buffer * 10^-m + 10^-m * (1/10 * (d * 2^-e + r) * 2^e
+        -:  767:        //         = buffer * 10^-m + 10^-m * (1/10 * (d + r * 2^e))
+        -:  768:        //         = (buffer * 10 + d) * 10^(-m-1) + 10^(-m-1) * r * 2^e
+        -:  769:        //
+       2*:  770:        JSON_ASSERT(d <= 9);
+        2:  770-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 2
+    %%%%%:  770-block  1
+call    2 never executed
+        2:  770-block  2
+        2:  771:        buffer[length++] = static_cast<char>('0' + d); // buffer := buffer * 10 + d
+        -:  772:        //
+        -:  773:        //      M+ = buffer * 10^(-m-1) + 10^(-m-1) * r * 2^e
+        -:  774:        //
+        2:  775:        p2 = r;
+        2:  776:        m++;
+        -:  777:        //
+        -:  778:        //      M+ = buffer * 10^-m + 10^-m * p2 * 2^e
+        -:  779:        // Invariant restored.
+        -:  780:
+        -:  781:        // Check if enough digits have been generated.
+        -:  782:        //
+        -:  783:        //      10^-m * p2 * 2^e <= delta * 2^e
+        -:  784:        //              p2 * 2^e <= 10^m * delta * 2^e
+        -:  785:        //                    p2 <= 10^m * delta
+        2:  786:        delta *= 10;
+        2:  787:        dist  *= 10;
+        2:  788:        if (p2 <= delta)
+        2:  788-block  0
+branch  0 taken 2 (fallthrough)
+branch  1 taken 0
+        -:  789:        {
+        2:  790:            break;
+        2:  790-block  0
+        -:  791:        }
+    #####:  792:    }
+    %%%%%:  792-block  0
+        -:  793:
+        -:  794:    // V = buffer * 10^-m, with M- <= V <= M+.
+        -:  795:
+        2:  796:    decimal_exponent -= m;
+        -:  797:
+        -:  798:    // 1 ulp in the decimal representation is now 10^-m.
+        -:  799:    // Since delta and dist are now scaled by 10^m, we need to do the
+        -:  800:    // same with ulp in order to keep the units in sync.
+        -:  801:    //
+        -:  802:    //      10^m * 10^-m = 1 = 2^-e * 2^e = ten_m * 2^e
+        -:  803:    //
+        2:  804:    const std::uint64_t ten_m = one.f;
+        2:  805:    grisu2_round(buffer, length, dist, delta, p2, ten_m);
+        2:  805-block  0
+call    0 returned 2
+branch  1 taken 2 (fallthrough)
+branch  2 taken 0 (throw)
+        -:  806:
+        -:  807:    // By construction this algorithm generates the shortest possible decimal
+        -:  808:    // number (Loitsch, Theorem 6.2) which rounds back to w.
+        -:  809:    // For an input number of precision p, at least
+        -:  810:    //
+        -:  811:    //      N = 1 + ceil(p * log_10(2))
+        -:  812:    //
+        -:  813:    // decimal digits are sufficient to identify all binary floating-point
+        -:  814:    // numbers (Matula, "In-and-Out conversions").
+        -:  815:    // This implies that the algorithm does not produce more than N decimal
+        -:  816:    // digits.
+        -:  817:    //
+        -:  818:    //      N = 17 for p = 53 (IEEE double precision)
+        -:  819:    //      N = 9  for p = 24 (IEEE single precision)
+        -:  820:}
+        -:  821:
+        -:  822:/*!
+        -:  823:v = buf * 10^decimal_exponent
+        -:  824:len is the length of the buffer (number of decimal digits)
+        -:  825:The buffer must be large enough, i.e. >= max_digits10.
+        -:  826:*/
+        -:  827:JSON_HEDLEY_NON_NULL(1)
+function _ZN8nlohmann16json_abi_v3_11_36detail9dtoa_impl6grisu2EPcRiS4_NS2_5diyfpES5_S5_ called 34 returned 100% blocks executed 88%
+       34:  828:inline void grisu2(char* buf, int& len, int& decimal_exponent,
+        -:  829:                   diyfp m_minus, diyfp v, diyfp m_plus)
+        -:  830:{
+      34*:  831:    JSON_ASSERT(m_plus.e == m_minus.e);
+       34:  831-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 34
+    %%%%%:  831-block  1
+call    2 never executed
+       34:  831-block  2
+      34*:  832:    JSON_ASSERT(m_plus.e == v.e);
+       34:  832-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 34
+    %%%%%:  832-block  1
+call    2 never executed
+       34:  832-block  2
+        -:  833:
+        -:  834:    //  --------(-----------------------+-----------------------)--------    (A)
+        -:  835:    //          m-                      v                       m+
+        -:  836:    //
+        -:  837:    //  --------------------(-----------+-----------------------)--------    (B)
+        -:  838:    //                      m-          v                       m+
+        -:  839:    //
+        -:  840:    // First scale v (and m- and m+) such that the exponent is in the range
+        -:  841:    // [alpha, gamma].
+        -:  842:
+       34:  843:    const cached_power cached = get_cached_power_for_binary_exponent(m_plus.e);
+       34:  843-block  0
+call    0 returned 34
+branch  1 taken 34 (fallthrough)
+branch  2 taken 0 (throw)
+        -:  844:
+       34:  845:    const diyfp c_minus_k(cached.f, cached.e); // = c ~= 10^-k
+       34:  845-block  0
+call    0 returned 34
+        -:  846:
+        -:  847:    // The exponent of the products is = v.e + c_minus_k.e + q and is in the range [alpha,gamma]
+       34:  848:    const diyfp w       = diyfp::mul(v,       c_minus_k);
+call    0 returned 34
+       34:  849:    const diyfp w_minus = diyfp::mul(m_minus, c_minus_k);
+call    0 returned 34
+       34:  850:    const diyfp w_plus  = diyfp::mul(m_plus,  c_minus_k);
+call    0 returned 34
+        -:  851:
+        -:  852:    //  ----(---+---)---------------(---+---)---------------(---+---)----
+        -:  853:    //          w-                      w                       w+
+        -:  854:    //          = c*m-                  = c*v                   = c*m+
+        -:  855:    //
+        -:  856:    // diyfp::mul rounds its result and c_minus_k is approximated too. w, w- and
+        -:  857:    // w+ are now off by a small amount.
+        -:  858:    // In fact:
+        -:  859:    //
+        -:  860:    //      w - v * 10^k < 1 ulp
+        -:  861:    //
+        -:  862:    // To account for this inaccuracy, add resp. subtract 1 ulp.
+        -:  863:    //
+        -:  864:    //  --------+---[---------------(---+---)---------------]---+--------
+        -:  865:    //          w-  M-                  w                   M+  w+
+        -:  866:    //
+        -:  867:    // Now any number in [M-, M+] (bounds included) will round to w when input,
+        -:  868:    // regardless of how the input rounding algorithm breaks ties.
+        -:  869:    //
+        -:  870:    // And digit_gen generates the shortest possible such number in [M-, M+].
+        -:  871:    // Note that this does not mean that Grisu2 always generates the shortest
+        -:  872:    // possible number in the interval (m-, m+).
+       34:  873:    const diyfp M_minus(w_minus.f + 1, w_minus.e);
+call    0 returned 34
+       34:  874:    const diyfp M_plus (w_plus.f  - 1, w_plus.e );
+call    0 returned 34
+        -:  875:
+       34:  876:    decimal_exponent = -cached.k; // = -(-k) = k
+        -:  877:
+       34:  878:    grisu2_digit_gen(buf, len, decimal_exponent, M_minus, w, M_plus);
+call    0 returned 34
+branch  1 taken 34 (fallthrough)
+branch  2 taken 0 (throw)
+       34:  879:}
+       34:  879-block  0
+        -:  880:
+        -:  881:/*!
+        -:  882:v = buf * 10^decimal_exponent
+        -:  883:len is the length of the buffer (number of decimal digits)
+        -:  884:The buffer must be large enough, i.e. >= max_digits10.
+        -:  885:*/
+        -:  886:template<typename FloatType>
+        -:  887:JSON_HEDLEY_NON_NULL(1)
+function _ZN8nlohmann16json_abi_v3_11_36detail9dtoa_impl6grisu2IdEEvPcRiS5_T_ called 34 returned 100% blocks executed 82%
+       34:  888:void grisu2(char* buf, int& len, int& decimal_exponent, FloatType value)
+        -:  889:{
+        -:  890:    static_assert(diyfp::kPrecision >= std::numeric_limits<FloatType>::digits + 3,
+        -:  891:                  "internal error: not enough precision");
+        -:  892:
+      34*:  893:    JSON_ASSERT(std::isfinite(value));
+       34:  893-block  0
+call    0 returned 34
+branch  1 taken 0 (fallthrough)
+branch  2 taken 34
+    %%%%%:  893-block  1
+call    3 never executed
+       34:  893-block  2
+      34*:  894:    JSON_ASSERT(value > 0);
+       34:  894-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 34
+    %%%%%:  894-block  1
+call    2 never executed
+       34:  894-block  2
+        -:  895:
+        -:  896:    // If the neighbors (and boundaries) of 'value' are always computed for double-precision
+        -:  897:    // numbers, all float's can be recovered using strtod (and strtof). However, the resulting
+        -:  898:    // decimal representations are not exactly "short".
+        -:  899:    //
+        -:  900:    // The documentation for 'std::to_chars' (https://en.cppreference.com/w/cpp/utility/to_chars)
+        -:  901:    // says "value is converted to a string as if by std::sprintf in the default ("C") locale"
+        -:  902:    // and since sprintf promotes floats to doubles, I think this is exactly what 'std::to_chars'
+        -:  903:    // does.
+        -:  904:    // On the other hand, the documentation for 'std::to_chars' requires that "parsing the
+        -:  905:    // representation using the corresponding std::from_chars function recovers value exactly". That
+        -:  906:    // indicates that single precision floating-point numbers should be recovered using
+        -:  907:    // 'std::strtof'.
+        -:  908:    //
+        -:  909:    // NB: If the neighbors are computed for single-precision numbers, there is a single float
+        -:  910:    //     (7.0385307e-26f) which can't be recovered using strtod. The resulting double precision
+        -:  911:    //     value is off by 1 ulp.
+        -:  912:#if 0 // NOLINT(readability-avoid-unconditional-preprocessor-if)
+        -:  913:    const boundaries w = compute_boundaries(static_cast<double>(value));
+        -:  914:#else
+       34:  915:    const boundaries w = compute_boundaries(value);
+       34:  915-block  0
+call    0 returned 34
+branch  1 taken 34 (fallthrough)
+branch  2 taken 0 (throw)
+        -:  916:#endif
+        -:  917:
+       34:  918:    grisu2(buf, len, decimal_exponent, w.minus, w.w, w.plus);
+       34:  918-block  0
+call    0 returned 34
+branch  1 taken 34 (fallthrough)
+branch  2 taken 0 (throw)
+       34:  919:}
+       34:  919-block  0
+        -:  920:
+        -:  921:/*!
+        -:  922:@brief appends a decimal representation of e to buf
+        -:  923:@return a pointer to the element following the exponent.
+        -:  924:@pre -1000 < e < 1000
+        -:  925:*/
+        -:  926:JSON_HEDLEY_NON_NULL(1)
+        -:  927:JSON_HEDLEY_RETURNS_NON_NULL
+function _ZN8nlohmann16json_abi_v3_11_36detail9dtoa_impl15append_exponentEPci called 0 returned 0% blocks executed 0%
+    #####:  928:inline char* append_exponent(char* buf, int e)
+        -:  929:{
+    #####:  930:    JSON_ASSERT(e > -1000);
+    %%%%%:  930-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    %%%%%:  930-block  1
+call    2 never executed
+    %%%%%:  930-block  2
+    #####:  931:    JSON_ASSERT(e <  1000);
+    %%%%%:  931-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    %%%%%:  931-block  1
+call    2 never executed
+    %%%%%:  931-block  2
+        -:  932:
+    #####:  933:    if (e < 0)
+    %%%%%:  933-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  934:    {
+    #####:  935:        e = -e;
+    #####:  936:        *buf++ = '-';
+    %%%%%:  936-block  0
+        -:  937:    }
+        -:  938:    else
+        -:  939:    {
+    #####:  940:        *buf++ = '+';
+    %%%%%:  940-block  0
+        -:  941:    }
+        -:  942:
+    #####:  943:    auto k = static_cast<std::uint32_t>(e);
+    #####:  944:    if (k < 10)
+    %%%%%:  944-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  945:    {
+        -:  946:        // Always print at least two digits in the exponent.
+        -:  947:        // This is for compatibility with printf("%g").
+    #####:  948:        *buf++ = '0';
+    #####:  949:        *buf++ = static_cast<char>('0' + k);
+    %%%%%:  949-block  0
+        -:  950:    }
+    #####:  951:    else if (k < 100)
+    %%%%%:  951-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  952:    {
+    #####:  953:        *buf++ = static_cast<char>('0' + k / 10);
+    #####:  954:        k %= 10;
+    #####:  955:        *buf++ = static_cast<char>('0' + k);
+    %%%%%:  955-block  0
+        -:  956:    }
+        -:  957:    else
+        -:  958:    {
+    #####:  959:        *buf++ = static_cast<char>('0' + k / 100);
+    #####:  960:        k %= 100;
+    #####:  961:        *buf++ = static_cast<char>('0' + k / 10);
+    #####:  962:        k %= 10;
+    #####:  963:        *buf++ = static_cast<char>('0' + k);
+    %%%%%:  963-block  0
+        -:  964:    }
+        -:  965:
+    #####:  966:    return buf;
+    %%%%%:  966-block  0
+        -:  967:}
+        -:  968:
+        -:  969:/*!
+        -:  970:@brief prettify v = buf * 10^decimal_exponent
+        -:  971:
+        -:  972:If v is in the range [10^min_exp, 10^max_exp) it will be printed in fixed-point
+        -:  973:notation. Otherwise it will be printed in exponential notation.
+        -:  974:
+        -:  975:@pre min_exp < 0
+        -:  976:@pre max_exp > 0
+        -:  977:*/
+        -:  978:JSON_HEDLEY_NON_NULL(1)
+        -:  979:JSON_HEDLEY_RETURNS_NON_NULL
+function _ZN8nlohmann16json_abi_v3_11_36detail9dtoa_impl13format_bufferEPciiii called 34 returned 100% blocks executed 54%
+       34:  980:inline char* format_buffer(char* buf, int len, int decimal_exponent,
+        -:  981:                           int min_exp, int max_exp)
+        -:  982:{
+      34*:  983:    JSON_ASSERT(min_exp < 0);
+       34:  983-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 34
+    %%%%%:  983-block  1
+call    2 never executed
+       34:  983-block  2
+      34*:  984:    JSON_ASSERT(max_exp > 0);
+       34:  984-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 34
+    %%%%%:  984-block  1
+call    2 never executed
+       34:  984-block  2
+        -:  985:
+       34:  986:    const int k = len;
+       34:  987:    const int n = len + decimal_exponent;
+        -:  988:
+        -:  989:    // v = buf * 10^(n-k)
+        -:  990:    // k is the length of the buffer (number of decimal digits)
+        -:  991:    // n is the position of the decimal point relative to the start of the buffer.
+        -:  992:
+       34:  993:    if (k <= n && n <= max_exp)
+       34:  993-block  0
+branch  0 taken 32 (fallthrough)
+branch  1 taken 2
+       32:  993-block  1
+branch  2 taken 32 (fallthrough)
+branch  3 taken 0
+        -:  994:    {
+        -:  995:        // digits[000]
+        -:  996:        // len <= max_exp + 2
+        -:  997:
+       32:  998:        std::memset(buf + k, '0', static_cast<size_t>(n) - static_cast<size_t>(k));
+        -:  999:        // Make it look like a floating-point number (#362, #378)
+       32: 1000:        buf[n + 0] = '.';
+       32: 1001:        buf[n + 1] = '0';
+       32: 1002:        return buf + (static_cast<size_t>(n) + 2);
+       32: 1002-block  0
+        -: 1003:    }
+        -: 1004:
+        2: 1005:    if (0 < n && n <= max_exp)
+        2: 1005-block  0
+branch  0 taken 2 (fallthrough)
+branch  1 taken 0
+        2: 1005-block  1
+branch  2 taken 2 (fallthrough)
+branch  3 taken 0
+        -: 1006:    {
+        -: 1007:        // dig.its
+        -: 1008:        // len <= max_digits10 + 1
+        -: 1009:
+       2*: 1010:        JSON_ASSERT(k > n);
+        2: 1010-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 2
+    %%%%%: 1010-block  1
+call    2 never executed
+        2: 1010-block  2
+        -: 1011:
+        2: 1012:        std::memmove(buf + (static_cast<size_t>(n) + 1), buf + n, static_cast<size_t>(k) - static_cast<size_t>(n));
+        2: 1013:        buf[n] = '.';
+        2: 1014:        return buf + (static_cast<size_t>(k) + 1U);
+        2: 1014-block  0
+        -: 1015:    }
+        -: 1016:
+    #####: 1017:    if (min_exp < n && n <= 0)
+    %%%%%: 1017-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    %%%%%: 1017-block  1
+branch  2 never executed (fallthrough)
+branch  3 never executed
+        -: 1018:    {
+        -: 1019:        // 0.[000]digits
+        -: 1020:        // len <= 2 + (-min_exp - 1) + max_digits10
+        -: 1021:
+    #####: 1022:        std::memmove(buf + (2 + static_cast<size_t>(-n)), buf, static_cast<size_t>(k));
+    #####: 1023:        buf[0] = '0';
+    #####: 1024:        buf[1] = '.';
+    #####: 1025:        std::memset(buf + 2, '0', static_cast<size_t>(-n));
+    #####: 1026:        return buf + (2U + static_cast<size_t>(-n) + static_cast<size_t>(k));
+    %%%%%: 1026-block  0
+        -: 1027:    }
+        -: 1028:
+    #####: 1029:    if (k == 1)
+    %%%%%: 1029-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -: 1030:    {
+        -: 1031:        // dE+123
+        -: 1032:        // len <= 1 + 5
+        -: 1033:
+    #####: 1034:        buf += 1;
+    %%%%%: 1034-block  0
+        -: 1035:    }
+        -: 1036:    else
+        -: 1037:    {
+        -: 1038:        // d.igitsE+123
+        -: 1039:        // len <= max_digits10 + 1 + 5
+        -: 1040:
+    #####: 1041:        std::memmove(buf + 2, buf + 1, static_cast<size_t>(k) - 1);
+    #####: 1042:        buf[1] = '.';
+    #####: 1043:        buf += 1 + static_cast<size_t>(k);
+    %%%%%: 1043-block  0
+        -: 1044:    }
+        -: 1045:
+    #####: 1046:    *buf++ = 'e';
+    #####: 1047:    return append_exponent(buf, n - 1);
+    %%%%%: 1047-block  0
+call    0 never executed
+        -: 1048:}
+        -: 1049:
+        -: 1050:}  // namespace dtoa_impl
+        -: 1051:
+        -: 1052:/*!
+        -: 1053:@brief generates a decimal representation of the floating-point number value in [first, last).
+        -: 1054:
+        -: 1055:The format of the resulting decimal representation is similar to printf's %g
+        -: 1056:format. Returns an iterator pointing past-the-end of the decimal representation.
+        -: 1057:
+        -: 1058:@note The input number must be finite, i.e. NaN's and Inf's are not supported.
+        -: 1059:@note The buffer must be large enough.
+        -: 1060:@note The result is NOT null-terminated.
+        -: 1061:*/
+        -: 1062:template<typename FloatType>
+        -: 1063:JSON_HEDLEY_NON_NULL(1, 2)
+        -: 1064:JSON_HEDLEY_RETURNS_NON_NULL
+function _ZN8nlohmann16json_abi_v3_11_36detail8to_charsIdEEPcS3_PKcT_ called 34 returned 100% blocks executed 73%
+       34: 1065:char* to_chars(char* first, const char* last, FloatType value)
+        -: 1066:{
+        -: 1067:    static_cast<void>(last); // maybe unused - fix warning
+      34*: 1068:    JSON_ASSERT(std::isfinite(value));
+       34: 1068-block  0
+call    0 returned 34
+branch  1 taken 0 (fallthrough)
+branch  2 taken 34
+    %%%%%: 1068-block  1
+call    3 never executed
+       34: 1068-block  2
+        -: 1069:
+        -: 1070:    // Use signbit(value) instead of (value < 0) since signbit works for -0.
+       34: 1071:    if (std::signbit(value))
+       34: 1071-block  0
+call    0 returned 34
+branch  1 taken 0 (fallthrough)
+branch  2 taken 34
+        -: 1072:    {
+    #####: 1073:        value = -value;
+    #####: 1074:        *first++ = '-';
+    %%%%%: 1074-block  0
+        -: 1075:    }
+        -: 1076:
+        -: 1077:#ifdef __GNUC__
+        -: 1078:#pragma GCC diagnostic push
+        -: 1079:#pragma GCC diagnostic ignored "-Wfloat-equal"
+        -: 1080:#endif
+       34: 1081:    if (value == 0) // +-0
+       34: 1081-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 34
+        -: 1082:    {
+    #####: 1083:        *first++ = '0';
+        -: 1084:        // Make it look like a floating-point number (#362, #378)
+    #####: 1085:        *first++ = '.';
+    #####: 1086:        *first++ = '0';
+    #####: 1087:        return first;
+    %%%%%: 1087-block  0
+        -: 1088:    }
+        -: 1089:#ifdef __GNUC__
+        -: 1090:#pragma GCC diagnostic pop
+        -: 1091:#endif
+        -: 1092:
+      34*: 1093:    JSON_ASSERT(last - first >= std::numeric_limits<FloatType>::max_digits10);
+       34: 1093-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 34
+    %%%%%: 1093-block  1
+call    2 never executed
+       34: 1093-block  2
+        -: 1094:
+        -: 1095:    // Compute v = buffer * 10^decimal_exponent.
+        -: 1096:    // The decimal digits are stored in the buffer, which needs to be interpreted
+        -: 1097:    // as an unsigned decimal integer.
+        -: 1098:    // len is the length of the buffer, i.e. the number of decimal digits.
+       34: 1099:    int len = 0;
+       34: 1100:    int decimal_exponent = 0;
+       34: 1101:    dtoa_impl::grisu2(first, len, decimal_exponent, value);
+       34: 1101-block  0
+call    0 returned 34
+branch  1 taken 34 (fallthrough)
+branch  2 taken 0 (throw)
+        -: 1102:
+      34*: 1103:    JSON_ASSERT(len <= std::numeric_limits<FloatType>::max_digits10);
+       34: 1103-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 34
+    %%%%%: 1103-block  1
+call    2 never executed
+       34: 1103-block  2
+        -: 1104:
+        -: 1105:    // Format the buffer like printf("%.*g", prec, value)
+       34: 1106:    constexpr int kMinExp = -4;
+        -: 1107:    // Use digits10 here to increase compatibility with version 2.
+       34: 1108:    constexpr int kMaxExp = std::numeric_limits<FloatType>::digits10;
+        -: 1109:
+      34*: 1110:    JSON_ASSERT(last - first >= kMaxExp + 2);
+       34: 1110-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 34
+    %%%%%: 1110-block  1
+call    2 never executed
+       34: 1110-block  2
+      34*: 1111:    JSON_ASSERT(last - first >= 2 + (-kMinExp - 1) + std::numeric_limits<FloatType>::max_digits10);
+       34: 1111-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 34
+    %%%%%: 1111-block  1
+call    2 never executed
+       34: 1111-block  2
+      34*: 1112:    JSON_ASSERT(last - first >= std::numeric_limits<FloatType>::max_digits10 + 6);
+       34: 1112-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 34
+    %%%%%: 1112-block  1
+call    2 never executed
+       34: 1112-block  2
+        -: 1113:
+       34: 1114:    return dtoa_impl::format_buffer(first, len, decimal_exponent, kMinExp, kMaxExp);
+       34: 1114-block  0
+call    0 returned 34
+branch  1 taken 34 (fallthrough)
+branch  2 taken 0 (throw)
+       34: 1114-block  1
+        -: 1115:}
+        -: 1116:
+        -: 1117:}  // namespace detail
+        -: 1118:NLOHMANN_JSON_NAMESPACE_END

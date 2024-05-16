@@ -1,0 +1,451 @@
+        -:    0:Source:C:/Users/rares/CLionProjects/OOP/Json-test/main.cpp
+        -:    0:Graph:C:\Users\rares\CLionProjects\OOP\Json-test\cmake-build-debug-coverage\CMakeFiles\Json_test.dir\main.cpp.gcno
+        -:    0:Data:C:\Users\rares\CLionProjects\OOP\Json-test\cmake-build-debug-coverage\CMakeFiles\Json_test.dir\main.cpp.gcda
+        -:    0:Runs:1
+        -:    1:#include <iostream>
+        -:    2:#include <fstream>
+        -:    3:#include "include/nlohmann/json.hpp"
+        -:    4:#include "Repositories/AutoRepo/AutoRepo.h"
+        -:    5:#include "Domain/Auto.h"
+        -:    6:#include "Repositories/AutoRepo/TestsAutoRepo/testsAutoRepo.h"
+        -:    7:#include "Controllers/AutoController/autocontroller.h"
+        -:    8:
+        -:    9:
+        -:   10:using namespace std;
+        -:   11:
+function main called 1 returned 100% blocks executed 47%
+        1:   12:int main() {
+        1:   13:    run_tests_auto_repo();
+        1:   13-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        -:   14:
+        -:   15:
+        -:   16://    car2.write_to_json("cars.json");
+        -:   17:
+       12:   18:    Auto car3("", "A7", "Audi", 2024, 24500, 75000, "Diesel", "Automatik", "Grun");
+        1:   18-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   18-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:   18-block  2
+call    6 returned 1
+branch  7 taken 1 (fallthrough)
+branch  8 taken 0 (throw)
+        1:   18-block  3
+call    9 returned 1
+branch 10 taken 1 (fallthrough)
+branch 11 taken 0 (throw)
+        1:   18-block  4
+call   12 returned 1
+branch 13 taken 1 (fallthrough)
+branch 14 taken 0 (throw)
+        1:   18-block  5
+call   15 returned 1
+branch 16 taken 1 (fallthrough)
+branch 17 taken 0 (throw)
+        1:   18-block  6
+call   18 returned 1
+branch 19 taken 1 (fallthrough)
+branch 20 taken 0 (throw)
+        1:   18-block  7
+call   21 returned 1
+call   22 returned 1
+call   23 returned 1
+call   24 returned 1
+call   25 returned 1
+call   26 returned 1
+    $$$$$:   18-block  8
+call   27 never executed
+    $$$$$:   18-block  9
+    $$$$$:   18-block 10
+    $$$$$:   18-block 11
+call   28 never executed
+    $$$$$:   18-block 12
+    $$$$$:   18-block 13
+    $$$$$:   18-block 14
+call   29 never executed
+    $$$$$:   18-block 15
+    $$$$$:   18-block 16
+    $$$$$:   18-block 17
+call   30 never executed
+    $$$$$:   18-block 18
+    $$$$$:   18-block 19
+    $$$$$:   18-block 20
+call   31 never executed
+    $$$$$:   18-block 21
+    $$$$$:   18-block 22
+    $$$$$:   18-block 23
+call   32 never executed
+    $$$$$:   18-block 24
+    $$$$$:   18-block 25
+       14:   19:    Auto car4("VAFS242", "A7", "Audi", 2024, 24500, 75000, "Diesel", "Automatik", "Grun", "Damaged front wing");
+        1:   19-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   19-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:   19-block  2
+call    6 returned 1
+branch  7 taken 1 (fallthrough)
+branch  8 taken 0 (throw)
+        1:   19-block  3
+call    9 returned 1
+branch 10 taken 1 (fallthrough)
+branch 11 taken 0 (throw)
+        1:   19-block  4
+call   12 returned 1
+branch 13 taken 1 (fallthrough)
+branch 14 taken 0 (throw)
+        1:   19-block  5
+call   15 returned 1
+branch 16 taken 1 (fallthrough)
+branch 17 taken 0 (throw)
+        1:   19-block  6
+call   18 returned 1
+branch 19 taken 1 (fallthrough)
+branch 20 taken 0 (throw)
+        1:   19-block  7
+call   21 returned 1
+branch 22 taken 1 (fallthrough)
+branch 23 taken 0 (throw)
+        1:   19-block  8
+call   24 returned 1
+call   25 returned 1
+call   26 returned 1
+call   27 returned 1
+call   28 returned 1
+call   29 returned 1
+call   30 returned 1
+    $$$$$:   19-block  9
+call   31 never executed
+    $$$$$:   19-block 10
+    $$$$$:   19-block 11
+    $$$$$:   19-block 12
+call   32 never executed
+    $$$$$:   19-block 13
+    $$$$$:   19-block 14
+    $$$$$:   19-block 15
+call   33 never executed
+    $$$$$:   19-block 16
+    $$$$$:   19-block 17
+    $$$$$:   19-block 18
+call   34 never executed
+    $$$$$:   19-block 19
+    $$$$$:   19-block 20
+    $$$$$:   19-block 21
+call   35 never executed
+    $$$$$:   19-block 22
+    $$$$$:   19-block 23
+    $$$$$:   19-block 24
+call   36 never executed
+    $$$$$:   19-block 25
+    $$$$$:   19-block 26
+    $$$$$:   19-block 27
+call   37 never executed
+    $$$$$:   19-block 28
+    $$$$$:   19-block 29
+       12:   20:    Auto car5("AsGgDFG", "GT 63", "Mercedes", 2022, 26500, 120000, "Diesel", "Automatik", "Rot");
+        1:   20-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   20-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:   20-block  2
+call    6 returned 1
+branch  7 taken 1 (fallthrough)
+branch  8 taken 0 (throw)
+        1:   20-block  3
+call    9 returned 1
+branch 10 taken 1 (fallthrough)
+branch 11 taken 0 (throw)
+        1:   20-block  4
+call   12 returned 1
+branch 13 taken 1 (fallthrough)
+branch 14 taken 0 (throw)
+        1:   20-block  5
+call   15 returned 1
+branch 16 taken 1 (fallthrough)
+branch 17 taken 0 (throw)
+        1:   20-block  6
+call   18 returned 1
+branch 19 taken 1 (fallthrough)
+branch 20 taken 0 (throw)
+        1:   20-block  7
+call   21 returned 1
+call   22 returned 1
+call   23 returned 1
+call   24 returned 1
+call   25 returned 1
+call   26 returned 1
+    $$$$$:   20-block  8
+call   27 never executed
+    $$$$$:   20-block  9
+    $$$$$:   20-block 10
+    $$$$$:   20-block 11
+call   28 never executed
+    $$$$$:   20-block 12
+    $$$$$:   20-block 13
+    $$$$$:   20-block 14
+call   29 never executed
+    $$$$$:   20-block 15
+    $$$$$:   20-block 16
+    $$$$$:   20-block 17
+call   30 never executed
+    $$$$$:   20-block 18
+    $$$$$:   20-block 19
+    $$$$$:   20-block 20
+call   31 never executed
+    $$$$$:   20-block 21
+    $$$$$:   20-block 22
+    $$$$$:   20-block 23
+call   32 never executed
+    $$$$$:   20-block 24
+    $$$$$:   20-block 25
+       12:   21:    Auto car6("af24asf", "M5", "BMW", 2022, 26500, 120000, "Diesel", "Automatik", "Rot");
+        1:   21-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   21-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:   21-block  2
+call    6 returned 1
+branch  7 taken 1 (fallthrough)
+branch  8 taken 0 (throw)
+        1:   21-block  3
+call    9 returned 1
+branch 10 taken 1 (fallthrough)
+branch 11 taken 0 (throw)
+        1:   21-block  4
+call   12 returned 1
+branch 13 taken 1 (fallthrough)
+branch 14 taken 0 (throw)
+        1:   21-block  5
+call   15 returned 1
+branch 16 taken 1 (fallthrough)
+branch 17 taken 0 (throw)
+        1:   21-block  6
+call   18 returned 1
+branch 19 taken 1 (fallthrough)
+branch 20 taken 0 (throw)
+        1:   21-block  7
+call   21 returned 1
+call   22 returned 1
+call   23 returned 1
+call   24 returned 1
+call   25 returned 1
+call   26 returned 1
+    $$$$$:   21-block  8
+call   27 never executed
+    $$$$$:   21-block  9
+    $$$$$:   21-block 10
+    $$$$$:   21-block 11
+call   28 never executed
+    $$$$$:   21-block 12
+    $$$$$:   21-block 13
+    $$$$$:   21-block 14
+call   29 never executed
+    $$$$$:   21-block 15
+    $$$$$:   21-block 16
+    $$$$$:   21-block 17
+call   30 never executed
+    $$$$$:   21-block 18
+    $$$$$:   21-block 19
+    $$$$$:   21-block 20
+call   31 never executed
+    $$$$$:   21-block 21
+    $$$$$:   21-block 22
+    $$$$$:   21-block 23
+call   32 never executed
+    $$$$$:   21-block 24
+    $$$$$:   21-block 25
+       12:   22:    Auto car7("af26aff", "M3", "BMW", 2023, 26500, 120000, "Diesel", "Automatik", "Rot");
+        1:   22-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   22-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:   22-block  2
+call    6 returned 1
+branch  7 taken 1 (fallthrough)
+branch  8 taken 0 (throw)
+        1:   22-block  3
+call    9 returned 1
+branch 10 taken 1 (fallthrough)
+branch 11 taken 0 (throw)
+        1:   22-block  4
+call   12 returned 1
+branch 13 taken 1 (fallthrough)
+branch 14 taken 0 (throw)
+        1:   22-block  5
+call   15 returned 1
+branch 16 taken 1 (fallthrough)
+branch 17 taken 0 (throw)
+        1:   22-block  6
+call   18 returned 1
+branch 19 taken 1 (fallthrough)
+branch 20 taken 0 (throw)
+        1:   22-block  7
+call   21 returned 1
+call   22 returned 1
+call   23 returned 1
+call   24 returned 1
+call   25 returned 1
+call   26 returned 1
+    $$$$$:   22-block  8
+call   27 never executed
+    $$$$$:   22-block  9
+    $$$$$:   22-block 10
+    $$$$$:   22-block 11
+call   28 never executed
+    $$$$$:   22-block 12
+    $$$$$:   22-block 13
+    $$$$$:   22-block 14
+call   29 never executed
+    $$$$$:   22-block 15
+    $$$$$:   22-block 16
+    $$$$$:   22-block 17
+call   30 never executed
+    $$$$$:   22-block 18
+    $$$$$:   22-block 19
+    $$$$$:   22-block 20
+call   31 never executed
+    $$$$$:   22-block 21
+    $$$$$:   22-block 22
+    $$$$$:   22-block 23
+call   32 never executed
+    $$$$$:   22-block 24
+    $$$$$:   22-block 25
+        -:   23:
+        1:   24:    AutoRepo cr("cars.json"); // la initializare, se deschide fisierul cars.json in Repo
+        1:   24-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   24-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:   24-block  2
+call    6 returned 1
+    $$$$$:   24-block  3
+call    7 never executed
+    $$$$$:   24-block  4
+    $$$$$:   24-block  5
+        1:   25:    AutoController cc(cr);
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        -:   26:
+        -:   27://    cr.add_car(car4);
+        -:   28://    cr.remove_car("Af24Asf");
+        -:   29://    cout << cr.remove_car("af24asf") << "\n";
+        -:   30://    cr.print_cars();
+        -:   31://    cr.add_car(car5);
+        -:   32://    cr.add_car(car7);
+        -:   33://    cc.save();
+        1:   34:    cout << "\n";
+        1:   34-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        -:   35://    json cars = cr.get_cars_json();
+        -:   36:   // cc.print_cars();
+        -:   37://    for (auto obj: cars){
+        -:   38://        cout << obj["kennzeichen"] << " " << " " << obj["modell"] << " " << obj["marke"] << " " << obj["erstzulassungsjahr"]
+        -:   39://             << " " << obj["kilometerstand"] << " " << obj["tagespreis"] << " " << obj["kraftstoffart"] << " "
+        -:   40://             << obj["getriebe"] << " " << obj["farbe"] << " " << obj["bemerkung"]  << "\n";
+        -:   41://    }
+        5:   42:    cr.modify_car("ASGGDDG", "aktiv", "nein");
+        1:   42-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   42-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:   42-block  2
+call    6 returned 1
+branch  7 taken 1 (fallthrough)
+branch  8 taken 0 (throw)
+        1:   42-block  3
+call    9 returned 1
+branch 10 taken 1 (fallthrough)
+branch 11 taken 0 (throw)
+        1:   42-block  4
+call   12 returned 1
+call   13 returned 1
+call   14 returned 1
+    $$$$$:   42-block  5
+call   15 never executed
+    $$$$$:   42-block  6
+    $$$$$:   42-block  7
+    $$$$$:   42-block  8
+call   16 never executed
+    $$$$$:   42-block  9
+    $$$$$:   42-block 10
+    $$$$$:   42-block 11
+call   17 never executed
+    $$$$$:   42-block 12
+    $$$$$:   42-block 13
+        1:   43:    cc.print_cars();
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        -:   44://    cr.remove_car("af24ASF");
+        -:   45://    cars = cr.get_cars_json();
+        -:   46://    cout << "\n";
+        -:   47://    json cars = cr.get_cars_json();
+        -:   48://    for (auto obj: cars){
+        -:   49://        cout << obj["kennzeichen"] << " " << " " << obj["modell"] << " " << obj["marke"] << " " << obj["erstzulassungsjahr"]
+        -:   50://             << " " << obj["kilometerstand"] << " " << obj["tagespreis"] << " " << obj["kraftstoffart"] << " "
+        -:   51://             << obj["getriebe"] << " " << obj["farbe"] << " " << obj["bemerkung"] << " " << obj["aktiv"] << " " << obj["bestellt"]  << "\n";
+        -:   52://    }
+        -:   53://    cr.print_cars();
+        -:   54://    for(auto car: autos){
+        -:   55://        cout << car.getKennzeichen() << " " << car.getModell() << " " << car.getMarke() << " "
+        -:   56://        << car.getErstzulassungsjahr() << " " << car.getKilometerstand() << " " << car.getTagespreis() << " "
+        -:   57://        << car.getKraftstoffart() << " " << car.getGetriebe() << " " << car.getBemerkung() << "\n";
+        -:   58://    }
+        1:   59:    return 0;
+        1:   60:}
+        1:   60-block  0
+call    0 returned 1
+call    1 returned 1
+call    2 returned 1
+call    3 returned 1
+call    4 returned 1
+call    5 returned 1
+call    6 returned 1
+    $$$$$:   60-block  1
+call    7 never executed
+    $$$$$:   60-block  2
+call    8 never executed
+    $$$$$:   60-block  3
+call    9 never executed
+    $$$$$:   60-block  4
+call   10 never executed
+    $$$$$:   60-block  5
+call   11 never executed
+    $$$$$:   60-block  6
+call   12 never executed
+    $$$$$:   60-block  7
+call   13 never executed

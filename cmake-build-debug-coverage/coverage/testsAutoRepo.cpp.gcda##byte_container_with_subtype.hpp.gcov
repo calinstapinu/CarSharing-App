@@ -1,0 +1,121 @@
+        -:    0:Source:C:/Users/rares/CLionProjects/OOP/Json-test/include/nlohmann/byte_container_with_subtype.hpp
+        -:    0:Graph:C:\Users\rares\CLionProjects\OOP\Json-test\cmake-build-debug-coverage\CMakeFiles\Json_test.dir\Repositories\AutoRepo\TestsAutoRepo\testsAutoRepo.cpp.gcno
+        -:    0:Data:C:\Users\rares\CLionProjects\OOP\Json-test\cmake-build-debug-coverage\CMakeFiles\Json_test.dir\Repositories\AutoRepo\TestsAutoRepo\testsAutoRepo.cpp.gcda
+        -:    0:Runs:1
+        -:    1://     __ _____ _____ _____
+        -:    2://  __|  |   __|     |   | |  JSON for Modern C++
+        -:    3:// |  |  |__   |  |  | | | |  version 3.11.3
+        -:    4:// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+        -:    5://
+        -:    6:// SPDX-FileCopyrightText: 2013-2023 Niels Lohmann <https://nlohmann.me>
+        -:    7:// SPDX-License-Identifier: MIT
+        -:    8:
+        -:    9:#pragma once
+        -:   10:
+        -:   11:#include <cstdint> // uint8_t, uint64_t
+        -:   12:#include <tuple> // tie
+        -:   13:#include <utility> // move
+        -:   14:
+        -:   15:#include <nlohmann/detail/abi_macros.hpp>
+        -:   16:
+        -:   17:NLOHMANN_JSON_NAMESPACE_BEGIN
+        -:   18:
+        -:   19:/// @brief an internal type for a backed binary type
+        -:   20:/// @sa https://json.nlohmann.me/api/byte_container_with_subtype/
+        -:   21:template<typename BinaryType>
+        -:   22:class byte_container_with_subtype : public BinaryType
+        -:   23:{
+        -:   24:  public:
+        -:   25:    using container_type = BinaryType;
+        -:   26:    using subtype_type = std::uint64_t;
+        -:   27:
+        -:   28:    /// @sa https://json.nlohmann.me/api/byte_container_with_subtype/byte_container_with_subtype/
+function _ZN8nlohmann16json_abi_v3_11_327byte_container_with_subtypeISt6vectorIhSaIhEEEC1Ev called 0 returned 0% blocks executed 0%
+    #####:   29:    byte_container_with_subtype() noexcept(noexcept(container_type()))
+    #####:   30:        : container_type()
+    %%%%%:   30-block  0
+call    0 never executed
+    #####:   31:    {}
+        -:   32:
+        -:   33:    /// @sa https://json.nlohmann.me/api/byte_container_with_subtype/byte_container_with_subtype/
+        -:   34:    byte_container_with_subtype(const container_type& b) noexcept(noexcept(container_type(b)))
+        -:   35:        : container_type(b)
+        -:   36:    {}
+        -:   37:
+        -:   38:    /// @sa https://json.nlohmann.me/api/byte_container_with_subtype/byte_container_with_subtype/
+        -:   39:    byte_container_with_subtype(container_type&& b) noexcept(noexcept(container_type(std::move(b))))
+        -:   40:        : container_type(std::move(b))
+        -:   41:    {}
+        -:   42:
+        -:   43:    /// @sa https://json.nlohmann.me/api/byte_container_with_subtype/byte_container_with_subtype/
+        -:   44:    byte_container_with_subtype(const container_type& b, subtype_type subtype_) noexcept(noexcept(container_type(b)))
+        -:   45:        : container_type(b)
+        -:   46:        , m_subtype(subtype_)
+        -:   47:        , m_has_subtype(true)
+        -:   48:    {}
+        -:   49:
+        -:   50:    /// @sa https://json.nlohmann.me/api/byte_container_with_subtype/byte_container_with_subtype/
+        -:   51:    byte_container_with_subtype(container_type&& b, subtype_type subtype_) noexcept(noexcept(container_type(std::move(b))))
+        -:   52:        : container_type(std::move(b))
+        -:   53:        , m_subtype(subtype_)
+        -:   54:        , m_has_subtype(true)
+        -:   55:    {}
+        -:   56:
+function _ZNK8nlohmann16json_abi_v3_11_327byte_container_with_subtypeISt6vectorIhSaIhEEEeqERKS5_ called 0 returned 0% blocks executed 0%
+    #####:   57:    bool operator==(const byte_container_with_subtype& rhs) const
+        -:   58:    {
+    #####:   59:        return std::tie(static_cast<const BinaryType&>(*this), m_subtype, m_has_subtype) ==
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    %%%%%:   59-block  0
+    $$$$$:   59-block  1
+    #####:   60:               std::tie(static_cast<const BinaryType&>(rhs), rhs.m_subtype, rhs.m_has_subtype);
+    %%%%%:   60-block  0
+call    0 never executed
+    %%%%%:   60-block  1
+    %%%%%:   60-block  2
+        -:   61:    }
+        -:   62:
+        -:   63:    bool operator!=(const byte_container_with_subtype& rhs) const
+        -:   64:    {
+        -:   65:        return !(rhs == *this);
+        -:   66:    }
+        -:   67:
+        -:   68:    /// @brief sets the binary subtype
+        -:   69:    /// @sa https://json.nlohmann.me/api/byte_container_with_subtype/set_subtype/
+        -:   70:    void set_subtype(subtype_type subtype_) noexcept
+        -:   71:    {
+        -:   72:        m_subtype = subtype_;
+        -:   73:        m_has_subtype = true;
+        -:   74:    }
+        -:   75:
+        -:   76:    /// @brief return the binary subtype
+        -:   77:    /// @sa https://json.nlohmann.me/api/byte_container_with_subtype/subtype/
+        -:   78:    constexpr subtype_type subtype() const noexcept
+        -:   79:    {
+        -:   80:        return m_has_subtype ? m_subtype : static_cast<subtype_type>(-1);
+        -:   81:    }
+        -:   82:
+        -:   83:    /// @brief return whether the value has a subtype
+        -:   84:    /// @sa https://json.nlohmann.me/api/byte_container_with_subtype/has_subtype/
+        -:   85:    constexpr bool has_subtype() const noexcept
+        -:   86:    {
+        -:   87:        return m_has_subtype;
+        -:   88:    }
+        -:   89:
+        -:   90:    /// @brief clears the binary subtype
+        -:   91:    /// @sa https://json.nlohmann.me/api/byte_container_with_subtype/clear_subtype/
+        -:   92:    void clear_subtype() noexcept
+        -:   93:    {
+        -:   94:        m_subtype = 0;
+        -:   95:        m_has_subtype = false;
+        -:   96:    }
+        -:   97:
+        -:   98:  private:
+        -:   99:    subtype_type m_subtype = 0;
+        -:  100:    bool m_has_subtype = false;
+        -:  101:};
+        -:  102:
+        -:  103:NLOHMANN_JSON_NAMESPACE_END

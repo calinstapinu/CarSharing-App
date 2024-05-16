@@ -1,0 +1,2565 @@
+        -:    0:Source:C:/Users/rares/CLionProjects/OOP/Json-test/include/nlohmann/detail/input/lexer.hpp
+        -:    0:Graph:C:\Users\rares\CLionProjects\OOP\Json-test\cmake-build-debug-coverage\CMakeFiles\Json_test.dir\Repositories\AutoRepo\AutoRepo.cpp.gcno
+        -:    0:Data:C:\Users\rares\CLionProjects\OOP\Json-test\cmake-build-debug-coverage\CMakeFiles\Json_test.dir\Repositories\AutoRepo\AutoRepo.cpp.gcda
+        -:    0:Runs:1
+        -:    1://     __ _____ _____ _____
+        -:    2://  __|  |   __|     |   | |  JSON for Modern C++
+        -:    3:// |  |  |__   |  |  | | | |  version 3.11.3
+        -:    4:// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+        -:    5://
+        -:    6:// SPDX-FileCopyrightText: 2013-2023 Niels Lohmann <https://nlohmann.me>
+        -:    7:// SPDX-License-Identifier: MIT
+        -:    8:
+        -:    9:#pragma once
+        -:   10:
+        -:   11:#include <array> // array
+        -:   12:#include <clocale> // localeconv
+        -:   13:#include <cstddef> // size_t
+        -:   14:#include <cstdio> // snprintf
+        -:   15:#include <cstdlib> // strtof, strtod, strtold, strtoll, strtoull
+        -:   16:#include <initializer_list> // initializer_list
+        -:   17:#include <string> // char_traits, string
+        -:   18:#include <utility> // move
+        -:   19:#include <vector> // vector
+        -:   20:
+        -:   21:#include <nlohmann/detail/input/input_adapters.hpp>
+        -:   22:#include <nlohmann/detail/input/position_t.hpp>
+        -:   23:#include <nlohmann/detail/macro_scope.hpp>
+        -:   24:#include <nlohmann/detail/meta/type_traits.hpp>
+        -:   25:
+        -:   26:NLOHMANN_JSON_NAMESPACE_BEGIN
+        -:   27:namespace detail
+        -:   28:{
+        -:   29:
+        -:   30:///////////
+        -:   31:// lexer //
+        -:   32:///////////
+        -:   33:
+        -:   34:template<typename BasicJsonType>
+        -:   35:class lexer_base
+        -:   36:{
+        -:   37:  public:
+        -:   38:    /// token types for the parser
+        -:   39:    enum class token_type
+        -:   40:    {
+        -:   41:        uninitialized,    ///< indicating the scanner is uninitialized
+        -:   42:        literal_true,     ///< the `true` literal
+        -:   43:        literal_false,    ///< the `false` literal
+        -:   44:        literal_null,     ///< the `null` literal
+        -:   45:        value_string,     ///< a string -- use get_string() for actual value
+        -:   46:        value_unsigned,   ///< an unsigned integer -- use get_number_unsigned() for actual value
+        -:   47:        value_integer,    ///< a signed integer -- use get_number_integer() for actual value
+        -:   48:        value_float,      ///< an floating point number -- use get_number_float() for actual value
+        -:   49:        begin_array,      ///< the character for array begin `[`
+        -:   50:        begin_object,     ///< the character for object begin `{`
+        -:   51:        end_array,        ///< the character for array end `]`
+        -:   52:        end_object,       ///< the character for object end `}`
+        -:   53:        name_separator,   ///< the name separator `:`
+        -:   54:        value_separator,  ///< the value separator `,`
+        -:   55:        parse_error,      ///< indicating a parse error
+        -:   56:        end_of_input,     ///< indicating the end of the input buffer
+        -:   57:        literal_or_value  ///< a literal or the begin of a value (only for diagnostics)
+        -:   58:    };
+        -:   59:
+        -:   60:    /// return name of values of type token_type (only used for errors)
+        -:   61:    JSON_HEDLEY_RETURNS_NON_NULL
+        -:   62:    JSON_HEDLEY_CONST
+function _ZN8nlohmann16json_abi_v3_11_36detail10lexer_baseINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE15token_type_nameENSG_10token_typeE called 0 returned 0% blocks executed 0%
+    #####:   63:    static const char* token_type_name(const token_type t) noexcept
+        -:   64:    {
+    #####:   65:        switch (t)
+    %%%%%:   65-block  0
+branch  0 never executed
+branch  1 never executed
+branch  2 never executed
+branch  3 never executed
+branch  4 never executed
+branch  5 never executed
+branch  6 never executed
+branch  7 never executed
+branch  8 never executed
+branch  9 never executed
+branch 10 never executed
+branch 11 never executed
+branch 12 never executed
+branch 13 never executed
+branch 14 never executed
+branch 15 never executed
+        -:   66:        {
+    #####:   67:            case token_type::uninitialized:
+    #####:   68:                return "<uninitialized>";
+    %%%%%:   68-block  0
+    #####:   69:            case token_type::literal_true:
+    #####:   70:                return "true literal";
+    %%%%%:   70-block  0
+    #####:   71:            case token_type::literal_false:
+    #####:   72:                return "false literal";
+    %%%%%:   72-block  0
+    #####:   73:            case token_type::literal_null:
+    #####:   74:                return "null literal";
+    %%%%%:   74-block  0
+    #####:   75:            case token_type::value_string:
+    #####:   76:                return "string literal";
+    %%%%%:   76-block  0
+    #####:   77:            case token_type::value_unsigned:
+        -:   78:            case token_type::value_integer:
+        -:   79:            case token_type::value_float:
+    #####:   80:                return "number literal";
+    %%%%%:   80-block  0
+    #####:   81:            case token_type::begin_array:
+    #####:   82:                return "'['";
+    %%%%%:   82-block  0
+    #####:   83:            case token_type::begin_object:
+    #####:   84:                return "'{'";
+    %%%%%:   84-block  0
+    #####:   85:            case token_type::end_array:
+    #####:   86:                return "']'";
+    %%%%%:   86-block  0
+    #####:   87:            case token_type::end_object:
+    #####:   88:                return "'}'";
+    %%%%%:   88-block  0
+    #####:   89:            case token_type::name_separator:
+    #####:   90:                return "':'";
+    %%%%%:   90-block  0
+    #####:   91:            case token_type::value_separator:
+    #####:   92:                return "','";
+    %%%%%:   92-block  0
+    #####:   93:            case token_type::parse_error:
+    #####:   94:                return "<parse error>";
+    %%%%%:   94-block  0
+    #####:   95:            case token_type::end_of_input:
+    #####:   96:                return "end of input";
+    %%%%%:   96-block  0
+    #####:   97:            case token_type::literal_or_value:
+    #####:   98:                return "'[', '{', or a literal";
+    %%%%%:   98-block  0
+        -:   99:            // LCOV_EXCL_START
+    #####:  100:            default: // catch non-enum values
+    #####:  101:                return "unknown token";
+    %%%%%:  101-block  0
+        -:  102:                // LCOV_EXCL_STOP
+        -:  103:        }
+        -:  104:    }
+        -:  105:};
+        -:  106:/*!
+        -:  107:@brief lexical analysis
+        -:  108:
+        -:  109:This class organizes the lexical analysis during JSON deserialization.
+        -:  110:*/
+        -:  111:template<typename BasicJsonType, typename InputAdapterType>
+        -:  112:class lexer : public lexer_base<BasicJsonType>
+        -:  113:{
+        -:  114:    using number_integer_t = typename BasicJsonType::number_integer_t;
+        -:  115:    using number_unsigned_t = typename BasicJsonType::number_unsigned_t;
+        -:  116:    using number_float_t = typename BasicJsonType::number_float_t;
+        -:  117:    using string_t = typename BasicJsonType::string_t;
+        -:  118:    using char_type = typename InputAdapterType::char_type;
+        -:  119:    using char_int_type = typename char_traits<char_type>::int_type;
+        -:  120:
+        -:  121:  public:
+        -:  122:    using token_type = typename lexer_base<BasicJsonType>::token_type;
+        -:  123:
+function _ZN8nlohmann16json_abi_v3_11_36detail5lexerINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEENS1_20input_stream_adapterEEC1EOSG_b called 6 returned 100% blocks executed 100%
+        6:  124:    explicit lexer(InputAdapterType&& adapter, bool ignore_comments_ = false) noexcept
+        6:  125:        : ia(std::move(adapter))
+        6:  125-block  0
+call    0 returned 6
+call    1 returned 6
+        6:  126:        , ignore_comments(ignore_comments_)
+        6:  127:        , decimal_point_char(static_cast<char_int_type>(get_decimal_point()))
+call    0 returned 6
+call    1 returned 6
+call    2 returned 6
+        6:  128:    {}
+        -:  129:
+        -:  130:    // delete because of pointer members
+        -:  131:    lexer(const lexer&) = delete;
+        -:  132:    lexer(lexer&&) = default; // NOLINT(hicpp-noexcept-move,performance-noexcept-move-constructor)
+        -:  133:    lexer& operator=(lexer&) = delete;
+        -:  134:    lexer& operator=(lexer&&) = default; // NOLINT(hicpp-noexcept-move,performance-noexcept-move-constructor)
+function _ZN8nlohmann16json_abi_v3_11_36detail5lexerINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEENS1_20input_stream_adapterEED1Ev called 6 returned 100% blocks executed 100%
+        6:  135:    ~lexer() = default;
+        6:  135-block  0
+call    0 returned 6
+call    1 returned 6
+call    2 returned 6
+        -:  136:
+        -:  137:  private:
+        -:  138:    /////////////////////
+        -:  139:    // locales
+        -:  140:    /////////////////////
+        -:  141:
+        -:  142:    /// return the locale-dependent decimal point
+        -:  143:    JSON_HEDLEY_PURE
+function _ZN8nlohmann16json_abi_v3_11_36detail5lexerINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEENS1_20input_stream_adapterEE17get_decimal_pointEv called 6 returned 100% blocks executed 78%
+        6:  144:    static char get_decimal_point() noexcept
+        -:  145:    {
+        6:  146:        const auto* loc = localeconv();
+        6:  146-block  0
+call    0 returned 6
+       6*:  147:        JSON_ASSERT(loc != nullptr);
+branch  0 taken 0 (fallthrough)
+branch  1 taken 6
+    %%%%%:  147-block  0
+call    2 never executed
+        6:  147-block  1
+       6*:  148:        return (loc->decimal_point == nullptr) ? '.' : *(loc->decimal_point);
+        6:  148-block  0
+branch  0 taken 6 (fallthrough)
+branch  1 taken 0
+        6:  148-block  1
+    %%%%%:  148-block  2
+        6:  148-block  3
+        -:  149:    }
+        -:  150:
+        -:  151:    /////////////////////
+        -:  152:    // scan functions
+        -:  153:    /////////////////////
+        -:  154:
+        -:  155:    /*!
+        -:  156:    @brief get codepoint from 4 hex characters following `\u`
+        -:  157:
+        -:  158:    For input "\u c1 c2 c3 c4" the codepoint is:
+        -:  159:      (c1 * 0x1000) + (c2 * 0x0100) + (c3 * 0x0010) + c4
+        -:  160:    = (c1 << 12) + (c2 << 8) + (c3 << 4) + (c4 << 0)
+        -:  161:
+        -:  162:    Furthermore, the possible characters '0'..'9', 'A'..'F', and 'a'..'f'
+        -:  163:    must be converted to the integers 0x0..0x9, 0xA..0xF, 0xA..0xF, resp. The
+        -:  164:    conversion is done by subtracting the offset (0x30, 0x37, and 0x57)
+        -:  165:    between the ASCII value of the character and the desired integer value.
+        -:  166:
+        -:  167:    @return codepoint (0x0000..0xFFFF) or -1 in case of an error (e.g. EOF or
+        -:  168:            non-hex character)
+        -:  169:    */
+function _ZN8nlohmann16json_abi_v3_11_36detail5lexerINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEENS1_20input_stream_adapterEE13get_codepointEv called 0 returned 0% blocks executed 0%
+    #####:  170:    int get_codepoint()
+        -:  171:    {
+        -:  172:        // this function only makes sense after reading `\u`
+    #####:  173:        JSON_ASSERT(current == 'u');
+    %%%%%:  173-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    %%%%%:  173-block  1
+call    2 never executed
+    %%%%%:  173-block  2
+    #####:  174:        int codepoint = 0;
+        -:  175:
+    #####:  176:        const auto factors = { 12u, 8u, 4u, 0u };
+    #####:  177:        for (const auto factor : factors)
+    %%%%%:  177-block  0
+call    0 never executed
+call    1 never executed
+    %%%%%:  177-block  1
+    %%%%%:  177-block  2
+branch  2 never executed
+branch  3 never executed (fallthrough)
+        -:  178:        {
+    #####:  179:            get();
+    %%%%%:  179-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+        -:  180:
+    #####:  181:            if (current >= '0' && current <= '9')
+    %%%%%:  181-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    %%%%%:  181-block  1
+branch  2 never executed (fallthrough)
+branch  3 never executed
+        -:  182:            {
+    #####:  183:                codepoint += static_cast<int>((static_cast<unsigned int>(current) - 0x30u) << factor);
+    %%%%%:  183-block  0
+        -:  184:            }
+    #####:  185:            else if (current >= 'A' && current <= 'F')
+    %%%%%:  185-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    %%%%%:  185-block  1
+branch  2 never executed (fallthrough)
+branch  3 never executed
+        -:  186:            {
+    #####:  187:                codepoint += static_cast<int>((static_cast<unsigned int>(current) - 0x37u) << factor);
+    %%%%%:  187-block  0
+        -:  188:            }
+    #####:  189:            else if (current >= 'a' && current <= 'f')
+    %%%%%:  189-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    %%%%%:  189-block  1
+branch  2 never executed (fallthrough)
+branch  3 never executed
+        -:  190:            {
+    #####:  191:                codepoint += static_cast<int>((static_cast<unsigned int>(current) - 0x57u) << factor);
+    %%%%%:  191-block  0
+        -:  192:            }
+        -:  193:            else
+        -:  194:            {
+    #####:  195:                return -1;
+    %%%%%:  195-block  0
+        -:  196:            }
+        -:  197:        }
+        -:  198:
+    #####:  199:        JSON_ASSERT(0x0000 <= codepoint && codepoint <= 0xFFFF);
+    %%%%%:  199-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    %%%%%:  199-block  1
+branch  2 never executed (fallthrough)
+branch  3 never executed
+    %%%%%:  199-block  2
+call    4 never executed
+    %%%%%:  199-block  3
+    #####:  200:        return codepoint;
+    %%%%%:  200-block  0
+        -:  201:    }
+        -:  202:
+        -:  203:    /*!
+        -:  204:    @brief check if the next byte(s) are inside a given range
+        -:  205:
+        -:  206:    Adds the current byte and, for each passed range, reads a new byte and
+        -:  207:    checks if it is inside the range. If a violation was detected, set up an
+        -:  208:    error message and return false. Otherwise, return true.
+        -:  209:
+        -:  210:    @param[in] ranges  list of integers; interpreted as list of pairs of
+        -:  211:                       inclusive lower and upper bound, respectively
+        -:  212:
+        -:  213:    @pre The passed list @a ranges must have 2, 4, or 6 elements; that is,
+        -:  214:         1, 2, or 3 pairs. This precondition is enforced by an assertion.
+        -:  215:
+        -:  216:    @return true if and only if no range violation was detected
+        -:  217:    */
+function _ZN8nlohmann16json_abi_v3_11_36detail5lexerINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEENS1_20input_stream_adapterEE18next_byte_in_rangeESt16initializer_listIiE called 0 returned 0% blocks executed 0%
+    #####:  218:    bool next_byte_in_range(std::initializer_list<char_int_type> ranges)
+        -:  219:    {
+    #####:  220:        JSON_ASSERT(ranges.size() == 2 || ranges.size() == 4 || ranges.size() == 6);
+    %%%%%:  220-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+    %%%%%:  220-block  1
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed
+    %%%%%:  220-block  2
+call    6 never executed
+branch  7 never executed (fallthrough)
+branch  8 never executed
+    %%%%%:  220-block  3
+call    9 never executed
+    %%%%%:  220-block  4
+    #####:  221:        add(current);
+    %%%%%:  221-block  0
+call    0 never executed
+        -:  222:
+    #####:  223:        for (auto range = ranges.begin(); range != ranges.end(); ++range)
+call    0 never executed
+    %%%%%:  223-block  0
+call    1 never executed
+branch  2 never executed
+branch  3 never executed (fallthrough)
+        -:  224:        {
+    #####:  225:            get();
+    %%%%%:  225-block  0
+call    0 never executed
+    #####:  226:            if (JSON_HEDLEY_LIKELY(*range <= current && current <= *(++range))) // NOLINT(bugprone-inc-dec-in-conditions)
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    %%%%%:  226-block  0
+branch  2 never executed (fallthrough)
+branch  3 never executed
+    %%%%%:  226-block  1
+    %%%%%:  226-block  2
+    %%%%%:  226-block  3
+branch  4 never executed (fallthrough)
+branch  5 never executed
+        -:  227:            {
+    #####:  228:                add(current);
+    %%%%%:  228-block  0
+call    0 never executed
+        -:  229:            }
+        -:  230:            else
+        -:  231:            {
+    #####:  232:                error_message = "invalid string: ill-formed UTF-8 byte";
+    #####:  233:                return false;
+    %%%%%:  233-block  0
+        -:  234:            }
+        -:  235:        }
+        -:  236:
+    #####:  237:        return true;
+    %%%%%:  237-block  0
+        -:  238:    }
+        -:  239:
+        -:  240:    /*!
+        -:  241:    @brief scan a string literal
+        -:  242:
+        -:  243:    This function scans a string according to Sect. 7 of RFC 8259. While
+        -:  244:    scanning, bytes are escaped and copied into buffer token_buffer. Then the
+        -:  245:    function returns successfully, token_buffer is *not* null-terminated (as it
+        -:  246:    may contain \0 bytes), and token_buffer.size() is the number of bytes in the
+        -:  247:    string.
+        -:  248:
+        -:  249:    @return token_type::value_string if string could be successfully scanned,
+        -:  250:            token_type::parse_error otherwise
+        -:  251:
+        -:  252:    @note In case of errors, variable error_message contains a textual
+        -:  253:          description.
+        -:  254:    */
+function _ZN8nlohmann16json_abi_v3_11_36detail5lexerINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEENS1_20input_stream_adapterEE11scan_stringEv called 126 returned 100% blocks executed 7%
+      126:  255:    token_type scan_string()
+        -:  256:    {
+        -:  257:        // reset token_buffer (ignore opening quote)
+      126:  258:        reset();
+      126:  258-block  0
+call    0 returned 126
+        -:  259:
+        -:  260:        // we entered the function by reading an open quote
+     126*:  261:        JSON_ASSERT(current == '\"');
+branch  0 taken 0 (fallthrough)
+branch  1 taken 126
+    %%%%%:  261-block  0
+call    2 never executed
+      126:  261-block  1
+        -:  262:
+      916:  263:        while (true)
+      916:  263-block  0
+        -:  264:        {
+        -:  265:            // get next character
+     1042:  266:            switch (get())
+     1042:  266-block  0
+call    0 returned 1042
+branch  1 taken 0
+branch  2 taken 126
+branch  3 taken 0
+branch  4 taken 0
+branch  5 taken 0
+branch  6 taken 0
+branch  7 taken 0
+branch  8 taken 0
+branch  9 taken 0
+branch 10 taken 0
+branch 11 taken 0
+branch 12 taken 0
+branch 13 taken 0
+branch 14 taken 0
+branch 15 taken 0
+branch 16 taken 0
+branch 17 taken 0
+branch 18 taken 0
+branch 19 taken 0
+branch 20 taken 0
+branch 21 taken 0
+branch 22 taken 0
+branch 23 taken 0
+branch 24 taken 0
+branch 25 taken 0
+branch 26 taken 0
+branch 27 taken 0
+branch 28 taken 0
+branch 29 taken 0
+branch 30 taken 0
+branch 31 taken 0
+branch 32 taken 0
+branch 33 taken 0
+branch 34 taken 0
+branch 35 taken 0
+branch 36 taken 916
+branch 37 taken 0
+branch 38 taken 0
+branch 39 taken 0
+branch 40 taken 0
+branch 41 taken 0
+branch 42 taken 0
+branch 43 taken 0
+branch 44 taken 0
+        -:  267:            {
+        -:  268:                // end of file while parsing string
+    #####:  269:                case char_traits<char_type>::eof():
+        -:  270:                {
+    #####:  271:                    error_message = "invalid string: missing closing quote";
+    #####:  272:                    return token_type::parse_error;
+    %%%%%:  272-block  0
+        -:  273:                }
+        -:  274:
+        -:  275:                // closing quote
+      126:  276:                case '\"':
+        -:  277:                {
+      126:  278:                    return token_type::value_string;
+      126:  278-block  0
+        -:  279:                }
+        -:  280:
+        -:  281:                // escapes
+    #####:  282:                case '\\':
+        -:  283:                {
+    #####:  284:                    switch (get())
+    %%%%%:  284-block  0
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+branch  3 never executed
+branch  4 never executed
+branch  5 never executed
+branch  6 never executed
+branch  7 never executed
+branch  8 never executed
+branch  9 never executed
+branch 10 never executed
+        -:  285:                    {
+        -:  286:                        // quotation mark
+    #####:  287:                        case '\"':
+    #####:  288:                            add('\"');
+    %%%%%:  288-block  0
+call    0 never executed
+    #####:  289:                            break;
+        -:  290:                        // reverse solidus
+    #####:  291:                        case '\\':
+    #####:  292:                            add('\\');
+    %%%%%:  292-block  0
+call    0 never executed
+    #####:  293:                            break;
+        -:  294:                        // solidus
+    #####:  295:                        case '/':
+    #####:  296:                            add('/');
+    %%%%%:  296-block  0
+call    0 never executed
+    #####:  297:                            break;
+        -:  298:                        // backspace
+    #####:  299:                        case 'b':
+    #####:  300:                            add('\b');
+    %%%%%:  300-block  0
+call    0 never executed
+    #####:  301:                            break;
+        -:  302:                        // form feed
+    #####:  303:                        case 'f':
+    #####:  304:                            add('\f');
+    %%%%%:  304-block  0
+call    0 never executed
+    #####:  305:                            break;
+        -:  306:                        // line feed
+    #####:  307:                        case 'n':
+    #####:  308:                            add('\n');
+    %%%%%:  308-block  0
+call    0 never executed
+    #####:  309:                            break;
+        -:  310:                        // carriage return
+    #####:  311:                        case 'r':
+    #####:  312:                            add('\r');
+    %%%%%:  312-block  0
+call    0 never executed
+    #####:  313:                            break;
+        -:  314:                        // tab
+    #####:  315:                        case 't':
+    #####:  316:                            add('\t');
+    %%%%%:  316-block  0
+call    0 never executed
+    #####:  317:                            break;
+        -:  318:
+        -:  319:                        // unicode escapes
+    #####:  320:                        case 'u':
+        -:  321:                        {
+    #####:  322:                            const int codepoint1 = get_codepoint();
+    %%%%%:  322-block  0
+call    0 never executed
+    #####:  323:                            int codepoint = codepoint1; // start with codepoint1
+        -:  324:
+    #####:  325:                            if (JSON_HEDLEY_UNLIKELY(codepoint1 == -1))
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  326:                            {
+    #####:  327:                                error_message = "invalid string: '\\u' must be followed by 4 hex digits";
+    #####:  328:                                return token_type::parse_error;
+    %%%%%:  328-block  0
+        -:  329:                            }
+        -:  330:
+        -:  331:                            // check if code point is a high surrogate
+    #####:  332:                            if (0xD800 <= codepoint1 && codepoint1 <= 0xDBFF)
+    %%%%%:  332-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    %%%%%:  332-block  1
+branch  2 never executed (fallthrough)
+branch  3 never executed
+        -:  333:                            {
+        -:  334:                                // expect next \uxxxx entry
+    #####:  335:                                if (JSON_HEDLEY_LIKELY(get() == '\\' && get() == 'u'))
+    %%%%%:  335-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+    %%%%%:  335-block  1
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed
+    %%%%%:  335-block  2
+    %%%%%:  335-block  3
+    %%%%%:  335-block  4
+branch  6 never executed (fallthrough)
+branch  7 never executed
+        -:  336:                                {
+    #####:  337:                                    const int codepoint2 = get_codepoint();
+    %%%%%:  337-block  0
+call    0 never executed
+        -:  338:
+    #####:  339:                                    if (JSON_HEDLEY_UNLIKELY(codepoint2 == -1))
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  340:                                    {
+    #####:  341:                                        error_message = "invalid string: '\\u' must be followed by 4 hex digits";
+    #####:  342:                                        return token_type::parse_error;
+    %%%%%:  342-block  0
+        -:  343:                                    }
+        -:  344:
+        -:  345:                                    // check if codepoint2 is a low surrogate
+    #####:  346:                                    if (JSON_HEDLEY_LIKELY(0xDC00 <= codepoint2 && codepoint2 <= 0xDFFF))
+    %%%%%:  346-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    %%%%%:  346-block  1
+branch  2 never executed (fallthrough)
+branch  3 never executed
+    %%%%%:  346-block  2
+    %%%%%:  346-block  3
+    %%%%%:  346-block  4
+branch  4 never executed (fallthrough)
+branch  5 never executed
+        -:  347:                                    {
+        -:  348:                                        // overwrite codepoint
+    #####:  349:                                        codepoint = static_cast<int>(
+        -:  350:                                                        // high surrogate occupies the most significant 22 bits
+    #####:  351:                                                        (static_cast<unsigned int>(codepoint1) << 10u)
+        -:  352:                                                        // low surrogate occupies the least significant 15 bits
+    #####:  353:                                                        + static_cast<unsigned int>(codepoint2)
+        -:  354:                                                        // there is still the 0xD800, 0xDC00 and 0x10000 noise
+        -:  355:                                                        // in the result, so we have to subtract with:
+        -:  356:                                                        // (0xD800 << 10) + DC00 - 0x10000 = 0x35FDC00
+    #####:  357:                                                        - 0x35FDC00u);
+    %%%%%:  357-block  0
+        -:  358:                                    }
+        -:  359:                                    else
+        -:  360:                                    {
+    #####:  361:                                        error_message = "invalid string: surrogate U+D800..U+DBFF must be followed by U+DC00..U+DFFF";
+    #####:  362:                                        return token_type::parse_error;
+    %%%%%:  362-block  0
+        -:  363:                                    }
+        -:  364:                                }
+        -:  365:                                else
+        -:  366:                                {
+    #####:  367:                                    error_message = "invalid string: surrogate U+D800..U+DBFF must be followed by U+DC00..U+DFFF";
+    #####:  368:                                    return token_type::parse_error;
+    %%%%%:  368-block  0
+        -:  369:                                }
+    #####:  370:                            }
+    %%%%%:  370-block  0
+        -:  371:                            else
+        -:  372:                            {
+    #####:  373:                                if (JSON_HEDLEY_UNLIKELY(0xDC00 <= codepoint1 && codepoint1 <= 0xDFFF))
+    %%%%%:  373-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    %%%%%:  373-block  1
+branch  2 never executed (fallthrough)
+branch  3 never executed
+    %%%%%:  373-block  2
+    %%%%%:  373-block  3
+    %%%%%:  373-block  4
+branch  4 never executed (fallthrough)
+branch  5 never executed
+        -:  374:                                {
+    #####:  375:                                    error_message = "invalid string: surrogate U+DC00..U+DFFF must follow U+D800..U+DBFF";
+    #####:  376:                                    return token_type::parse_error;
+    %%%%%:  376-block  0
+        -:  377:                                }
+        -:  378:                            }
+        -:  379:
+        -:  380:                            // result of the above calculation yields a proper codepoint
+    #####:  381:                            JSON_ASSERT(0x00 <= codepoint && codepoint <= 0x10FFFF);
+    %%%%%:  381-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    %%%%%:  381-block  1
+branch  2 never executed (fallthrough)
+branch  3 never executed
+    %%%%%:  381-block  2
+call    4 never executed
+    %%%%%:  381-block  3
+        -:  382:
+        -:  383:                            // translate codepoint into bytes
+    #####:  384:                            if (codepoint < 0x80)
+    %%%%%:  384-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  385:                            {
+        -:  386:                                // 1-byte characters: 0xxxxxxx (ASCII)
+    #####:  387:                                add(static_cast<char_int_type>(codepoint));
+    %%%%%:  387-block  0
+call    0 never executed
+        -:  388:                            }
+    #####:  389:                            else if (codepoint <= 0x7FF)
+    %%%%%:  389-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  390:                            {
+        -:  391:                                // 2-byte characters: 110xxxxx 10xxxxxx
+    #####:  392:                                add(static_cast<char_int_type>(0xC0u | (static_cast<unsigned int>(codepoint) >> 6u)));
+    %%%%%:  392-block  0
+call    0 never executed
+    #####:  393:                                add(static_cast<char_int_type>(0x80u | (static_cast<unsigned int>(codepoint) & 0x3Fu)));
+call    0 never executed
+        -:  394:                            }
+    #####:  395:                            else if (codepoint <= 0xFFFF)
+    %%%%%:  395-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  396:                            {
+        -:  397:                                // 3-byte characters: 1110xxxx 10xxxxxx 10xxxxxx
+    #####:  398:                                add(static_cast<char_int_type>(0xE0u | (static_cast<unsigned int>(codepoint) >> 12u)));
+    %%%%%:  398-block  0
+call    0 never executed
+    #####:  399:                                add(static_cast<char_int_type>(0x80u | ((static_cast<unsigned int>(codepoint) >> 6u) & 0x3Fu)));
+call    0 never executed
+    #####:  400:                                add(static_cast<char_int_type>(0x80u | (static_cast<unsigned int>(codepoint) & 0x3Fu)));
+call    0 never executed
+        -:  401:                            }
+        -:  402:                            else
+        -:  403:                            {
+        -:  404:                                // 4-byte characters: 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
+    #####:  405:                                add(static_cast<char_int_type>(0xF0u | (static_cast<unsigned int>(codepoint) >> 18u)));
+    %%%%%:  405-block  0
+call    0 never executed
+    #####:  406:                                add(static_cast<char_int_type>(0x80u | ((static_cast<unsigned int>(codepoint) >> 12u) & 0x3Fu)));
+call    0 never executed
+    #####:  407:                                add(static_cast<char_int_type>(0x80u | ((static_cast<unsigned int>(codepoint) >> 6u) & 0x3Fu)));
+call    0 never executed
+    #####:  408:                                add(static_cast<char_int_type>(0x80u | (static_cast<unsigned int>(codepoint) & 0x3Fu)));
+call    0 never executed
+        -:  409:                            }
+        -:  410:
+    #####:  411:                            break;
+    %%%%%:  411-block  0
+        -:  412:                        }
+        -:  413:
+        -:  414:                        // other characters after escape
+    #####:  415:                        default:
+    #####:  416:                            error_message = "invalid string: forbidden character after backslash";
+    #####:  417:                            return token_type::parse_error;
+    %%%%%:  417-block  0
+        -:  418:                    }
+        -:  419:
+    #####:  420:                    break;
+    %%%%%:  420-block  0
+        -:  421:                }
+        -:  422:
+        -:  423:                // invalid control characters
+    #####:  424:                case 0x00:
+        -:  425:                {
+    #####:  426:                    error_message = "invalid string: control character U+0000 (NUL) must be escaped to \\u0000";
+    #####:  427:                    return token_type::parse_error;
+    %%%%%:  427-block  0
+        -:  428:                }
+        -:  429:
+    #####:  430:                case 0x01:
+        -:  431:                {
+    #####:  432:                    error_message = "invalid string: control character U+0001 (SOH) must be escaped to \\u0001";
+    #####:  433:                    return token_type::parse_error;
+    %%%%%:  433-block  0
+        -:  434:                }
+        -:  435:
+    #####:  436:                case 0x02:
+        -:  437:                {
+    #####:  438:                    error_message = "invalid string: control character U+0002 (STX) must be escaped to \\u0002";
+    #####:  439:                    return token_type::parse_error;
+    %%%%%:  439-block  0
+        -:  440:                }
+        -:  441:
+    #####:  442:                case 0x03:
+        -:  443:                {
+    #####:  444:                    error_message = "invalid string: control character U+0003 (ETX) must be escaped to \\u0003";
+    #####:  445:                    return token_type::parse_error;
+    %%%%%:  445-block  0
+        -:  446:                }
+        -:  447:
+    #####:  448:                case 0x04:
+        -:  449:                {
+    #####:  450:                    error_message = "invalid string: control character U+0004 (EOT) must be escaped to \\u0004";
+    #####:  451:                    return token_type::parse_error;
+    %%%%%:  451-block  0
+        -:  452:                }
+        -:  453:
+    #####:  454:                case 0x05:
+        -:  455:                {
+    #####:  456:                    error_message = "invalid string: control character U+0005 (ENQ) must be escaped to \\u0005";
+    #####:  457:                    return token_type::parse_error;
+    %%%%%:  457-block  0
+        -:  458:                }
+        -:  459:
+    #####:  460:                case 0x06:
+        -:  461:                {
+    #####:  462:                    error_message = "invalid string: control character U+0006 (ACK) must be escaped to \\u0006";
+    #####:  463:                    return token_type::parse_error;
+    %%%%%:  463-block  0
+        -:  464:                }
+        -:  465:
+    #####:  466:                case 0x07:
+        -:  467:                {
+    #####:  468:                    error_message = "invalid string: control character U+0007 (BEL) must be escaped to \\u0007";
+    #####:  469:                    return token_type::parse_error;
+    %%%%%:  469-block  0
+        -:  470:                }
+        -:  471:
+    #####:  472:                case 0x08:
+        -:  473:                {
+    #####:  474:                    error_message = "invalid string: control character U+0008 (BS) must be escaped to \\u0008 or \\b";
+    #####:  475:                    return token_type::parse_error;
+    %%%%%:  475-block  0
+        -:  476:                }
+        -:  477:
+    #####:  478:                case 0x09:
+        -:  479:                {
+    #####:  480:                    error_message = "invalid string: control character U+0009 (HT) must be escaped to \\u0009 or \\t";
+    #####:  481:                    return token_type::parse_error;
+    %%%%%:  481-block  0
+        -:  482:                }
+        -:  483:
+    #####:  484:                case 0x0A:
+        -:  485:                {
+    #####:  486:                    error_message = "invalid string: control character U+000A (LF) must be escaped to \\u000A or \\n";
+    #####:  487:                    return token_type::parse_error;
+    %%%%%:  487-block  0
+        -:  488:                }
+        -:  489:
+    #####:  490:                case 0x0B:
+        -:  491:                {
+    #####:  492:                    error_message = "invalid string: control character U+000B (VT) must be escaped to \\u000B";
+    #####:  493:                    return token_type::parse_error;
+    %%%%%:  493-block  0
+        -:  494:                }
+        -:  495:
+    #####:  496:                case 0x0C:
+        -:  497:                {
+    #####:  498:                    error_message = "invalid string: control character U+000C (FF) must be escaped to \\u000C or \\f";
+    #####:  499:                    return token_type::parse_error;
+    %%%%%:  499-block  0
+        -:  500:                }
+        -:  501:
+    #####:  502:                case 0x0D:
+        -:  503:                {
+    #####:  504:                    error_message = "invalid string: control character U+000D (CR) must be escaped to \\u000D or \\r";
+    #####:  505:                    return token_type::parse_error;
+    %%%%%:  505-block  0
+        -:  506:                }
+        -:  507:
+    #####:  508:                case 0x0E:
+        -:  509:                {
+    #####:  510:                    error_message = "invalid string: control character U+000E (SO) must be escaped to \\u000E";
+    #####:  511:                    return token_type::parse_error;
+    %%%%%:  511-block  0
+        -:  512:                }
+        -:  513:
+    #####:  514:                case 0x0F:
+        -:  515:                {
+    #####:  516:                    error_message = "invalid string: control character U+000F (SI) must be escaped to \\u000F";
+    #####:  517:                    return token_type::parse_error;
+    %%%%%:  517-block  0
+        -:  518:                }
+        -:  519:
+    #####:  520:                case 0x10:
+        -:  521:                {
+    #####:  522:                    error_message = "invalid string: control character U+0010 (DLE) must be escaped to \\u0010";
+    #####:  523:                    return token_type::parse_error;
+    %%%%%:  523-block  0
+        -:  524:                }
+        -:  525:
+    #####:  526:                case 0x11:
+        -:  527:                {
+    #####:  528:                    error_message = "invalid string: control character U+0011 (DC1) must be escaped to \\u0011";
+    #####:  529:                    return token_type::parse_error;
+    %%%%%:  529-block  0
+        -:  530:                }
+        -:  531:
+    #####:  532:                case 0x12:
+        -:  533:                {
+    #####:  534:                    error_message = "invalid string: control character U+0012 (DC2) must be escaped to \\u0012";
+    #####:  535:                    return token_type::parse_error;
+    %%%%%:  535-block  0
+        -:  536:                }
+        -:  537:
+    #####:  538:                case 0x13:
+        -:  539:                {
+    #####:  540:                    error_message = "invalid string: control character U+0013 (DC3) must be escaped to \\u0013";
+    #####:  541:                    return token_type::parse_error;
+    %%%%%:  541-block  0
+        -:  542:                }
+        -:  543:
+    #####:  544:                case 0x14:
+        -:  545:                {
+    #####:  546:                    error_message = "invalid string: control character U+0014 (DC4) must be escaped to \\u0014";
+    #####:  547:                    return token_type::parse_error;
+    %%%%%:  547-block  0
+        -:  548:                }
+        -:  549:
+    #####:  550:                case 0x15:
+        -:  551:                {
+    #####:  552:                    error_message = "invalid string: control character U+0015 (NAK) must be escaped to \\u0015";
+    #####:  553:                    return token_type::parse_error;
+    %%%%%:  553-block  0
+        -:  554:                }
+        -:  555:
+    #####:  556:                case 0x16:
+        -:  557:                {
+    #####:  558:                    error_message = "invalid string: control character U+0016 (SYN) must be escaped to \\u0016";
+    #####:  559:                    return token_type::parse_error;
+    %%%%%:  559-block  0
+        -:  560:                }
+        -:  561:
+    #####:  562:                case 0x17:
+        -:  563:                {
+    #####:  564:                    error_message = "invalid string: control character U+0017 (ETB) must be escaped to \\u0017";
+    #####:  565:                    return token_type::parse_error;
+    %%%%%:  565-block  0
+        -:  566:                }
+        -:  567:
+    #####:  568:                case 0x18:
+        -:  569:                {
+    #####:  570:                    error_message = "invalid string: control character U+0018 (CAN) must be escaped to \\u0018";
+    #####:  571:                    return token_type::parse_error;
+    %%%%%:  571-block  0
+        -:  572:                }
+        -:  573:
+    #####:  574:                case 0x19:
+        -:  575:                {
+    #####:  576:                    error_message = "invalid string: control character U+0019 (EM) must be escaped to \\u0019";
+    #####:  577:                    return token_type::parse_error;
+    %%%%%:  577-block  0
+        -:  578:                }
+        -:  579:
+    #####:  580:                case 0x1A:
+        -:  581:                {
+    #####:  582:                    error_message = "invalid string: control character U+001A (SUB) must be escaped to \\u001A";
+    #####:  583:                    return token_type::parse_error;
+    %%%%%:  583-block  0
+        -:  584:                }
+        -:  585:
+    #####:  586:                case 0x1B:
+        -:  587:                {
+    #####:  588:                    error_message = "invalid string: control character U+001B (ESC) must be escaped to \\u001B";
+    #####:  589:                    return token_type::parse_error;
+    %%%%%:  589-block  0
+        -:  590:                }
+        -:  591:
+    #####:  592:                case 0x1C:
+        -:  593:                {
+    #####:  594:                    error_message = "invalid string: control character U+001C (FS) must be escaped to \\u001C";
+    #####:  595:                    return token_type::parse_error;
+    %%%%%:  595-block  0
+        -:  596:                }
+        -:  597:
+    #####:  598:                case 0x1D:
+        -:  599:                {
+    #####:  600:                    error_message = "invalid string: control character U+001D (GS) must be escaped to \\u001D";
+    #####:  601:                    return token_type::parse_error;
+    %%%%%:  601-block  0
+        -:  602:                }
+        -:  603:
+    #####:  604:                case 0x1E:
+        -:  605:                {
+    #####:  606:                    error_message = "invalid string: control character U+001E (RS) must be escaped to \\u001E";
+    #####:  607:                    return token_type::parse_error;
+    %%%%%:  607-block  0
+        -:  608:                }
+        -:  609:
+    #####:  610:                case 0x1F:
+        -:  611:                {
+    #####:  612:                    error_message = "invalid string: control character U+001F (US) must be escaped to \\u001F";
+    #####:  613:                    return token_type::parse_error;
+    %%%%%:  613-block  0
+        -:  614:                }
+        -:  615:
+        -:  616:                // U+0020..U+007F (except U+0022 (quote) and U+005C (backspace))
+      916:  617:                case 0x20:
+        -:  618:                case 0x21:
+        -:  619:                case 0x23:
+        -:  620:                case 0x24:
+        -:  621:                case 0x25:
+        -:  622:                case 0x26:
+        -:  623:                case 0x27:
+        -:  624:                case 0x28:
+        -:  625:                case 0x29:
+        -:  626:                case 0x2A:
+        -:  627:                case 0x2B:
+        -:  628:                case 0x2C:
+        -:  629:                case 0x2D:
+        -:  630:                case 0x2E:
+        -:  631:                case 0x2F:
+        -:  632:                case 0x30:
+        -:  633:                case 0x31:
+        -:  634:                case 0x32:
+        -:  635:                case 0x33:
+        -:  636:                case 0x34:
+        -:  637:                case 0x35:
+        -:  638:                case 0x36:
+        -:  639:                case 0x37:
+        -:  640:                case 0x38:
+        -:  641:                case 0x39:
+        -:  642:                case 0x3A:
+        -:  643:                case 0x3B:
+        -:  644:                case 0x3C:
+        -:  645:                case 0x3D:
+        -:  646:                case 0x3E:
+        -:  647:                case 0x3F:
+        -:  648:                case 0x40:
+        -:  649:                case 0x41:
+        -:  650:                case 0x42:
+        -:  651:                case 0x43:
+        -:  652:                case 0x44:
+        -:  653:                case 0x45:
+        -:  654:                case 0x46:
+        -:  655:                case 0x47:
+        -:  656:                case 0x48:
+        -:  657:                case 0x49:
+        -:  658:                case 0x4A:
+        -:  659:                case 0x4B:
+        -:  660:                case 0x4C:
+        -:  661:                case 0x4D:
+        -:  662:                case 0x4E:
+        -:  663:                case 0x4F:
+        -:  664:                case 0x50:
+        -:  665:                case 0x51:
+        -:  666:                case 0x52:
+        -:  667:                case 0x53:
+        -:  668:                case 0x54:
+        -:  669:                case 0x55:
+        -:  670:                case 0x56:
+        -:  671:                case 0x57:
+        -:  672:                case 0x58:
+        -:  673:                case 0x59:
+        -:  674:                case 0x5A:
+        -:  675:                case 0x5B:
+        -:  676:                case 0x5D:
+        -:  677:                case 0x5E:
+        -:  678:                case 0x5F:
+        -:  679:                case 0x60:
+        -:  680:                case 0x61:
+        -:  681:                case 0x62:
+        -:  682:                case 0x63:
+        -:  683:                case 0x64:
+        -:  684:                case 0x65:
+        -:  685:                case 0x66:
+        -:  686:                case 0x67:
+        -:  687:                case 0x68:
+        -:  688:                case 0x69:
+        -:  689:                case 0x6A:
+        -:  690:                case 0x6B:
+        -:  691:                case 0x6C:
+        -:  692:                case 0x6D:
+        -:  693:                case 0x6E:
+        -:  694:                case 0x6F:
+        -:  695:                case 0x70:
+        -:  696:                case 0x71:
+        -:  697:                case 0x72:
+        -:  698:                case 0x73:
+        -:  699:                case 0x74:
+        -:  700:                case 0x75:
+        -:  701:                case 0x76:
+        -:  702:                case 0x77:
+        -:  703:                case 0x78:
+        -:  704:                case 0x79:
+        -:  705:                case 0x7A:
+        -:  706:                case 0x7B:
+        -:  707:                case 0x7C:
+        -:  708:                case 0x7D:
+        -:  709:                case 0x7E:
+        -:  710:                case 0x7F:
+        -:  711:                {
+      916:  712:                    add(current);
+      916:  712-block  0
+call    0 returned 916
+      916:  713:                    break;
+        -:  714:                }
+        -:  715:
+        -:  716:                // U+0080..U+07FF: bytes C2..DF 80..BF
+    #####:  717:                case 0xC2:
+        -:  718:                case 0xC3:
+        -:  719:                case 0xC4:
+        -:  720:                case 0xC5:
+        -:  721:                case 0xC6:
+        -:  722:                case 0xC7:
+        -:  723:                case 0xC8:
+        -:  724:                case 0xC9:
+        -:  725:                case 0xCA:
+        -:  726:                case 0xCB:
+        -:  727:                case 0xCC:
+        -:  728:                case 0xCD:
+        -:  729:                case 0xCE:
+        -:  730:                case 0xCF:
+        -:  731:                case 0xD0:
+        -:  732:                case 0xD1:
+        -:  733:                case 0xD2:
+        -:  734:                case 0xD3:
+        -:  735:                case 0xD4:
+        -:  736:                case 0xD5:
+        -:  737:                case 0xD6:
+        -:  738:                case 0xD7:
+        -:  739:                case 0xD8:
+        -:  740:                case 0xD9:
+        -:  741:                case 0xDA:
+        -:  742:                case 0xDB:
+        -:  743:                case 0xDC:
+        -:  744:                case 0xDD:
+        -:  745:                case 0xDE:
+        -:  746:                case 0xDF:
+        -:  747:                {
+    #####:  748:                    if (JSON_HEDLEY_UNLIKELY(!next_byte_in_range({0x80, 0xBF})))
+    %%%%%:  748-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  748-block  1
+branch  3 never executed (fallthrough)
+branch  4 never executed
+    $$$$$:  748-block  2
+call    5 never executed
+        -:  749:                    {
+    #####:  750:                        return token_type::parse_error;
+    %%%%%:  750-block  0
+        -:  751:                    }
+    #####:  752:                    break;
+    %%%%%:  752-block  0
+        -:  753:                }
+        -:  754:
+        -:  755:                // U+0800..U+0FFF: bytes E0 A0..BF 80..BF
+    #####:  756:                case 0xE0:
+        -:  757:                {
+    #####:  758:                    if (JSON_HEDLEY_UNLIKELY(!(next_byte_in_range({0xA0, 0xBF, 0x80, 0xBF}))))
+    %%%%%:  758-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  758-block  1
+branch  3 never executed (fallthrough)
+branch  4 never executed
+    $$$$$:  758-block  2
+call    5 never executed
+        -:  759:                    {
+    #####:  760:                        return token_type::parse_error;
+    %%%%%:  760-block  0
+        -:  761:                    }
+    #####:  762:                    break;
+    %%%%%:  762-block  0
+        -:  763:                }
+        -:  764:
+        -:  765:                // U+1000..U+CFFF: bytes E1..EC 80..BF 80..BF
+        -:  766:                // U+E000..U+FFFF: bytes EE..EF 80..BF 80..BF
+    #####:  767:                case 0xE1:
+        -:  768:                case 0xE2:
+        -:  769:                case 0xE3:
+        -:  770:                case 0xE4:
+        -:  771:                case 0xE5:
+        -:  772:                case 0xE6:
+        -:  773:                case 0xE7:
+        -:  774:                case 0xE8:
+        -:  775:                case 0xE9:
+        -:  776:                case 0xEA:
+        -:  777:                case 0xEB:
+        -:  778:                case 0xEC:
+        -:  779:                case 0xEE:
+        -:  780:                case 0xEF:
+        -:  781:                {
+    #####:  782:                    if (JSON_HEDLEY_UNLIKELY(!(next_byte_in_range({0x80, 0xBF, 0x80, 0xBF}))))
+    %%%%%:  782-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  782-block  1
+branch  3 never executed (fallthrough)
+branch  4 never executed
+    $$$$$:  782-block  2
+call    5 never executed
+        -:  783:                    {
+    #####:  784:                        return token_type::parse_error;
+    %%%%%:  784-block  0
+        -:  785:                    }
+    #####:  786:                    break;
+    %%%%%:  786-block  0
+        -:  787:                }
+        -:  788:
+        -:  789:                // U+D000..U+D7FF: bytes ED 80..9F 80..BF
+    #####:  790:                case 0xED:
+        -:  791:                {
+    #####:  792:                    if (JSON_HEDLEY_UNLIKELY(!(next_byte_in_range({0x80, 0x9F, 0x80, 0xBF}))))
+    %%%%%:  792-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  792-block  1
+branch  3 never executed (fallthrough)
+branch  4 never executed
+    $$$$$:  792-block  2
+call    5 never executed
+        -:  793:                    {
+    #####:  794:                        return token_type::parse_error;
+    %%%%%:  794-block  0
+        -:  795:                    }
+    #####:  796:                    break;
+    %%%%%:  796-block  0
+        -:  797:                }
+        -:  798:
+        -:  799:                // U+10000..U+3FFFF F0 90..BF 80..BF 80..BF
+    #####:  800:                case 0xF0:
+        -:  801:                {
+    #####:  802:                    if (JSON_HEDLEY_UNLIKELY(!(next_byte_in_range({0x90, 0xBF, 0x80, 0xBF, 0x80, 0xBF}))))
+    %%%%%:  802-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  802-block  1
+branch  3 never executed (fallthrough)
+branch  4 never executed
+    $$$$$:  802-block  2
+call    5 never executed
+        -:  803:                    {
+    #####:  804:                        return token_type::parse_error;
+    %%%%%:  804-block  0
+        -:  805:                    }
+    #####:  806:                    break;
+    %%%%%:  806-block  0
+        -:  807:                }
+        -:  808:
+        -:  809:                // U+40000..U+FFFFF F1..F3 80..BF 80..BF 80..BF
+    #####:  810:                case 0xF1:
+        -:  811:                case 0xF2:
+        -:  812:                case 0xF3:
+        -:  813:                {
+    #####:  814:                    if (JSON_HEDLEY_UNLIKELY(!(next_byte_in_range({0x80, 0xBF, 0x80, 0xBF, 0x80, 0xBF}))))
+    %%%%%:  814-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  814-block  1
+branch  3 never executed (fallthrough)
+branch  4 never executed
+    $$$$$:  814-block  2
+call    5 never executed
+        -:  815:                    {
+    #####:  816:                        return token_type::parse_error;
+    %%%%%:  816-block  0
+        -:  817:                    }
+    #####:  818:                    break;
+    %%%%%:  818-block  0
+        -:  819:                }
+        -:  820:
+        -:  821:                // U+100000..U+10FFFF F4 80..8F 80..BF 80..BF
+    #####:  822:                case 0xF4:
+        -:  823:                {
+    #####:  824:                    if (JSON_HEDLEY_UNLIKELY(!(next_byte_in_range({0x80, 0x8F, 0x80, 0xBF, 0x80, 0xBF}))))
+    %%%%%:  824-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  824-block  1
+branch  3 never executed (fallthrough)
+branch  4 never executed
+        -:  825:                    {
+    #####:  826:                        return token_type::parse_error;
+    %%%%%:  826-block  0
+        -:  827:                    }
+    #####:  828:                    break;
+    %%%%%:  828-block  0
+        -:  829:                }
+        -:  830:
+        -:  831:                // remaining bytes (80..C1 and F5..FF) are ill-formed
+    #####:  832:                default:
+        -:  833:                {
+    #####:  834:                    error_message = "invalid string: ill-formed UTF-8 byte";
+    #####:  835:                    return token_type::parse_error;
+    %%%%%:  835-block  0
+        -:  836:                }
+        -:  837:            }
+        -:  838:        }
+        -:  839:    }
+        -:  840:
+        -:  841:    /*!
+        -:  842:     * @brief scan a comment
+        -:  843:     * @return whether comment could be scanned successfully
+        -:  844:     */
+function _ZN8nlohmann16json_abi_v3_11_36detail5lexerINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEENS1_20input_stream_adapterEE12scan_commentEv called 0 returned 0% blocks executed 0%
+    #####:  845:    bool scan_comment()
+        -:  846:    {
+    #####:  847:        switch (get())
+    %%%%%:  847-block  0
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+branch  3 never executed
+        -:  848:        {
+        -:  849:            // single-line comments skip input until a newline or EOF is read
+    #####:  850:            case '/':
+        -:  851:            {
+        -:  852:                while (true)
+        -:  853:                {
+    #####:  854:                    switch (get())
+    %%%%%:  854-block  0
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+    %%%%%:  854-block  1
+        -:  855:                    {
+    #####:  856:                        case '\n':
+        -:  857:                        case '\r':
+        -:  858:                        case char_traits<char_type>::eof():
+        -:  859:                        case '\0':
+    #####:  860:                            return true;
+    %%%%%:  860-block  0
+        -:  861:
+    #####:  862:                        default:
+    #####:  863:                            break;
+    %%%%%:  863-block  0
+        -:  864:                    }
+        -:  865:                }
+        -:  866:            }
+        -:  867:
+        -:  868:            // multi-line comments skip input until */ is read
+    #####:  869:            case '*':
+        -:  870:            {
+        -:  871:                while (true)
+        -:  872:                {
+    #####:  873:                    switch (get())
+    %%%%%:  873-block  0
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+branch  3 never executed
+    %%%%%:  873-block  1
+        -:  874:                    {
+    #####:  875:                        case char_traits<char_type>::eof():
+        -:  876:                        case '\0':
+        -:  877:                        {
+    #####:  878:                            error_message = "invalid comment; missing closing '*/'";
+    #####:  879:                            return false;
+    %%%%%:  879-block  0
+        -:  880:                        }
+        -:  881:
+    #####:  882:                        case '*':
+        -:  883:                        {
+    #####:  884:                            switch (get())
+    %%%%%:  884-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+        -:  885:                            {
+    #####:  886:                                case '/':
+    #####:  887:                                    return true;
+    %%%%%:  887-block  0
+        -:  888:
+    #####:  889:                                default:
+        -:  890:                                {
+    #####:  891:                                    unget();
+    %%%%%:  891-block  0
+call    0 never executed
+    #####:  892:                                    continue;
+        -:  893:                                }
+        -:  894:                            }
+        -:  895:                        }
+        -:  896:
+    #####:  897:                        default:
+    #####:  898:                            continue;
+    %%%%%:  898-block  0
+        -:  899:                    }
+        -:  900:                }
+        -:  901:            }
+        -:  902:
+        -:  903:            // unexpected character after reading '/'
+    #####:  904:            default:
+        -:  905:            {
+    #####:  906:                error_message = "invalid comment; expecting '/' or '*' after '/'";
+    #####:  907:                return false;
+    %%%%%:  907-block  0
+        -:  908:            }
+        -:  909:        }
+        -:  910:    }
+        -:  911:
+        -:  912:    JSON_HEDLEY_NON_NULL(2)
+        -:  913:    static void strtof(float& f, const char* str, char** endptr) noexcept
+        -:  914:    {
+        -:  915:        f = std::strtof(str, endptr);
+        -:  916:    }
+        -:  917:
+        -:  918:    JSON_HEDLEY_NON_NULL(2)
+function _ZN8nlohmann16json_abi_v3_11_36detail5lexerINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEENS1_20input_stream_adapterEE6strtofERdPKcPPc called 6 returned 100% blocks executed 100%
+        6:  919:    static void strtof(double& f, const char* str, char** endptr) noexcept
+        -:  920:    {
+        6:  921:        f = std::strtod(str, endptr);
+        6:  921-block  0
+call    0 returned 6
+        6:  922:    }
+        -:  923:
+        -:  924:    JSON_HEDLEY_NON_NULL(2)
+        -:  925:    static void strtof(long double& f, const char* str, char** endptr) noexcept
+        -:  926:    {
+        -:  927:        f = std::strtold(str, endptr);
+        -:  928:    }
+        -:  929:
+        -:  930:    /*!
+        -:  931:    @brief scan a number literal
+        -:  932:
+        -:  933:    This function scans a string according to Sect. 6 of RFC 8259.
+        -:  934:
+        -:  935:    The function is realized with a deterministic finite state machine derived
+        -:  936:    from the grammar described in RFC 8259. Starting in state "init", the
+        -:  937:    input is read and used to determined the next state. Only state "done"
+        -:  938:    accepts the number. State "error" is a trap state to model errors. In the
+        -:  939:    table below, "anything" means any character but the ones listed before.
+        -:  940:
+        -:  941:    state    | 0        | 1-9      | e E      | +       | -       | .        | anything
+        -:  942:    ---------|----------|----------|----------|---------|---------|----------|-----------
+        -:  943:    init     | zero     | any1     | [error]  | [error] | minus   | [error]  | [error]
+        -:  944:    minus    | zero     | any1     | [error]  | [error] | [error] | [error]  | [error]
+        -:  945:    zero     | done     | done     | exponent | done    | done    | decimal1 | done
+        -:  946:    any1     | any1     | any1     | exponent | done    | done    | decimal1 | done
+        -:  947:    decimal1 | decimal2 | decimal2 | [error]  | [error] | [error] | [error]  | [error]
+        -:  948:    decimal2 | decimal2 | decimal2 | exponent | done    | done    | done     | done
+        -:  949:    exponent | any2     | any2     | [error]  | sign    | sign    | [error]  | [error]
+        -:  950:    sign     | any2     | any2     | [error]  | [error] | [error] | [error]  | [error]
+        -:  951:    any2     | any2     | any2     | done     | done    | done    | done     | done
+        -:  952:
+        -:  953:    The state machine is realized with one label per state (prefixed with
+        -:  954:    "scan_number_") and `goto` statements between them. The state machine
+        -:  955:    contains cycles, but any cycle can be left when EOF is read. Therefore,
+        -:  956:    the function is guaranteed to terminate.
+        -:  957:
+        -:  958:    During scanning, the read bytes are stored in token_buffer. This string is
+        -:  959:    then converted to a signed integer, an unsigned integer, or a
+        -:  960:    floating-point number.
+        -:  961:
+        -:  962:    @return token_type::value_unsigned, token_type::value_integer, or
+        -:  963:            token_type::value_float if number could be successfully scanned,
+        -:  964:            token_type::parse_error otherwise
+        -:  965:
+        -:  966:    @note The scanner is independent of the current locale. Internally, the
+        -:  967:          locale's decimal point is used instead of `.` to work with the
+        -:  968:          locale-dependent converters.
+        -:  969:    */
+function _ZN8nlohmann16json_abi_v3_11_36detail5lexerINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEENS1_20input_stream_adapterEE11scan_numberEv called 18 returned 100% blocks executed 45%
+       18:  970:    token_type scan_number()  // lgtm [cpp/use-of-goto]
+        -:  971:    {
+        -:  972:        // reset token_buffer to store the number's bytes
+       18:  973:        reset();
+       18:  973-block  0
+call    0 returned 18
+        -:  974:
+        -:  975:        // the type of the parsed number; initially set to unsigned; will be
+        -:  976:        // changed if minus sign, decimal point or exponent is read
+       18:  977:        token_type number_type = token_type::value_unsigned;
+        -:  978:
+        -:  979:        // state (init): we just found out we need to scan a number
+       18:  980:        switch (current)
+branch  0 taken 0
+branch  1 taken 0
+branch  2 taken 18
+branch  3 taken 0
+        -:  981:        {
+    #####:  982:            case '-':
+        -:  983:            {
+    #####:  984:                add(current);
+    %%%%%:  984-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    #####:  985:                goto scan_number_minus;
+    %%%%%:  985-block  0
+        -:  986:            }
+        -:  987:
+    #####:  988:            case '0':
+        -:  989:            {
+    #####:  990:                add(current);
+    %%%%%:  990-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    #####:  991:                goto scan_number_zero;
+    %%%%%:  991-block  0
+        -:  992:            }
+        -:  993:
+       18:  994:            case '1':
+        -:  995:            case '2':
+        -:  996:            case '3':
+        -:  997:            case '4':
+        -:  998:            case '5':
+        -:  999:            case '6':
+        -: 1000:            case '7':
+        -: 1001:            case '8':
+        -: 1002:            case '9':
+        -: 1003:            {
+       18: 1004:                add(current);
+       18: 1004-block  0
+call    0 returned 18
+branch  1 taken 18 (fallthrough)
+branch  2 taken 0 (throw)
+       18: 1005:                goto scan_number_any1;
+       18: 1005-block  0
+        -: 1006:            }
+        -: 1007:
+        -: 1008:            // all other characters are rejected outside scan_number()
+    #####: 1009:            default:            // LCOV_EXCL_LINE
+    #####: 1010:                JSON_ASSERT(false); // NOLINT(cert-dcl03-c,hicpp-static-assert,misc-static-assert) LCOV_EXCL_LINE
+    %%%%%: 1010-block  0
+call    0 never executed
+        -: 1011:        }
+        -: 1012:
+    #####: 1013:scan_number_minus:
+        -: 1014:        // state: we just parsed a leading minus sign
+    #####: 1015:        number_type = token_type::value_integer;
+    #####: 1016:        switch (get())
+    %%%%%: 1016-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%: 1016-block  1
+branch  3 never executed
+branch  4 never executed
+branch  5 never executed
+        -: 1017:        {
+    #####: 1018:            case '0':
+        -: 1019:            {
+    #####: 1020:                add(current);
+    %%%%%: 1020-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    #####: 1021:                goto scan_number_zero;
+    %%%%%: 1021-block  0
+        -: 1022:            }
+        -: 1023:
+    #####: 1024:            case '1':
+        -: 1025:            case '2':
+        -: 1026:            case '3':
+        -: 1027:            case '4':
+        -: 1028:            case '5':
+        -: 1029:            case '6':
+        -: 1030:            case '7':
+        -: 1031:            case '8':
+        -: 1032:            case '9':
+        -: 1033:            {
+    #####: 1034:                add(current);
+    %%%%%: 1034-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    #####: 1035:                goto scan_number_any1;
+    %%%%%: 1035-block  0
+        -: 1036:            }
+        -: 1037:
+    #####: 1038:            default:
+        -: 1039:            {
+    #####: 1040:                error_message = "invalid number; expected digit after '-'";
+    #####: 1041:                return token_type::parse_error;
+    %%%%%: 1041-block  0
+        -: 1042:            }
+        -: 1043:        }
+        -: 1044:
+    #####: 1045:scan_number_zero:
+        -: 1046:        // state: we just parse a zero (maybe with a leading minus sign)
+    #####: 1047:        switch (get())
+    %%%%%: 1047-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%: 1047-block  1
+branch  3 never executed
+branch  4 never executed
+branch  5 never executed
+        -: 1048:        {
+    #####: 1049:            case '.':
+        -: 1050:            {
+    #####: 1051:                add(decimal_point_char);
+    %%%%%: 1051-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    #####: 1052:                goto scan_number_decimal1;
+    %%%%%: 1052-block  0
+        -: 1053:            }
+        -: 1054:
+    #####: 1055:            case 'e':
+        -: 1056:            case 'E':
+        -: 1057:            {
+    #####: 1058:                add(current);
+    %%%%%: 1058-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    #####: 1059:                goto scan_number_exponent;
+    %%%%%: 1059-block  0
+        -: 1060:            }
+        -: 1061:
+    #####: 1062:            default:
+    #####: 1063:                goto scan_number_done;
+    %%%%%: 1063-block  0
+        -: 1064:        }
+        -: 1065:
+       85: 1066:scan_number_any1:
+        -: 1067:        // state: we just parsed a number 0-9 (maybe with a leading minus sign)
+       85: 1068:        switch (get())
+       85: 1068-block  0
+call    0 returned 85
+branch  1 taken 85 (fallthrough)
+branch  2 taken 0 (throw)
+       85: 1068-block  1
+branch  3 taken 67
+branch  4 taken 6
+branch  5 taken 0
+branch  6 taken 12
+        -: 1069:        {
+       67: 1070:            case '0':
+        -: 1071:            case '1':
+        -: 1072:            case '2':
+        -: 1073:            case '3':
+        -: 1074:            case '4':
+        -: 1075:            case '5':
+        -: 1076:            case '6':
+        -: 1077:            case '7':
+        -: 1078:            case '8':
+        -: 1079:            case '9':
+        -: 1080:            {
+       67: 1081:                add(current);
+       67: 1081-block  0
+call    0 returned 67
+branch  1 taken 67 (fallthrough)
+branch  2 taken 0 (throw)
+       67: 1082:                goto scan_number_any1;
+       67: 1082-block  0
+        -: 1083:            }
+        -: 1084:
+        6: 1085:            case '.':
+        -: 1086:            {
+        6: 1087:                add(decimal_point_char);
+        6: 1087-block  0
+call    0 returned 6
+branch  1 taken 6 (fallthrough)
+branch  2 taken 0 (throw)
+        6: 1088:                goto scan_number_decimal1;
+        6: 1088-block  0
+        -: 1089:            }
+        -: 1090:
+    #####: 1091:            case 'e':
+        -: 1092:            case 'E':
+        -: 1093:            {
+    #####: 1094:                add(current);
+    %%%%%: 1094-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    #####: 1095:                goto scan_number_exponent;
+    %%%%%: 1095-block  0
+        -: 1096:            }
+        -: 1097:
+       12: 1098:            default:
+       12: 1099:                goto scan_number_done;
+       12: 1099-block  0
+        -: 1100:        }
+        -: 1101:
+        6: 1102:scan_number_decimal1:
+        -: 1103:        // state: we just parsed a decimal point
+        6: 1104:        number_type = token_type::value_float;
+        6: 1105:        switch (get())
+        6: 1105-block  0
+call    0 returned 6
+branch  1 taken 6 (fallthrough)
+branch  2 taken 0 (throw)
+        6: 1105-block  1
+branch  3 taken 6 (fallthrough)
+branch  4 taken 0
+        -: 1106:        {
+        6: 1107:            case '0':
+        -: 1108:            case '1':
+        -: 1109:            case '2':
+        -: 1110:            case '3':
+        -: 1111:            case '4':
+        -: 1112:            case '5':
+        -: 1113:            case '6':
+        -: 1114:            case '7':
+        -: 1115:            case '8':
+        -: 1116:            case '9':
+        -: 1117:            {
+        6: 1118:                add(current);
+        6: 1118-block  0
+call    0 returned 6
+branch  1 taken 6 (fallthrough)
+branch  2 taken 0 (throw)
+        6: 1119:                goto scan_number_decimal2;
+        6: 1119-block  0
+        -: 1120:            }
+        -: 1121:
+    #####: 1122:            default:
+        -: 1123:            {
+    #####: 1124:                error_message = "invalid number; expected digit after '.'";
+    #####: 1125:                return token_type::parse_error;
+    %%%%%: 1125-block  0
+        -: 1126:            }
+        -: 1127:        }
+        -: 1128:
+        7: 1129:scan_number_decimal2:
+        -: 1130:        // we just parsed at least one number after a decimal point
+        7: 1131:        switch (get())
+        7: 1131-block  0
+call    0 returned 7
+branch  1 taken 7 (fallthrough)
+branch  2 taken 0 (throw)
+        7: 1131-block  1
+branch  3 taken 1
+branch  4 taken 0
+branch  5 taken 6
+        -: 1132:        {
+        1: 1133:            case '0':
+        -: 1134:            case '1':
+        -: 1135:            case '2':
+        -: 1136:            case '3':
+        -: 1137:            case '4':
+        -: 1138:            case '5':
+        -: 1139:            case '6':
+        -: 1140:            case '7':
+        -: 1141:            case '8':
+        -: 1142:            case '9':
+        -: 1143:            {
+        1: 1144:                add(current);
+        1: 1144-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1: 1145:                goto scan_number_decimal2;
+        1: 1145-block  0
+        -: 1146:            }
+        -: 1147:
+    #####: 1148:            case 'e':
+        -: 1149:            case 'E':
+        -: 1150:            {
+    #####: 1151:                add(current);
+    %%%%%: 1151-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    #####: 1152:                goto scan_number_exponent;
+    %%%%%: 1152-block  0
+        -: 1153:            }
+        -: 1154:
+        6: 1155:            default:
+        6: 1156:                goto scan_number_done;
+        6: 1156-block  0
+        -: 1157:        }
+        -: 1158:
+    #####: 1159:scan_number_exponent:
+        -: 1160:        // we just parsed an exponent
+    #####: 1161:        number_type = token_type::value_float;
+    #####: 1162:        switch (get())
+    %%%%%: 1162-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%: 1162-block  1
+branch  3 never executed
+branch  4 never executed
+branch  5 never executed
+        -: 1163:        {
+    #####: 1164:            case '+':
+        -: 1165:            case '-':
+        -: 1166:            {
+    #####: 1167:                add(current);
+    %%%%%: 1167-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    #####: 1168:                goto scan_number_sign;
+    %%%%%: 1168-block  0
+        -: 1169:            }
+        -: 1170:
+    #####: 1171:            case '0':
+        -: 1172:            case '1':
+        -: 1173:            case '2':
+        -: 1174:            case '3':
+        -: 1175:            case '4':
+        -: 1176:            case '5':
+        -: 1177:            case '6':
+        -: 1178:            case '7':
+        -: 1179:            case '8':
+        -: 1180:            case '9':
+        -: 1181:            {
+    #####: 1182:                add(current);
+    %%%%%: 1182-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    #####: 1183:                goto scan_number_any2;
+    %%%%%: 1183-block  0
+        -: 1184:            }
+        -: 1185:
+    #####: 1186:            default:
+        -: 1187:            {
+    #####: 1188:                error_message =
+        -: 1189:                    "invalid number; expected '+', '-', or digit after exponent";
+    #####: 1190:                return token_type::parse_error;
+    %%%%%: 1190-block  0
+        -: 1191:            }
+        -: 1192:        }
+        -: 1193:
+    #####: 1194:scan_number_sign:
+        -: 1195:        // we just parsed an exponent sign
+    #####: 1196:        switch (get())
+    %%%%%: 1196-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%: 1196-block  1
+branch  3 never executed (fallthrough)
+branch  4 never executed
+        -: 1197:        {
+    #####: 1198:            case '0':
+        -: 1199:            case '1':
+        -: 1200:            case '2':
+        -: 1201:            case '3':
+        -: 1202:            case '4':
+        -: 1203:            case '5':
+        -: 1204:            case '6':
+        -: 1205:            case '7':
+        -: 1206:            case '8':
+        -: 1207:            case '9':
+        -: 1208:            {
+    #####: 1209:                add(current);
+    %%%%%: 1209-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    #####: 1210:                goto scan_number_any2;
+    %%%%%: 1210-block  0
+        -: 1211:            }
+        -: 1212:
+    #####: 1213:            default:
+        -: 1214:            {
+    #####: 1215:                error_message = "invalid number; expected digit after exponent sign";
+    #####: 1216:                return token_type::parse_error;
+    %%%%%: 1216-block  0
+        -: 1217:            }
+        -: 1218:        }
+        -: 1219:
+    #####: 1220:scan_number_any2:
+        -: 1221:        // we just parsed a number after the exponent or exponent sign
+    #####: 1222:        switch (get())
+    %%%%%: 1222-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%: 1222-block  1
+branch  3 never executed (fallthrough)
+branch  4 never executed
+        -: 1223:        {
+    #####: 1224:            case '0':
+        -: 1225:            case '1':
+        -: 1226:            case '2':
+        -: 1227:            case '3':
+        -: 1228:            case '4':
+        -: 1229:            case '5':
+        -: 1230:            case '6':
+        -: 1231:            case '7':
+        -: 1232:            case '8':
+        -: 1233:            case '9':
+        -: 1234:            {
+    #####: 1235:                add(current);
+    %%%%%: 1235-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    #####: 1236:                goto scan_number_any2;
+    %%%%%: 1236-block  0
+        -: 1237:            }
+        -: 1238:
+    #####: 1239:            default:
+    #####: 1240:                goto scan_number_done;
+    %%%%%: 1240-block  0
+        -: 1241:        }
+        -: 1242:
+       18: 1243:scan_number_done:
+        -: 1244:        // unget the character after the number (we only read it to know that
+        -: 1245:        // we are done scanning a number)
+       18: 1246:        unget();
+       18: 1246-block  0
+call    0 returned 18
+branch  1 taken 18 (fallthrough)
+branch  2 taken 0 (throw)
+        -: 1247:
+       18: 1248:        char* endptr = nullptr; // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+       18: 1249:        errno = 0;
+       18: 1249-block  0
+call    0 returned 18
+branch  1 taken 18 (fallthrough)
+branch  2 taken 0 (throw)
+        -: 1250:
+        -: 1251:        // try to parse integers first and fall back to floats
+       18: 1252:        if (number_type == token_type::value_unsigned)
+       18: 1252-block  0
+branch  0 taken 12 (fallthrough)
+branch  1 taken 6
+        -: 1253:        {
+       12: 1254:            const auto x = std::strtoull(token_buffer.data(), &endptr, 10);
+       12: 1254-block  0
+call    0 returned 12
+call    1 returned 12
+        -: 1255:
+        -: 1256:            // we checked the number format before
+      12*: 1257:            JSON_ASSERT(endptr == token_buffer.data() + token_buffer.size());
+call    0 returned 12
+call    1 returned 12
+branch  2 taken 0 (fallthrough)
+branch  3 taken 12
+    %%%%%: 1257-block  0
+call    4 never executed
+       12: 1257-block  1
+        -: 1258:
+       12: 1259:            if (errno == 0)
+       12: 1259-block  0
+call    0 returned 12
+branch  1 taken 12 (fallthrough)
+branch  2 taken 0 (throw)
+       12: 1259-block  1
+branch  3 taken 12 (fallthrough)
+branch  4 taken 0
+        -: 1260:            {
+       12: 1261:                value_unsigned = static_cast<number_unsigned_t>(x);
+       12: 1262:                if (value_unsigned == x)
+       12: 1262-block  0
+branch  0 taken 12 (fallthrough)
+branch  1 taken 0
+        -: 1263:                {
+       12: 1264:                    return token_type::value_unsigned;
+       12: 1264-block  0
+        -: 1265:                }
+        -: 1266:            }
+        -: 1267:        }
+        6: 1268:        else if (number_type == token_type::value_integer)
+        6: 1268-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 6
+        -: 1269:        {
+    #####: 1270:            const auto x = std::strtoll(token_buffer.data(), &endptr, 10);
+    %%%%%: 1270-block  0
+call    0 never executed
+call    1 never executed
+        -: 1271:
+        -: 1272:            // we checked the number format before
+    #####: 1273:            JSON_ASSERT(endptr == token_buffer.data() + token_buffer.size());
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed
+    %%%%%: 1273-block  0
+call    4 never executed
+    %%%%%: 1273-block  1
+        -: 1274:
+    #####: 1275:            if (errno == 0)
+    %%%%%: 1275-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%: 1275-block  1
+branch  3 never executed (fallthrough)
+branch  4 never executed
+        -: 1276:            {
+    #####: 1277:                value_integer = static_cast<number_integer_t>(x);
+    #####: 1278:                if (value_integer == x)
+    %%%%%: 1278-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -: 1279:                {
+    #####: 1280:                    return token_type::value_integer;
+    %%%%%: 1280-block  0
+        -: 1281:                }
+        -: 1282:            }
+        -: 1283:        }
+        -: 1284:
+        -: 1285:        // this code is reached if we parse a floating-point number or if an
+        -: 1286:        // integer conversion above failed
+        6: 1287:        strtof(value_float, token_buffer.data(), &endptr);
+        6: 1287-block  0
+call    0 returned 6
+call    1 returned 6
+        -: 1288:
+        -: 1289:        // we checked the number format before
+       6*: 1290:        JSON_ASSERT(endptr == token_buffer.data() + token_buffer.size());
+call    0 returned 6
+call    1 returned 6
+branch  2 taken 0 (fallthrough)
+branch  3 taken 6
+    %%%%%: 1290-block  0
+call    4 never executed
+        6: 1290-block  1
+        -: 1291:
+        6: 1292:        return token_type::value_float;
+        6: 1292-block  0
+        -: 1293:    }
+        -: 1294:
+        -: 1295:    /*!
+        -: 1296:    @param[in] literal_text  the literal text to expect
+        -: 1297:    @param[in] length        the length of the passed literal text
+        -: 1298:    @param[in] return_type   the token type to return on success
+        -: 1299:    */
+        -: 1300:    JSON_HEDLEY_NON_NULL(2)
+function _ZN8nlohmann16json_abi_v3_11_36detail5lexerINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEENS1_20input_stream_adapterEE12scan_literalEPKcyNS1_10lexer_baseISF_E10token_typeE called 0 returned 0% blocks executed 0%
+    #####: 1301:    token_type scan_literal(const char_type* literal_text, const std::size_t length,
+        -: 1302:                            token_type return_type)
+        -: 1303:    {
+    #####: 1304:        JSON_ASSERT(char_traits<char_type>::to_char_type(current) == literal_text[0]);
+    %%%%%: 1304-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+    %%%%%: 1304-block  1
+call    3 never executed
+    %%%%%: 1304-block  2
+    #####: 1305:        for (std::size_t i = 1; i < length; ++i)
+    %%%%%: 1305-block  0
+    %%%%%: 1305-block  1
+    %%%%%: 1305-block  2
+branch  0 never executed
+branch  1 never executed (fallthrough)
+        -: 1306:        {
+    #####: 1307:            if (JSON_HEDLEY_UNLIKELY(char_traits<char_type>::to_char_type(get()) != literal_text[i]))
+    %%%%%: 1307-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%: 1307-block  1
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed
+        -: 1308:            {
+    #####: 1309:                error_message = "invalid literal";
+    #####: 1310:                return token_type::parse_error;
+    %%%%%: 1310-block  0
+        -: 1311:            }
+        -: 1312:        }
+    #####: 1313:        return return_type;
+    %%%%%: 1313-block  0
+        -: 1314:    }
+        -: 1315:
+        -: 1316:    /////////////////////
+        -: 1317:    // input management
+        -: 1318:    /////////////////////
+        -: 1319:
+        -: 1320:    /// reset token_buffer; current character is beginning of token
+function _ZN8nlohmann16json_abi_v3_11_36detail5lexerINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEENS1_20input_stream_adapterEE5resetEv called 144 returned 100% blocks executed 100%
+      144: 1321:    void reset() noexcept
+        -: 1322:    {
+      144: 1323:        token_buffer.clear();
+      144: 1323-block  0
+call    0 returned 144
+      144: 1324:        token_string.clear();
+call    0 returned 144
+      144: 1325:        token_string.push_back(char_traits<char_type>::to_char_type(current));
+call    0 returned 144
+call    1 returned 144
+      144: 1326:    }
+        -: 1327:
+        -: 1328:    /*
+        -: 1329:    @brief get next character from the input
+        -: 1330:
+        -: 1331:    This function provides the interface to the used input adapter. It does
+        -: 1332:    not throw in case the input reached EOF, but returns a
+        -: 1333:    `char_traits<char>::eof()` in that case.  Stores the scanned characters
+        -: 1334:    for use in error messages.
+        -: 1335:
+        -: 1336:    @return character read from the input
+        -: 1337:    */
+function _ZN8nlohmann16json_abi_v3_11_36detail5lexerINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEENS1_20input_stream_adapterEE3getEv called 2238 returned 100% blocks executed 100%
+     2238: 1338:    char_int_type get()
+        -: 1339:    {
+     2238: 1340:        ++position.chars_read_total;
+     2238: 1341:        ++position.chars_read_current_line;
+        -: 1342:
+     2238: 1343:        if (next_unget)
+     2238: 1343-block  0
+branch  0 taken 24 (fallthrough)
+branch  1 taken 2214
+        -: 1344:        {
+        -: 1345:            // just reset the next_unget variable and work with current
+       24: 1346:            next_unget = false;
+       24: 1346-block  0
+        -: 1347:        }
+        -: 1348:        else
+        -: 1349:        {
+     2214: 1350:            current = ia.get_character();
+     2214: 1350-block  0
+call    0 returned 2214
+        -: 1351:        }
+        -: 1352:
+     2238: 1353:        if (JSON_HEDLEY_LIKELY(current != char_traits<char_type>::eof()))
+     2238: 1353-block  0
+call    0 returned 2238
+branch  1 taken 2238 (fallthrough)
+branch  2 taken 0
+        -: 1354:        {
+     2238: 1355:            token_string.push_back(char_traits<char_type>::to_char_type(current));
+     2238: 1355-block  0
+call    0 returned 2238
+call    1 returned 2238
+branch  2 taken 2238 (fallthrough)
+branch  3 taken 0 (throw)
+     2238: 1355-block  1
+        -: 1356:        }
+        -: 1357:
+     2238: 1358:        if (current == '\n')
+     2238: 1358-block  0
+branch  0 taken 91 (fallthrough)
+branch  1 taken 2147
+        -: 1359:        {
+       91: 1360:            ++position.lines_read;
+       91: 1361:            position.chars_read_current_line = 0;
+       91: 1361-block  0
+        -: 1362:        }
+        -: 1363:
+     2238: 1364:        return current;
+     2238: 1364-block  0
+     2238: 1364-block  1
+        -: 1365:    }
+        -: 1366:
+        -: 1367:    /*!
+        -: 1368:    @brief unget current character (read it again on next get)
+        -: 1369:
+        -: 1370:    We implement unget by setting variable next_unget to true. The input is not
+        -: 1371:    changed - we just simulate ungetting by modifying chars_read_total,
+        -: 1372:    chars_read_current_line, and token_string. The next call to get() will
+        -: 1373:    behave as if the unget character is read again.
+        -: 1374:    */
+function _ZN8nlohmann16json_abi_v3_11_36detail5lexerINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEENS1_20input_stream_adapterEE5ungetEv called 24 returned 100% blocks executed 92%
+       24: 1375:    void unget()
+        -: 1376:    {
+       24: 1377:        next_unget = true;
+        -: 1378:
+       24: 1379:        --position.chars_read_total;
+        -: 1380:
+        -: 1381:        // in case we "unget" a newline, we have to also decrement the lines_read
+       24: 1382:        if (position.chars_read_current_line == 0)
+       24: 1382-block  0
+branch  0 taken 6 (fallthrough)
+branch  1 taken 18
+        -: 1383:        {
+        6: 1384:            if (position.lines_read > 0)
+        6: 1384-block  0
+branch  0 taken 6 (fallthrough)
+branch  1 taken 0
+        -: 1385:            {
+        6: 1386:                --position.lines_read;
+        6: 1386-block  0
+        -: 1387:            }
+        -: 1388:        }
+        -: 1389:        else
+        -: 1390:        {
+       18: 1391:            --position.chars_read_current_line;
+       18: 1391-block  0
+        -: 1392:        }
+        -: 1393:
+       24: 1394:        if (JSON_HEDLEY_LIKELY(current != char_traits<char_type>::eof()))
+       24: 1394-block  0
+call    0 returned 24
+branch  1 taken 24 (fallthrough)
+branch  2 taken 0
+        -: 1395:        {
+      24*: 1396:            JSON_ASSERT(!token_string.empty());
+       24: 1396-block  0
+call    0 returned 24
+branch  1 taken 0 (fallthrough)
+branch  2 taken 24
+    %%%%%: 1396-block  1
+call    3 never executed
+       24: 1396-block  2
+       24: 1397:            token_string.pop_back();
+       24: 1397-block  0
+call    0 returned 24
+        -: 1398:        }
+       24: 1399:    }
+        -: 1400:
+        -: 1401:    /// add a character to token_buffer
+function _ZN8nlohmann16json_abi_v3_11_36detail5lexerINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEENS1_20input_stream_adapterEE3addEi called 1014 returned 100% blocks executed 100%
+     1014: 1402:    void add(char_int_type c)
+        -: 1403:    {
+     1014: 1404:        token_buffer.push_back(static_cast<typename string_t::value_type>(c));
+     1014: 1404-block  0
+call    0 returned 1014
+     1014: 1405:    }
+        -: 1406:
+        -: 1407:  public:
+        -: 1408:    /////////////////////
+        -: 1409:    // value getters
+        -: 1410:    /////////////////////
+        -: 1411:
+        -: 1412:    /// return integer value
+function _ZNK8nlohmann16json_abi_v3_11_36detail5lexerINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEENS1_20input_stream_adapterEE18get_number_integerEv called 0 returned 0% blocks executed 0%
+    #####: 1413:    constexpr number_integer_t get_number_integer() const noexcept
+        -: 1414:    {
+    #####: 1415:        return value_integer;
+    %%%%%: 1415-block  0
+        -: 1416:    }
+        -: 1417:
+        -: 1418:    /// return unsigned integer value
+function _ZNK8nlohmann16json_abi_v3_11_36detail5lexerINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEENS1_20input_stream_adapterEE19get_number_unsignedEv called 12 returned 100% blocks executed 100%
+       12: 1419:    constexpr number_unsigned_t get_number_unsigned() const noexcept
+        -: 1420:    {
+       12: 1421:        return value_unsigned;
+       12: 1421-block  0
+        -: 1422:    }
+        -: 1423:
+        -: 1424:    /// return floating-point value
+function _ZNK8nlohmann16json_abi_v3_11_36detail5lexerINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEENS1_20input_stream_adapterEE16get_number_floatEv called 6 returned 100% blocks executed 100%
+        6: 1425:    constexpr number_float_t get_number_float() const noexcept
+        -: 1426:    {
+        6: 1427:        return value_float;
+        6: 1427-block  0
+        -: 1428:    }
+        -: 1429:
+        -: 1430:    /// return current string value (implicitly resets the token; useful only once)
+function _ZN8nlohmann16json_abi_v3_11_36detail5lexerINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEENS1_20input_stream_adapterEE10get_stringEv called 132 returned 100% blocks executed 100%
+      132: 1431:    string_t& get_string()
+        -: 1432:    {
+      132: 1433:        return token_buffer;
+      132: 1433-block  0
+        -: 1434:    }
+        -: 1435:
+        -: 1436:    /////////////////////
+        -: 1437:    // diagnostics
+        -: 1438:    /////////////////////
+        -: 1439:
+        -: 1440:    /// return position of last read token
+function _ZNK8nlohmann16json_abi_v3_11_36detail5lexerINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEENS1_20input_stream_adapterEE12get_positionEv called 0 returned 0% blocks executed 0%
+    #####: 1441:    constexpr position_t get_position() const noexcept
+        -: 1442:    {
+    #####: 1443:        return position;
+    %%%%%: 1443-block  0
+        -: 1444:    }
+        -: 1445:
+        -: 1446:    /// return the last read token (for errors only).  Will never contain EOF
+        -: 1447:    /// (an arbitrary value that is not a valid char value, often -1), because
+        -: 1448:    /// 255 may legitimately occur.  May contain NUL, which should be escaped.
+function _ZNK8nlohmann16json_abi_v3_11_36detail5lexerINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEENS1_20input_stream_adapterEE16get_token_stringEv called 0 returned 0% blocks executed 0%
+    #####: 1449:    std::string get_token_string() const
+        -: 1450:    {
+        -: 1451:        // escape control characters
+    #####: 1452:        std::string result;
+    %%%%%: 1452-block  0
+call    0 never executed
+    #####: 1453:        for (const auto c : token_string)
+call    0 never executed
+call    1 never executed
+    %%%%%: 1453-block  0
+call    2 never executed
+    %%%%%: 1453-block  1
+call    3 never executed
+    %%%%%: 1453-block  2
+call    4 never executed
+branch  5 never executed
+branch  6 never executed (fallthrough)
+        -: 1454:        {
+    #####: 1455:            if (static_cast<unsigned char>(c) <= '\x1F')
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -: 1456:            {
+        -: 1457:                // escape control characters
+    #####: 1458:                std::array<char, 9> cs{{}};
+    #####: 1459:                static_cast<void>((std::snprintf)(cs.data(), cs.size(), "<U+%.4X>", static_cast<unsigned char>(c))); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+    %%%%%: 1459-block  0
+    %%%%%: 1459-block  1
+    %%%%%: 1459-block  2
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    #####: 1460:                result += cs.data();
+    %%%%%: 1460-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+        -: 1461:            }
+        -: 1462:            else
+        -: 1463:            {
+        -: 1464:                // add character as is
+    #####: 1465:                result.push_back(static_cast<std::string::value_type>(c));
+    %%%%%: 1465-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+        -: 1466:            }
+        -: 1467:        }
+        -: 1468:
+    #####: 1469:        return result;
+    %%%%%: 1469-block  0
+    %%%%%: 1469-block  1
+    =====: 1470:    }
+    $$$$$: 1470-block  0
+call    0 never executed
+        -: 1471:
+        -: 1472:    /// return syntax error message
+        -: 1473:    JSON_HEDLEY_RETURNS_NON_NULL
+function _ZNK8nlohmann16json_abi_v3_11_36detail5lexerINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEENS1_20input_stream_adapterEE17get_error_messageEv called 0 returned 0% blocks executed 0%
+    #####: 1474:    constexpr const char* get_error_message() const noexcept
+        -: 1475:    {
+    #####: 1476:        return error_message;
+    %%%%%: 1476-block  0
+        -: 1477:    }
+        -: 1478:
+        -: 1479:    /////////////////////
+        -: 1480:    // actual scanner
+        -: 1481:    /////////////////////
+        -: 1482:
+        -: 1483:    /*!
+        -: 1484:    @brief skip the UTF-8 byte order mark
+        -: 1485:    @return true iff there is no BOM or the correct BOM has been skipped
+        -: 1486:    */
+function _ZN8nlohmann16json_abi_v3_11_36detail5lexerINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEENS1_20input_stream_adapterEE8skip_bomEv called 6 returned 100% blocks executed 42%
+        6: 1487:    bool skip_bom()
+        -: 1488:    {
+        6: 1489:        if (get() == 0xEF)
+        6: 1489-block  0
+call    0 returned 6
+branch  1 taken 0 (fallthrough)
+branch  2 taken 6
+        -: 1490:        {
+        -: 1491:            // check if we completely parse the BOM
+    #####: 1492:            return get() == 0xBB && get() == 0xBF;
+    %%%%%: 1492-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+    %%%%%: 1492-block  1
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed
+    %%%%%: 1492-block  2
+    %%%%%: 1492-block  3
+    %%%%%: 1492-block  4
+        -: 1493:        }
+        -: 1494:
+        -: 1495:        // the first character is not the beginning of the BOM; unget it to
+        -: 1496:        // process is later
+        6: 1497:        unget();
+        6: 1497-block  0
+call    0 returned 6
+        6: 1498:        return true;
+        -: 1499:    }
+        -: 1500:
+function _ZN8nlohmann16json_abi_v3_11_36detail5lexerINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEENS1_20input_stream_adapterEE15skip_whitespaceEv called 311 returned 100% blocks executed 100%
+     1092: 1501:    void skip_whitespace()
+        -: 1502:    {
+        -: 1503:        do
+        -: 1504:        {
+     1092: 1505:            get();
+     1092: 1505-block  0
+call    0 returned 1092
+        -: 1506:        }
+     1092: 1507:        while (current == ' ' || current == '\t' || current == '\n' || current == '\r');
+branch  0 taken 696
+branch  1 taken 396 (fallthrough)
+      396: 1507-block  0
+branch  2 taken 0
+branch  3 taken 396 (fallthrough)
+      396: 1507-block  1
+branch  4 taken 85
+branch  5 taken 311 (fallthrough)
+      311: 1507-block  2
+branch  6 taken 0
+branch  7 taken 311 (fallthrough)
+      311: 1508:    }
+        -: 1509:
+function _ZN8nlohmann16json_abi_v3_11_36detail5lexerINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEENS1_20input_stream_adapterEE4scanEv called 311 returned 100% blocks executed 40%
+      311: 1510:    token_type scan()
+        -: 1511:    {
+        -: 1512:        // initially, skip the BOM
+     311*: 1513:        if (position.chars_read_total == 0 && !skip_bom())
+      311: 1513-block  0
+branch  0 taken 6 (fallthrough)
+branch  1 taken 305
+        6: 1513-block  1
+call    2 returned 6
+branch  3 taken 0 (fallthrough)
+branch  4 taken 6
+    %%%%%: 1513-block  2
+      311: 1513-block  3
+      311: 1513-block  4
+branch  5 taken 0 (fallthrough)
+branch  6 taken 311
+        -: 1514:        {
+    #####: 1515:            error_message = "invalid BOM; must be 0xEF 0xBB 0xBF if given";
+    #####: 1516:            return token_type::parse_error;
+    %%%%%: 1516-block  0
+        -: 1517:        }
+        -: 1518:
+        -: 1519:        // read next character and ignore whitespace
+      311: 1520:        skip_whitespace();
+      311: 1520-block  0
+call    0 returned 311
+        -: 1521:
+        -: 1522:        // ignore comments
+     311*: 1523:        while (ignore_comments && current == '/')
+      311: 1523-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 311
+    %%%%%: 1523-block  1
+branch  2 never executed
+branch  3 never executed (fallthrough)
+        -: 1524:        {
+    #####: 1525:            if (!scan_comment())
+    %%%%%: 1525-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+        -: 1526:            {
+    #####: 1527:                return token_type::parse_error;
+    %%%%%: 1527-block  0
+        -: 1528:            }
+        -: 1529:
+        -: 1530:            // skip following whitespace
+    #####: 1531:            skip_whitespace();
+    %%%%%: 1531-block  0
+call    0 never executed
+        -: 1532:        }
+        -: 1533:
+      311: 1534:        switch (current)
+      311: 1534-block  0
+branch  0 taken 6
+branch  1 taken 6
+branch  2 taken 6
+branch  3 taken 6
+branch  4 taken 72
+branch  5 taken 71
+branch  6 taken 0
+branch  7 taken 0
+branch  8 taken 0
+branch  9 taken 126
+branch 10 taken 18
+branch 11 taken 0
+branch 12 taken 0
+        -: 1535:        {
+        -: 1536:            // structural characters
+        6: 1537:            case '[':
+        6: 1538:                return token_type::begin_array;
+        6: 1538-block  0
+        6: 1539:            case ']':
+        6: 1540:                return token_type::end_array;
+        6: 1540-block  0
+        6: 1541:            case '{':
+        6: 1542:                return token_type::begin_object;
+        6: 1542-block  0
+        6: 1543:            case '}':
+        6: 1544:                return token_type::end_object;
+        6: 1544-block  0
+       72: 1545:            case ':':
+       72: 1546:                return token_type::name_separator;
+       72: 1546-block  0
+       71: 1547:            case ',':
+       71: 1548:                return token_type::value_separator;
+       71: 1548-block  0
+        -: 1549:
+        -: 1550:            // literals
+    #####: 1551:            case 't':
+        -: 1552:            {
+    #####: 1553:                std::array<char_type, 4> true_literal = {{static_cast<char_type>('t'), static_cast<char_type>('r'), static_cast<char_type>('u'), static_cast<char_type>('e')}};
+    %%%%%: 1553-block  0
+    #####: 1554:                return scan_literal(true_literal.data(), true_literal.size(), token_type::literal_true);
+    %%%%%: 1554-block  0
+    %%%%%: 1554-block  1
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%: 1554-block  2
+        -: 1555:            }
+    #####: 1556:            case 'f':
+        -: 1557:            {
+    #####: 1558:                std::array<char_type, 5> false_literal = {{static_cast<char_type>('f'), static_cast<char_type>('a'), static_cast<char_type>('l'), static_cast<char_type>('s'), static_cast<char_type>('e')}};
+    %%%%%: 1558-block  0
+    #####: 1559:                return scan_literal(false_literal.data(), false_literal.size(), token_type::literal_false);
+    %%%%%: 1559-block  0
+    %%%%%: 1559-block  1
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%: 1559-block  2
+        -: 1560:            }
+    #####: 1561:            case 'n':
+        -: 1562:            {
+    #####: 1563:                std::array<char_type, 4> null_literal = {{static_cast<char_type>('n'), static_cast<char_type>('u'), static_cast<char_type>('l'), static_cast<char_type>('l')}};
+    %%%%%: 1563-block  0
+    #####: 1564:                return scan_literal(null_literal.data(), null_literal.size(), token_type::literal_null);
+    %%%%%: 1564-block  0
+    %%%%%: 1564-block  1
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%: 1564-block  2
+        -: 1565:            }
+        -: 1566:
+        -: 1567:            // string
+      126: 1568:            case '\"':
+      126: 1569:                return scan_string();
+      126: 1569-block  0
+call    0 returned 126
+        -: 1570:
+        -: 1571:            // number
+       18: 1572:            case '-':
+        -: 1573:            case '0':
+        -: 1574:            case '1':
+        -: 1575:            case '2':
+        -: 1576:            case '3':
+        -: 1577:            case '4':
+        -: 1578:            case '5':
+        -: 1579:            case '6':
+        -: 1580:            case '7':
+        -: 1581:            case '8':
+        -: 1582:            case '9':
+       18: 1583:                return scan_number();
+       18: 1583-block  0
+call    0 returned 18
+        -: 1584:
+        -: 1585:            // end of input (the null byte is needed when parsing from
+        -: 1586:            // string literals)
+    #####: 1587:            case '\0':
+        -: 1588:            case char_traits<char_type>::eof():
+    #####: 1589:                return token_type::end_of_input;
+    %%%%%: 1589-block  0
+        -: 1590:
+        -: 1591:            // error
+    #####: 1592:            default:
+    #####: 1593:                error_message = "invalid literal";
+    #####: 1594:                return token_type::parse_error;
+    %%%%%: 1594-block  0
+        -: 1595:        }
+        -: 1596:    }
+        -: 1597:
+        -: 1598:  private:
+        -: 1599:    /// input adapter
+        -: 1600:    InputAdapterType ia;
+        -: 1601:
+        -: 1602:    /// whether comments should be ignored (true) or signaled as errors (false)
+        -: 1603:    const bool ignore_comments = false;
+        -: 1604:
+        -: 1605:    /// the current character
+        -: 1606:    char_int_type current = char_traits<char_type>::eof();
+        -: 1607:
+        -: 1608:    /// whether the next get() call should just return current
+        -: 1609:    bool next_unget = false;
+        -: 1610:
+        -: 1611:    /// the start position of the current token
+        -: 1612:    position_t position {};
+        -: 1613:
+        -: 1614:    /// raw input token string (for error messages)
+        -: 1615:    std::vector<char_type> token_string {};
+        -: 1616:
+        -: 1617:    /// buffer for variable-length tokens (numbers, strings)
+        -: 1618:    string_t token_buffer {};
+        -: 1619:
+        -: 1620:    /// a description of occurred lexer errors
+        -: 1621:    const char* error_message = "";
+        -: 1622:
+        -: 1623:    // number values
+        -: 1624:    number_integer_t value_integer = 0;
+        -: 1625:    number_unsigned_t value_unsigned = 0;
+        -: 1626:    number_float_t value_float = 0;
+        -: 1627:
+        -: 1628:    /// the decimal point
+        -: 1629:    const char_int_type decimal_point_char = '.';
+        -: 1630:};
+        -: 1631:
+        -: 1632:}  // namespace detail
+        -: 1633:NLOHMANN_JSON_NAMESPACE_END

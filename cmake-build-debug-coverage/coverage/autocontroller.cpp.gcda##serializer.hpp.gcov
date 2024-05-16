@@ -1,0 +1,2204 @@
+        -:    0:Source:C:/Users/rares/CLionProjects/OOP/Json-test/include/nlohmann/detail/output/serializer.hpp
+        -:    0:Graph:C:\Users\rares\CLionProjects\OOP\Json-test\cmake-build-debug-coverage\CMakeFiles\Json_test.dir\Controllers\AutoController\autocontroller.cpp.gcno
+        -:    0:Data:C:\Users\rares\CLionProjects\OOP\Json-test\cmake-build-debug-coverage\CMakeFiles\Json_test.dir\Controllers\AutoController\autocontroller.cpp.gcda
+        -:    0:Runs:1
+        -:    1://     __ _____ _____ _____
+        -:    2://  __|  |   __|     |   | |  JSON for Modern C++
+        -:    3:// |  |  |__   |  |  | | | |  version 3.11.3
+        -:    4:// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+        -:    5://
+        -:    6:// SPDX-FileCopyrightText: 2008-2009 Björn Hoehrmann <bjoern@hoehrmann.de>
+        -:    7:// SPDX-FileCopyrightText: 2013-2023 Niels Lohmann <https://nlohmann.me>
+        -:    8:// SPDX-License-Identifier: MIT
+        -:    9:
+        -:   10:#pragma once
+        -:   11:
+        -:   12:#include <algorithm> // reverse, remove, fill, find, none_of
+        -:   13:#include <array> // array
+        -:   14:#include <clocale> // localeconv, lconv
+        -:   15:#include <cmath> // labs, isfinite, isnan, signbit
+        -:   16:#include <cstddef> // size_t, ptrdiff_t
+        -:   17:#include <cstdint> // uint8_t
+        -:   18:#include <cstdio> // snprintf
+        -:   19:#include <limits> // numeric_limits
+        -:   20:#include <string> // string, char_traits
+        -:   21:#include <iomanip> // setfill, setw
+        -:   22:#include <type_traits> // is_same
+        -:   23:#include <utility> // move
+        -:   24:
+        -:   25:#include <nlohmann/detail/conversions/to_chars.hpp>
+        -:   26:#include <nlohmann/detail/exceptions.hpp>
+        -:   27:#include <nlohmann/detail/macro_scope.hpp>
+        -:   28:#include <nlohmann/detail/meta/cpp_future.hpp>
+        -:   29:#include <nlohmann/detail/output/binary_writer.hpp>
+        -:   30:#include <nlohmann/detail/output/output_adapters.hpp>
+        -:   31:#include <nlohmann/detail/string_concat.hpp>
+        -:   32:#include <nlohmann/detail/value_t.hpp>
+        -:   33:
+        -:   34:NLOHMANN_JSON_NAMESPACE_BEGIN
+        -:   35:namespace detail
+        -:   36:{
+        -:   37:
+        -:   38:///////////////////
+        -:   39:// serialization //
+        -:   40:///////////////////
+        -:   41:
+        -:   42:/// how to treat decoding errors
+        -:   43:enum class error_handler_t
+        -:   44:{
+        -:   45:    strict,  ///< throw a type_error exception in case of invalid UTF-8
+        -:   46:    replace, ///< replace invalid UTF-8 sequences with U+FFFD
+        -:   47:    ignore   ///< ignore invalid UTF-8 sequences
+        -:   48:};
+        -:   49:
+        -:   50:template<typename BasicJsonType>
+        -:   51:class serializer
+        -:   52:{
+        -:   53:    using string_t = typename BasicJsonType::string_t;
+        -:   54:    using number_float_t = typename BasicJsonType::number_float_t;
+        -:   55:    using number_integer_t = typename BasicJsonType::number_integer_t;
+        -:   56:    using number_unsigned_t = typename BasicJsonType::number_unsigned_t;
+        -:   57:    using binary_char_t = typename BasicJsonType::binary_t::value_type;
+        -:   58:    static constexpr std::uint8_t UTF8_ACCEPT = 0;
+        -:   59:    static constexpr std::uint8_t UTF8_REJECT = 1;
+        -:   60:
+        -:   61:  public:
+        -:   62:    /*!
+        -:   63:    @param[in] s  output stream to serialize to
+        -:   64:    @param[in] ichar  indentation character to use
+        -:   65:    @param[in] error_handler_  how to react on decoding errors
+        -:   66:    */
+function _ZN8nlohmann16json_abi_v3_11_36detail10serializerINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEEC1ESt10shared_ptrINS1_23output_adapter_protocolIcEEEcNS1_15error_handler_tE called 0 returned 0% blocks executed 0%
+    #####:   67:    serializer(output_adapter_t<char> s, const char ichar,
+        -:   68:               error_handler_t error_handler_ = error_handler_t::strict)
+    #####:   69:        : o(std::move(s))
+    %%%%%:   69-block  0
+call    0 never executed
+call    1 never executed
+    #####:   70:        , loc(std::localeconv())
+    #####:   71:        , thousands_sep(loc->thousands_sep == nullptr ? '\0' : std::char_traits<char>::to_char_type(* (loc->thousands_sep)))
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    %%%%%:   71-block  0
+call    2 never executed
+    %%%%%:   71-block  1
+    #####:   72:        , decimal_point(loc->decimal_point == nullptr ? '\0' : std::char_traits<char>::to_char_type(* (loc->decimal_point)))
+    %%%%%:   72-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    %%%%%:   72-block  1
+call    2 never executed
+    %%%%%:   72-block  2
+    #####:   73:        , indent_char(ichar)
+    #####:   74:        , indent_string(512, indent_char)
+    %%%%%:   74-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    $$$$$:   74-block  1
+    #####:   75:        , error_handler(error_handler_)
+call    0 never executed
+    %%%%%:   75-block  0
+    #####:   76:    {}
+    $$$$$:   76-block  0
+call    0 never executed
+        -:   77:
+        -:   78:    // delete because of pointer members
+        -:   79:    serializer(const serializer&) = delete;
+        -:   80:    serializer& operator=(const serializer&) = delete;
+        -:   81:    serializer(serializer&&) = delete;
+        -:   82:    serializer& operator=(serializer&&) = delete;
+function _ZN8nlohmann16json_abi_v3_11_36detail10serializerINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEED1Ev called 0 returned 0% blocks executed 0%
+    #####:   83:    ~serializer() = default;
+    %%%%%:   83-block  0
+call    0 never executed
+call    1 never executed
+        -:   84:
+        -:   85:    /*!
+        -:   86:    @brief internal implementation of the serialization function
+        -:   87:
+        -:   88:    This function is called by the public member function dump and organizes
+        -:   89:    the serialization internally. The indentation level is propagated as
+        -:   90:    additional parameter. In case of arrays and objects, the function is
+        -:   91:    called recursively.
+        -:   92:
+        -:   93:    - strings and object keys are escaped using `escape_string()`
+        -:   94:    - integer numbers are converted implicitly via `operator<<`
+        -:   95:    - floating-point numbers are converted to a string using `"%g"` format
+        -:   96:    - binary values are serialized as objects containing the subtype and the
+        -:   97:      byte array
+        -:   98:
+        -:   99:    @param[in] val               value to serialize
+        -:  100:    @param[in] pretty_print      whether the output shall be pretty-printed
+        -:  101:    @param[in] ensure_ascii If @a ensure_ascii is true, all non-ASCII characters
+        -:  102:    in the output are escaped with `\uXXXX` sequences, and the result consists
+        -:  103:    of ASCII characters only.
+        -:  104:    @param[in] indent_step       the indent level
+        -:  105:    @param[in] current_indent    the current indent level (only used internally)
+        -:  106:    */
+function _ZN8nlohmann16json_abi_v3_11_36detail10serializerINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE4dumpERKSF_bbjj called 0 returned 0% blocks executed 0%
+    #####:  107:    void dump(const BasicJsonType& val,
+        -:  108:              const bool pretty_print,
+        -:  109:              const bool ensure_ascii,
+        -:  110:              const unsigned int indent_step,
+        -:  111:              const unsigned int current_indent = 0)
+        -:  112:    {
+    #####:  113:        switch (val.m_data.m_type)
+    %%%%%:  113-block  0
+branch  0 never executed
+branch  1 never executed
+branch  2 never executed
+branch  3 never executed
+branch  4 never executed
+branch  5 never executed
+branch  6 never executed
+branch  7 never executed
+branch  8 never executed
+branch  9 never executed
+branch 10 never executed
+        -:  114:        {
+    #####:  115:            case value_t::object:
+        -:  116:            {
+    #####:  117:                if (val.m_data.m_value.object->empty())
+    %%%%%:  117-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+        -:  118:                {
+    #####:  119:                    o->write_characters("{}", 2);
+    %%%%%:  119-block  0
+call    0 never executed
+call    1 never executed
+    #####:  120:                    return;
+        -:  121:                }
+        -:  122:
+    #####:  123:                if (pretty_print)
+    %%%%%:  123-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  124:                {
+    #####:  125:                    o->write_characters("{\n", 2);
+    %%%%%:  125-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+        -:  126:
+        -:  127:                    // variable to hold indentation for recursive calls
+    #####:  128:                    const auto new_indent = current_indent + indent_step;
+    #####:  129:                    if (JSON_HEDLEY_UNLIKELY(indent_string.size() < new_indent))
+    %%%%%:  129-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+        -:  130:                    {
+    #####:  131:                        indent_string.resize(indent_string.size() * 2, ' ');
+    %%%%%:  131-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+        -:  132:                    }
+        -:  133:
+        -:  134:                    // first n-1 elements
+    #####:  135:                    auto i = val.m_data.m_value.object->cbegin();
+    %%%%%:  135-block  0
+call    0 never executed
+    #####:  136:                    for (std::size_t cnt = 0; cnt < val.m_data.m_value.object->size() - 1; ++cnt, ++i)
+    %%%%%:  136-block  0
+call    0 never executed
+    %%%%%:  136-block  1
+call    1 never executed
+branch  2 never executed
+branch  3 never executed (fallthrough)
+        -:  137:                    {
+    #####:  138:                        o->write_characters(indent_string.c_str(), new_indent);
+    %%%%%:  138-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+branch  3 never executed (fallthrough)
+branch  4 never executed (throw)
+    #####:  139:                        o->write_character('\"');
+    %%%%%:  139-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    #####:  140:                        dump_escaped(i->first, ensure_ascii);
+    %%%%%:  140-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    #####:  141:                        o->write_characters("\": ", 3);
+    %%%%%:  141-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    #####:  142:                        dump(i->second, true, ensure_ascii, indent_step, new_indent);
+    %%%%%:  142-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    #####:  143:                        o->write_characters(",\n", 2);
+    %%%%%:  143-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+        -:  144:                    }
+        -:  145:
+        -:  146:                    // last element
+    #####:  147:                    JSON_ASSERT(i != val.m_data.m_value.object->cend());
+    %%%%%:  147-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed
+    %%%%%:  147-block  1
+call    4 never executed
+    %%%%%:  147-block  2
+    $$$$$:  147-block  3
+    #####:  148:                    JSON_ASSERT(std::next(i) == val.m_data.m_value.object->cend());
+    %%%%%:  148-block  0
+call    0 never executed
+    %%%%%:  148-block  1
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed
+    %%%%%:  148-block  2
+call    4 never executed
+    %%%%%:  148-block  3
+    $$$$$:  148-block  4
+    $$$$$:  148-block  5
+    #####:  149:                    o->write_characters(indent_string.c_str(), new_indent);
+    %%%%%:  149-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+branch  3 never executed (fallthrough)
+branch  4 never executed (throw)
+    #####:  150:                    o->write_character('\"');
+    %%%%%:  150-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    #####:  151:                    dump_escaped(i->first, ensure_ascii);
+    %%%%%:  151-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    #####:  152:                    o->write_characters("\": ", 3);
+    %%%%%:  152-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    #####:  153:                    dump(i->second, true, ensure_ascii, indent_step, new_indent);
+    %%%%%:  153-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+        -:  154:
+    #####:  155:                    o->write_character('\n');
+    %%%%%:  155-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    #####:  156:                    o->write_characters(indent_string.c_str(), current_indent);
+    %%%%%:  156-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+branch  3 never executed (fallthrough)
+branch  4 never executed (throw)
+    #####:  157:                    o->write_character('}');
+    %%%%%:  157-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+        -:  158:                }
+        -:  159:                else
+        -:  160:                {
+    #####:  161:                    o->write_character('{');
+    %%%%%:  161-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+        -:  162:
+        -:  163:                    // first n-1 elements
+    #####:  164:                    auto i = val.m_data.m_value.object->cbegin();
+    %%%%%:  164-block  0
+call    0 never executed
+    #####:  165:                    for (std::size_t cnt = 0; cnt < val.m_data.m_value.object->size() - 1; ++cnt, ++i)
+    %%%%%:  165-block  0
+call    0 never executed
+    %%%%%:  165-block  1
+call    1 never executed
+branch  2 never executed
+branch  3 never executed (fallthrough)
+        -:  166:                    {
+    #####:  167:                        o->write_character('\"');
+    %%%%%:  167-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    #####:  168:                        dump_escaped(i->first, ensure_ascii);
+    %%%%%:  168-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    #####:  169:                        o->write_characters("\":", 2);
+    %%%%%:  169-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    #####:  170:                        dump(i->second, false, ensure_ascii, indent_step, current_indent);
+    %%%%%:  170-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    #####:  171:                        o->write_character(',');
+    %%%%%:  171-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+        -:  172:                    }
+        -:  173:
+        -:  174:                    // last element
+    #####:  175:                    JSON_ASSERT(i != val.m_data.m_value.object->cend());
+    %%%%%:  175-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed
+    %%%%%:  175-block  1
+call    4 never executed
+    %%%%%:  175-block  2
+    $$$$$:  175-block  3
+    #####:  176:                    JSON_ASSERT(std::next(i) == val.m_data.m_value.object->cend());
+    %%%%%:  176-block  0
+call    0 never executed
+    %%%%%:  176-block  1
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed
+    %%%%%:  176-block  2
+call    4 never executed
+    %%%%%:  176-block  3
+    $$$$$:  176-block  4
+    $$$$$:  176-block  5
+    #####:  177:                    o->write_character('\"');
+    %%%%%:  177-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    #####:  178:                    dump_escaped(i->first, ensure_ascii);
+    %%%%%:  178-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    #####:  179:                    o->write_characters("\":", 2);
+    %%%%%:  179-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    #####:  180:                    dump(i->second, false, ensure_ascii, indent_step, current_indent);
+    %%%%%:  180-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+        -:  181:
+    #####:  182:                    o->write_character('}');
+    %%%%%:  182-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+        -:  183:                }
+        -:  184:
+    #####:  185:                return;
+    %%%%%:  185-block  0
+        -:  186:            }
+        -:  187:
+    #####:  188:            case value_t::array:
+        -:  189:            {
+    #####:  190:                if (val.m_data.m_value.array->empty())
+    %%%%%:  190-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+        -:  191:                {
+    #####:  192:                    o->write_characters("[]", 2);
+    %%%%%:  192-block  0
+call    0 never executed
+call    1 never executed
+    #####:  193:                    return;
+        -:  194:                }
+        -:  195:
+    #####:  196:                if (pretty_print)
+    %%%%%:  196-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  197:                {
+    #####:  198:                    o->write_characters("[\n", 2);
+    %%%%%:  198-block  0
+call    0 never executed
+call    1 never executed
+        -:  199:
+        -:  200:                    // variable to hold indentation for recursive calls
+    #####:  201:                    const auto new_indent = current_indent + indent_step;
+    #####:  202:                    if (JSON_HEDLEY_UNLIKELY(indent_string.size() < new_indent))
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+        -:  203:                    {
+    #####:  204:                        indent_string.resize(indent_string.size() * 2, ' ');
+    %%%%%:  204-block  0
+call    0 never executed
+call    1 never executed
+        -:  205:                    }
+        -:  206:
+        -:  207:                    // first n-1 elements
+    #####:  208:                    for (auto i = val.m_data.m_value.array->cbegin();
+    %%%%%:  208-block  0
+call    0 never executed
+    #####:  209:                            i != val.m_data.m_value.array->cend() - 1; ++i)
+    %%%%%:  209-block  0
+call    0 never executed
+    %%%%%:  209-block  1
+call    1 never executed
+call    2 never executed
+call    3 never executed
+branch  4 never executed
+branch  5 never executed (fallthrough)
+        -:  210:                    {
+    #####:  211:                        o->write_characters(indent_string.c_str(), new_indent);
+    %%%%%:  211-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+branch  3 never executed (fallthrough)
+branch  4 never executed (throw)
+    #####:  212:                        dump(*i, true, ensure_ascii, indent_step, new_indent);
+    %%%%%:  212-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    #####:  213:                        o->write_characters(",\n", 2);
+    %%%%%:  213-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+        -:  214:                    }
+        -:  215:
+        -:  216:                    // last element
+    #####:  217:                    JSON_ASSERT(!val.m_data.m_value.array->empty());
+    %%%%%:  217-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+    %%%%%:  217-block  1
+call    3 never executed
+    %%%%%:  217-block  2
+    #####:  218:                    o->write_characters(indent_string.c_str(), new_indent);
+    %%%%%:  218-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+    #####:  219:                    dump(val.m_data.m_value.array->back(), true, ensure_ascii, indent_step, new_indent);
+call    0 never executed
+call    1 never executed
+        -:  220:
+    #####:  221:                    o->write_character('\n');
+call    0 never executed
+call    1 never executed
+    #####:  222:                    o->write_characters(indent_string.c_str(), current_indent);
+call    0 never executed
+call    1 never executed
+call    2 never executed
+    #####:  223:                    o->write_character(']');
+call    0 never executed
+call    1 never executed
+        -:  224:                }
+        -:  225:                else
+        -:  226:                {
+    #####:  227:                    o->write_character('[');
+    %%%%%:  227-block  0
+call    0 never executed
+call    1 never executed
+        -:  228:
+        -:  229:                    // first n-1 elements
+    #####:  230:                    for (auto i = val.m_data.m_value.array->cbegin();
+call    0 never executed
+    #####:  231:                            i != val.m_data.m_value.array->cend() - 1; ++i)
+    %%%%%:  231-block  0
+call    0 never executed
+    %%%%%:  231-block  1
+call    1 never executed
+call    2 never executed
+call    3 never executed
+branch  4 never executed
+branch  5 never executed (fallthrough)
+        -:  232:                    {
+    #####:  233:                        dump(*i, false, ensure_ascii, indent_step, current_indent);
+    %%%%%:  233-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    #####:  234:                        o->write_character(',');
+    %%%%%:  234-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+        -:  235:                    }
+        -:  236:
+        -:  237:                    // last element
+    #####:  238:                    JSON_ASSERT(!val.m_data.m_value.array->empty());
+    %%%%%:  238-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+    %%%%%:  238-block  1
+call    3 never executed
+    %%%%%:  238-block  2
+    #####:  239:                    dump(val.m_data.m_value.array->back(), false, ensure_ascii, indent_step, current_indent);
+    %%%%%:  239-block  0
+call    0 never executed
+call    1 never executed
+        -:  240:
+    #####:  241:                    o->write_character(']');
+call    0 never executed
+call    1 never executed
+        -:  242:                }
+        -:  243:
+    #####:  244:                return;
+    %%%%%:  244-block  0
+        -:  245:            }
+        -:  246:
+    #####:  247:            case value_t::string:
+        -:  248:            {
+    #####:  249:                o->write_character('\"');
+    %%%%%:  249-block  0
+call    0 never executed
+call    1 never executed
+    #####:  250:                dump_escaped(*val.m_data.m_value.string, ensure_ascii);
+call    0 never executed
+    #####:  251:                o->write_character('\"');
+call    0 never executed
+call    1 never executed
+    #####:  252:                return;
+        -:  253:            }
+        -:  254:
+    #####:  255:            case value_t::binary:
+        -:  256:            {
+    #####:  257:                if (pretty_print)
+    %%%%%:  257-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  258:                {
+    #####:  259:                    o->write_characters("{\n", 2);
+    %%%%%:  259-block  0
+call    0 never executed
+call    1 never executed
+        -:  260:
+        -:  261:                    // variable to hold indentation for recursive calls
+    #####:  262:                    const auto new_indent = current_indent + indent_step;
+    #####:  263:                    if (JSON_HEDLEY_UNLIKELY(indent_string.size() < new_indent))
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+        -:  264:                    {
+    #####:  265:                        indent_string.resize(indent_string.size() * 2, ' ');
+    %%%%%:  265-block  0
+call    0 never executed
+call    1 never executed
+        -:  266:                    }
+        -:  267:
+    #####:  268:                    o->write_characters(indent_string.c_str(), new_indent);
+    %%%%%:  268-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+        -:  269:
+    #####:  270:                    o->write_characters("\"bytes\": [", 10);
+call    0 never executed
+call    1 never executed
+        -:  271:
+    #####:  272:                    if (!val.m_data.m_value.binary->empty())
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+        -:  273:                    {
+    #####:  274:                        for (auto i = val.m_data.m_value.binary->cbegin();
+    %%%%%:  274-block  0
+call    0 never executed
+    #####:  275:                                i != val.m_data.m_value.binary->cend() - 1; ++i)
+    %%%%%:  275-block  0
+call    0 never executed
+    %%%%%:  275-block  1
+call    1 never executed
+call    2 never executed
+call    3 never executed
+branch  4 never executed
+branch  5 never executed (fallthrough)
+        -:  276:                        {
+    #####:  277:                            dump_integer(*i);
+    %%%%%:  277-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    #####:  278:                            o->write_characters(", ", 2);
+    %%%%%:  278-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+        -:  279:                        }
+    #####:  280:                        dump_integer(val.m_data.m_value.binary->back());
+    %%%%%:  280-block  0
+call    0 never executed
+call    1 never executed
+        -:  281:                    }
+        -:  282:
+    #####:  283:                    o->write_characters("],\n", 3);
+    %%%%%:  283-block  0
+call    0 never executed
+call    1 never executed
+    #####:  284:                    o->write_characters(indent_string.c_str(), new_indent);
+call    0 never executed
+call    1 never executed
+call    2 never executed
+        -:  285:
+    #####:  286:                    o->write_characters("\"subtype\": ", 11);
+call    0 never executed
+call    1 never executed
+    #####:  287:                    if (val.m_data.m_value.binary->has_subtype())
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+        -:  288:                    {
+    #####:  289:                        dump_integer(val.m_data.m_value.binary->subtype());
+    %%%%%:  289-block  0
+call    0 never executed
+call    1 never executed
+        -:  290:                    }
+        -:  291:                    else
+        -:  292:                    {
+    #####:  293:                        o->write_characters("null", 4);
+    %%%%%:  293-block  0
+call    0 never executed
+call    1 never executed
+        -:  294:                    }
+    #####:  295:                    o->write_character('\n');
+    %%%%%:  295-block  0
+call    0 never executed
+call    1 never executed
+    #####:  296:                    o->write_characters(indent_string.c_str(), current_indent);
+call    0 never executed
+call    1 never executed
+call    2 never executed
+    #####:  297:                    o->write_character('}');
+call    0 never executed
+call    1 never executed
+        -:  298:                }
+        -:  299:                else
+        -:  300:                {
+    #####:  301:                    o->write_characters("{\"bytes\":[", 10);
+    %%%%%:  301-block  0
+call    0 never executed
+call    1 never executed
+        -:  302:
+    #####:  303:                    if (!val.m_data.m_value.binary->empty())
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+        -:  304:                    {
+    #####:  305:                        for (auto i = val.m_data.m_value.binary->cbegin();
+    %%%%%:  305-block  0
+call    0 never executed
+    #####:  306:                                i != val.m_data.m_value.binary->cend() - 1; ++i)
+    %%%%%:  306-block  0
+call    0 never executed
+    %%%%%:  306-block  1
+call    1 never executed
+call    2 never executed
+call    3 never executed
+branch  4 never executed
+branch  5 never executed (fallthrough)
+        -:  307:                        {
+    #####:  308:                            dump_integer(*i);
+    %%%%%:  308-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    #####:  309:                            o->write_character(',');
+    %%%%%:  309-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+        -:  310:                        }
+    #####:  311:                        dump_integer(val.m_data.m_value.binary->back());
+    %%%%%:  311-block  0
+call    0 never executed
+call    1 never executed
+        -:  312:                    }
+        -:  313:
+    #####:  314:                    o->write_characters("],\"subtype\":", 12);
+    %%%%%:  314-block  0
+call    0 never executed
+call    1 never executed
+    #####:  315:                    if (val.m_data.m_value.binary->has_subtype())
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+        -:  316:                    {
+    #####:  317:                        dump_integer(val.m_data.m_value.binary->subtype());
+    %%%%%:  317-block  0
+call    0 never executed
+call    1 never executed
+    #####:  318:                        o->write_character('}');
+call    0 never executed
+call    1 never executed
+        -:  319:                    }
+        -:  320:                    else
+        -:  321:                    {
+    #####:  322:                        o->write_characters("null}", 5);
+    %%%%%:  322-block  0
+call    0 never executed
+call    1 never executed
+        -:  323:                    }
+        -:  324:                }
+    #####:  325:                return;
+    %%%%%:  325-block  0
+        -:  326:            }
+        -:  327:
+    #####:  328:            case value_t::boolean:
+        -:  329:            {
+    #####:  330:                if (val.m_data.m_value.boolean)
+    %%%%%:  330-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  331:                {
+    #####:  332:                    o->write_characters("true", 4);
+    %%%%%:  332-block  0
+call    0 never executed
+call    1 never executed
+        -:  333:                }
+        -:  334:                else
+        -:  335:                {
+    #####:  336:                    o->write_characters("false", 5);
+    %%%%%:  336-block  0
+call    0 never executed
+call    1 never executed
+        -:  337:                }
+    #####:  338:                return;
+    %%%%%:  338-block  0
+        -:  339:            }
+        -:  340:
+    #####:  341:            case value_t::number_integer:
+        -:  342:            {
+    #####:  343:                dump_integer(val.m_data.m_value.number_integer);
+    %%%%%:  343-block  0
+call    0 never executed
+    #####:  344:                return;
+        -:  345:            }
+        -:  346:
+    #####:  347:            case value_t::number_unsigned:
+        -:  348:            {
+    #####:  349:                dump_integer(val.m_data.m_value.number_unsigned);
+    %%%%%:  349-block  0
+call    0 never executed
+    #####:  350:                return;
+        -:  351:            }
+        -:  352:
+    #####:  353:            case value_t::number_float:
+        -:  354:            {
+    #####:  355:                dump_float(val.m_data.m_value.number_float);
+    %%%%%:  355-block  0
+call    0 never executed
+    #####:  356:                return;
+        -:  357:            }
+        -:  358:
+    #####:  359:            case value_t::discarded:
+        -:  360:            {
+    #####:  361:                o->write_characters("<discarded>", 11);
+    %%%%%:  361-block  0
+call    0 never executed
+call    1 never executed
+    #####:  362:                return;
+        -:  363:            }
+        -:  364:
+    #####:  365:            case value_t::null:
+        -:  366:            {
+    #####:  367:                o->write_characters("null", 4);
+    %%%%%:  367-block  0
+call    0 never executed
+call    1 never executed
+    #####:  368:                return;
+        -:  369:            }
+        -:  370:
+    #####:  371:            default:            // LCOV_EXCL_LINE
+    #####:  372:                JSON_ASSERT(false); // NOLINT(cert-dcl03-c,hicpp-static-assert,misc-static-assert) LCOV_EXCL_LINE
+    %%%%%:  372-block  0
+call    0 never executed
+        -:  373:        }
+        -:  374:    }
+        -:  375:
+        -:  376:  JSON_PRIVATE_UNLESS_TESTED:
+        -:  377:    /*!
+        -:  378:    @brief dump escaped string
+        -:  379:
+        -:  380:    Escape a string by replacing certain special characters by a sequence of an
+        -:  381:    escape character (backslash) and another character and other control
+        -:  382:    characters by a sequence of "\u" followed by a four-digit hex
+        -:  383:    representation. The escaped string is written to output stream @a o.
+        -:  384:
+        -:  385:    @param[in] s  the string to escape
+        -:  386:    @param[in] ensure_ascii  whether to escape non-ASCII characters with
+        -:  387:                             \uXXXX sequences
+        -:  388:
+        -:  389:    @complexity Linear in the length of string @a s.
+        -:  390:    */
+function _ZN8nlohmann16json_abi_v3_11_36detail10serializerINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE12dump_escapedERKSB_b called 0 returned 0% blocks executed 0%
+    #####:  391:    void dump_escaped(const string_t& s, const bool ensure_ascii)
+        -:  392:    {
+    #####:  393:        std::uint32_t codepoint{};
+    #####:  394:        std::uint8_t state = UTF8_ACCEPT;
+    #####:  395:        std::size_t bytes = 0;  // number of bytes written to string_buffer
+        -:  396:
+        -:  397:        // number of bytes written at the point of the last valid byte
+    #####:  398:        std::size_t bytes_after_last_accept = 0;
+    #####:  399:        std::size_t undumped_chars = 0;
+        -:  400:
+    #####:  401:        for (std::size_t i = 0; i < s.size(); ++i)
+    %%%%%:  401-block  0
+    %%%%%:  401-block  1
+    %%%%%:  401-block  2
+call    0 never executed
+branch  1 never executed
+branch  2 never executed (fallthrough)
+        -:  402:        {
+    #####:  403:            const auto byte = static_cast<std::uint8_t>(s[i]);
+    %%%%%:  403-block  0
+call    0 never executed
+        -:  404:
+    #####:  405:            switch (decode(state, codepoint, byte))
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+branch  3 never executed
+        -:  406:            {
+    #####:  407:                case UTF8_ACCEPT:  // decode found a new code point
+        -:  408:                {
+    #####:  409:                    switch (codepoint)
+    %%%%%:  409-block  0
+branch  0 never executed
+branch  1 never executed
+branch  2 never executed
+branch  3 never executed
+branch  4 never executed
+branch  5 never executed
+branch  6 never executed
+branch  7 never executed
+        -:  410:                    {
+    #####:  411:                        case 0x08: // backspace
+        -:  412:                        {
+    #####:  413:                            string_buffer[bytes++] = '\\';
+    %%%%%:  413-block  0
+call    0 never executed
+    #####:  414:                            string_buffer[bytes++] = 'b';
+call    0 never executed
+    #####:  415:                            break;
+        -:  416:                        }
+        -:  417:
+    #####:  418:                        case 0x09: // horizontal tab
+        -:  419:                        {
+    #####:  420:                            string_buffer[bytes++] = '\\';
+    %%%%%:  420-block  0
+call    0 never executed
+    #####:  421:                            string_buffer[bytes++] = 't';
+call    0 never executed
+    #####:  422:                            break;
+        -:  423:                        }
+        -:  424:
+    #####:  425:                        case 0x0A: // newline
+        -:  426:                        {
+    #####:  427:                            string_buffer[bytes++] = '\\';
+    %%%%%:  427-block  0
+call    0 never executed
+    #####:  428:                            string_buffer[bytes++] = 'n';
+call    0 never executed
+    #####:  429:                            break;
+        -:  430:                        }
+        -:  431:
+    #####:  432:                        case 0x0C: // formfeed
+        -:  433:                        {
+    #####:  434:                            string_buffer[bytes++] = '\\';
+    %%%%%:  434-block  0
+call    0 never executed
+    #####:  435:                            string_buffer[bytes++] = 'f';
+call    0 never executed
+    #####:  436:                            break;
+        -:  437:                        }
+        -:  438:
+    #####:  439:                        case 0x0D: // carriage return
+        -:  440:                        {
+    #####:  441:                            string_buffer[bytes++] = '\\';
+    %%%%%:  441-block  0
+call    0 never executed
+    #####:  442:                            string_buffer[bytes++] = 'r';
+call    0 never executed
+    #####:  443:                            break;
+        -:  444:                        }
+        -:  445:
+    #####:  446:                        case 0x22: // quotation mark
+        -:  447:                        {
+    #####:  448:                            string_buffer[bytes++] = '\\';
+    %%%%%:  448-block  0
+call    0 never executed
+    #####:  449:                            string_buffer[bytes++] = '\"';
+call    0 never executed
+    #####:  450:                            break;
+        -:  451:                        }
+        -:  452:
+    #####:  453:                        case 0x5C: // reverse solidus
+        -:  454:                        {
+    #####:  455:                            string_buffer[bytes++] = '\\';
+    %%%%%:  455-block  0
+call    0 never executed
+    #####:  456:                            string_buffer[bytes++] = '\\';
+call    0 never executed
+    #####:  457:                            break;
+        -:  458:                        }
+        -:  459:
+    #####:  460:                        default:
+        -:  461:                        {
+        -:  462:                            // escape control characters (0x00..0x1F) or, if
+        -:  463:                            // ensure_ascii parameter is used, non-ASCII characters
+    #####:  464:                            if ((codepoint <= 0x1F) || (ensure_ascii && (codepoint >= 0x7F)))
+    %%%%%:  464-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    %%%%%:  464-block  1
+branch  2 never executed (fallthrough)
+branch  3 never executed
+    %%%%%:  464-block  2
+branch  4 never executed (fallthrough)
+branch  5 never executed
+        -:  465:                            {
+    #####:  466:                                if (codepoint <= 0xFFFF)
+    %%%%%:  466-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  467:                                {
+        -:  468:                                    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+    #####:  469:                                    static_cast<void>((std::snprintf)(string_buffer.data() + bytes, 7, "\\u%04x",
+    %%%%%:  469-block  0
+    %%%%%:  469-block  1
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+        -:  470:                                                                      static_cast<std::uint16_t>(codepoint)));
+    #####:  471:                                    bytes += 6;
+    %%%%%:  471-block  0
+        -:  472:                                }
+        -:  473:                                else
+        -:  474:                                {
+        -:  475:                                    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+    #####:  476:                                    static_cast<void>((std::snprintf)(string_buffer.data() + bytes, 13, "\\u%04x\\u%04x",
+    %%%%%:  476-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    #####:  477:                                                                      static_cast<std::uint16_t>(0xD7C0u + (codepoint >> 10u)),
+    #####:  478:                                                                      static_cast<std::uint16_t>(0xDC00u + (codepoint & 0x3FFu))));
+    %%%%%:  478-block  0
+    #####:  479:                                    bytes += 12;
+    %%%%%:  479-block  0
+        -:  480:                                }
+        -:  481:                            }
+        -:  482:                            else
+        -:  483:                            {
+        -:  484:                                // copy byte to buffer (all previous bytes
+        -:  485:                                // been copied have in default case above)
+    #####:  486:                                string_buffer[bytes++] = s[i];
+    %%%%%:  486-block  0
+call    0 never executed
+call    1 never executed
+        -:  487:                            }
+    #####:  488:                            break;
+    %%%%%:  488-block  0
+        -:  489:                        }
+        -:  490:                    }
+        -:  491:
+        -:  492:                    // write buffer and reset index; there must be 13 bytes
+        -:  493:                    // left, as this is the maximal number of bytes to be
+        -:  494:                    // written ("\uxxxx\uxxxx\0") for one code point
+    #####:  495:                    if (string_buffer.size() - bytes < 13)
+    %%%%%:  495-block  0
+    %%%%%:  495-block  1
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  496:                    {
+    #####:  497:                        o->write_characters(string_buffer.data(), bytes);
+    %%%%%:  497-block  0
+call    0 never executed
+    %%%%%:  497-block  1
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    #####:  498:                        bytes = 0;
+    %%%%%:  498-block  0
+        -:  499:                    }
+        -:  500:
+        -:  501:                    // remember the byte position of this accept
+    #####:  502:                    bytes_after_last_accept = bytes;
+    #####:  503:                    undumped_chars = 0;
+    #####:  504:                    break;
+    %%%%%:  504-block  0
+        -:  505:                }
+        -:  506:
+    #####:  507:                case UTF8_REJECT:  // decode found invalid UTF-8 byte
+        -:  508:                {
+    #####:  509:                    switch (error_handler)
+    %%%%%:  509-block  0
+branch  0 never executed
+branch  1 never executed
+branch  2 never executed
+        -:  510:                    {
+    #####:  511:                        case error_handler_t::strict:
+        -:  512:                        {
+    #####:  513:                            JSON_THROW(type_error::create(316, concat("invalid UTF-8 byte at index ", std::to_string(i), ": 0x", hex_bytes(byte | 0)), nullptr));
+    %%%%%:  513-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    %%%%%:  513-block  1
+call    4 never executed
+branch  5 never executed (fallthrough)
+branch  6 never executed (throw)
+    %%%%%:  513-block  2
+call    7 never executed
+branch  8 never executed (fallthrough)
+branch  9 never executed (throw)
+    %%%%%:  513-block  3
+call   10 never executed
+branch 11 never executed (fallthrough)
+branch 12 never executed (throw)
+    %%%%%:  513-block  4
+call   13 never executed
+call   14 never executed
+call   15 never executed
+call   16 never executed
+    $$$$$:  513-block  5
+call   17 never executed
+    $$$$$:  513-block  6
+call   18 never executed
+    $$$$$:  513-block  7
+    $$$$$:  513-block  8
+call   19 never executed
+    $$$$$:  513-block  9
+    $$$$$:  513-block 10
+    $$$$$:  513-block 11
+call   20 never executed
+        -:  514:                        }
+        -:  515:
+    #####:  516:                        case error_handler_t::ignore:
+        -:  517:                        case error_handler_t::replace:
+        -:  518:                        {
+        -:  519:                            // in case we saw this character the first time, we
+        -:  520:                            // would like to read it again, because the byte
+        -:  521:                            // may be OK for itself, but just not OK for the
+        -:  522:                            // previous sequence
+    #####:  523:                            if (undumped_chars > 0)
+    %%%%%:  523-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  524:                            {
+    #####:  525:                                --i;
+    %%%%%:  525-block  0
+        -:  526:                            }
+        -:  527:
+        -:  528:                            // reset length buffer to the last accepted index;
+        -:  529:                            // thus removing/ignoring the invalid characters
+    #####:  530:                            bytes = bytes_after_last_accept;
+        -:  531:
+    #####:  532:                            if (error_handler == error_handler_t::replace)
+    %%%%%:  532-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  533:                            {
+        -:  534:                                // add a replacement character
+    #####:  535:                                if (ensure_ascii)
+    %%%%%:  535-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  536:                                {
+    #####:  537:                                    string_buffer[bytes++] = '\\';
+    %%%%%:  537-block  0
+call    0 never executed
+    #####:  538:                                    string_buffer[bytes++] = 'u';
+call    0 never executed
+    #####:  539:                                    string_buffer[bytes++] = 'f';
+call    0 never executed
+    #####:  540:                                    string_buffer[bytes++] = 'f';
+call    0 never executed
+    #####:  541:                                    string_buffer[bytes++] = 'f';
+call    0 never executed
+    #####:  542:                                    string_buffer[bytes++] = 'd';
+call    0 never executed
+        -:  543:                                }
+        -:  544:                                else
+        -:  545:                                {
+    #####:  546:                                    string_buffer[bytes++] = detail::binary_writer<BasicJsonType, char>::to_char_type('\xEF');
+    %%%%%:  546-block  0
+call    0 never executed
+call    1 never executed
+    #####:  547:                                    string_buffer[bytes++] = detail::binary_writer<BasicJsonType, char>::to_char_type('\xBF');
+call    0 never executed
+call    1 never executed
+    #####:  548:                                    string_buffer[bytes++] = detail::binary_writer<BasicJsonType, char>::to_char_type('\xBD');
+call    0 never executed
+call    1 never executed
+        -:  549:                                }
+        -:  550:
+        -:  551:                                // write buffer and reset index; there must be 13 bytes
+        -:  552:                                // left, as this is the maximal number of bytes to be
+        -:  553:                                // written ("\uxxxx\uxxxx\0") for one code point
+    #####:  554:                                if (string_buffer.size() - bytes < 13)
+    %%%%%:  554-block  0
+    %%%%%:  554-block  1
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  555:                                {
+    #####:  556:                                    o->write_characters(string_buffer.data(), bytes);
+    %%%%%:  556-block  0
+call    0 never executed
+    %%%%%:  556-block  1
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    #####:  557:                                    bytes = 0;
+    %%%%%:  557-block  0
+        -:  558:                                }
+        -:  559:
+    #####:  560:                                bytes_after_last_accept = bytes;
+    %%%%%:  560-block  0
+        -:  561:                            }
+        -:  562:
+    #####:  563:                            undumped_chars = 0;
+        -:  564:
+        -:  565:                            // continue processing the string
+    #####:  566:                            state = UTF8_ACCEPT;
+    #####:  567:                            break;
+    %%%%%:  567-block  0
+        -:  568:                        }
+        -:  569:
+    #####:  570:                        default:            // LCOV_EXCL_LINE
+    #####:  571:                            JSON_ASSERT(false); // NOLINT(cert-dcl03-c,hicpp-static-assert,misc-static-assert) LCOV_EXCL_LINE
+    %%%%%:  571-block  0
+call    0 never executed
+        -:  572:                    }
+    #####:  573:                    break;
+    %%%%%:  573-block  0
+        -:  574:                }
+        -:  575:
+    #####:  576:                default:  // decode found yet incomplete multi-byte code point
+        -:  577:                {
+    #####:  578:                    if (!ensure_ascii)
+    %%%%%:  578-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  579:                    {
+        -:  580:                        // code point will not be escaped - copy byte to buffer
+    #####:  581:                        string_buffer[bytes++] = s[i];
+    %%%%%:  581-block  0
+call    0 never executed
+call    1 never executed
+        -:  582:                    }
+    #####:  583:                    ++undumped_chars;
+    #####:  584:                    break;
+    %%%%%:  584-block  0
+        -:  585:                }
+        -:  586:            }
+        -:  587:        }
+        -:  588:
+        -:  589:        // we finished processing the string
+    #####:  590:        if (JSON_HEDLEY_LIKELY(state == UTF8_ACCEPT))
+    %%%%%:  590-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  591:        {
+        -:  592:            // write buffer
+    #####:  593:            if (bytes > 0)
+    %%%%%:  593-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  594:            {
+    #####:  595:                o->write_characters(string_buffer.data(), bytes);
+    %%%%%:  595-block  0
+call    0 never executed
+    %%%%%:  595-block  1
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+        -:  596:            }
+        -:  597:        }
+        -:  598:        else
+        -:  599:        {
+        -:  600:            // we finish reading, but do not accept: string was incomplete
+    #####:  601:            switch (error_handler)
+    %%%%%:  601-block  0
+branch  0 never executed
+branch  1 never executed
+branch  2 never executed
+branch  3 never executed
+        -:  602:            {
+    #####:  603:                case error_handler_t::strict:
+        -:  604:                {
+    #####:  605:                    JSON_THROW(type_error::create(316, concat("incomplete UTF-8 string; last byte: 0x", hex_bytes(static_cast<std::uint8_t>(s.back() | 0))), nullptr));
+    %%%%%:  605-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+branch  3 never executed (fallthrough)
+branch  4 never executed (throw)
+    %%%%%:  605-block  1
+call    5 never executed
+branch  6 never executed (fallthrough)
+branch  7 never executed (throw)
+    %%%%%:  605-block  2
+call    8 never executed
+branch  9 never executed (fallthrough)
+branch 10 never executed (throw)
+    %%%%%:  605-block  3
+call   11 never executed
+call   12 never executed
+call   13 never executed
+    $$$$$:  605-block  4
+call   14 never executed
+    $$$$$:  605-block  5
+call   15 never executed
+    $$$$$:  605-block  6
+    $$$$$:  605-block  7
+    $$$$$:  605-block  8
+call   16 never executed
+        -:  606:                }
+        -:  607:
+    #####:  608:                case error_handler_t::ignore:
+        -:  609:                {
+        -:  610:                    // write all accepted bytes
+    #####:  611:                    o->write_characters(string_buffer.data(), bytes_after_last_accept);
+    %%%%%:  611-block  0
+call    0 never executed
+    %%%%%:  611-block  1
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    #####:  612:                    break;
+    %%%%%:  612-block  0
+        -:  613:                }
+        -:  614:
+    #####:  615:                case error_handler_t::replace:
+        -:  616:                {
+        -:  617:                    // write all accepted bytes
+    #####:  618:                    o->write_characters(string_buffer.data(), bytes_after_last_accept);
+    %%%%%:  618-block  0
+call    0 never executed
+    %%%%%:  618-block  1
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+        -:  619:                    // add a replacement character
+    #####:  620:                    if (ensure_ascii)
+    %%%%%:  620-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  621:                    {
+    #####:  622:                        o->write_characters("\\ufffd", 6);
+    %%%%%:  622-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+        -:  623:                    }
+        -:  624:                    else
+        -:  625:                    {
+    #####:  626:                        o->write_characters("\xEF\xBF\xBD", 3);
+    %%%%%:  626-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+        -:  627:                    }
+    #####:  628:                    break;
+    %%%%%:  628-block  0
+        -:  629:                }
+        -:  630:
+    #####:  631:                default:            // LCOV_EXCL_LINE
+    #####:  632:                    JSON_ASSERT(false); // NOLINT(cert-dcl03-c,hicpp-static-assert,misc-static-assert) LCOV_EXCL_LINE
+    %%%%%:  632-block  0
+call    0 never executed
+        -:  633:            }
+        -:  634:        }
+    #####:  635:    }
+    %%%%%:  635-block  0
+        -:  636:
+        -:  637:  private:
+        -:  638:    /*!
+        -:  639:    @brief count digits
+        -:  640:
+        -:  641:    Count the number of decimal (base 10) digits for an input unsigned integer.
+        -:  642:
+        -:  643:    @param[in] x  unsigned integer number to count its digits
+        -:  644:    @return    number of decimal digits
+        -:  645:    */
+function _ZN8nlohmann16json_abi_v3_11_36detail10serializerINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE12count_digitsEy called 0 returned 0% blocks executed 0%
+    #####:  646:    inline unsigned int count_digits(number_unsigned_t x) noexcept
+        -:  647:    {
+    #####:  648:        unsigned int n_digits = 1;
+    %%%%%:  648-block  0
+        -:  649:        for (;;)
+        -:  650:        {
+    #####:  651:            if (x < 10)
+    %%%%%:  651-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  652:            {
+    #####:  653:                return n_digits;
+    %%%%%:  653-block  0
+        -:  654:            }
+    #####:  655:            if (x < 100)
+    %%%%%:  655-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  656:            {
+    #####:  657:                return n_digits + 1;
+    %%%%%:  657-block  0
+        -:  658:            }
+    #####:  659:            if (x < 1000)
+    %%%%%:  659-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  660:            {
+    #####:  661:                return n_digits + 2;
+    %%%%%:  661-block  0
+        -:  662:            }
+    #####:  663:            if (x < 10000)
+    %%%%%:  663-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  664:            {
+    #####:  665:                return n_digits + 3;
+    %%%%%:  665-block  0
+        -:  666:            }
+    #####:  667:            x = x / 10000u;
+    #####:  668:            n_digits += 4;
+    %%%%%:  668-block  0
+        -:  669:        }
+        -:  670:    }
+        -:  671:
+        -:  672:    /*!
+        -:  673:     * @brief convert a byte to a uppercase hex representation
+        -:  674:     * @param[in] byte byte to represent
+        -:  675:     * @return representation ("00".."FF")
+        -:  676:     */
+function _ZN8nlohmann16json_abi_v3_11_36detail10serializerINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE9hex_bytesEh called 0 returned 0% blocks executed 0%
+    #####:  677:    static std::string hex_bytes(std::uint8_t byte)
+    %%%%%:  677-block  0
+        -:  678:    {
+    #####:  679:        std::string result = "FF";
+    %%%%%:  679-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    $$$$$:  679-block  1
+call    3 never executed
+    #####:  680:        constexpr const char* nibble_to_hex = "0123456789ABCDEF";
+    #####:  681:        result[0] = nibble_to_hex[byte / 16];
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    #####:  682:        result[1] = nibble_to_hex[byte % 16];
+    %%%%%:  682-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    #####:  683:        return result;
+    %%%%%:  683-block  0
+    %%%%%:  683-block  1
+    =====:  684:    }
+    $$$$$:  684-block  0
+call    0 never executed
+        -:  685:
+        -:  686:    // templates to avoid warnings about useless casts
+        -:  687:    template <typename NumberType, enable_if_t<std::is_signed<NumberType>::value, int> = 0>
+function _ZN8nlohmann16json_abi_v3_11_36detail10serializerINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE18is_negative_numberIxLi0EEEbT_ called 0 returned 0% blocks executed 0%
+    #####:  688:    bool is_negative_number(NumberType x)
+        -:  689:    {
+    #####:  690:        return x < 0;
+    %%%%%:  690-block  0
+        -:  691:    }
+        -:  692:
+        -:  693:    template < typename NumberType, enable_if_t <std::is_unsigned<NumberType>::value, int > = 0 >
+    #####:  694:    bool is_negative_number(NumberType /*unused*/)
+        -:  695:    {
+    #####:  696:        return false;
+        -:  697:    }
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail10serializerINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE18is_negative_numberIyLi0EEEbT_:
+function _ZN8nlohmann16json_abi_v3_11_36detail10serializerINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE18is_negative_numberIyLi0EEEbT_ called 0 returned 0% blocks executed 0%
+    #####:  694:    bool is_negative_number(NumberType /*unused*/)
+        -:  695:    {
+    #####:  696:        return false;
+    %%%%%:  696-block  0
+        -:  697:    }
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail10serializerINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE18is_negative_numberIhLi0EEEbT_:
+function _ZN8nlohmann16json_abi_v3_11_36detail10serializerINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE18is_negative_numberIhLi0EEEbT_ called 0 returned 0% blocks executed 0%
+    #####:  694:    bool is_negative_number(NumberType /*unused*/)
+        -:  695:    {
+    #####:  696:        return false;
+    %%%%%:  696-block  0
+        -:  697:    }
+------------------
+        -:  698:
+        -:  699:    /*!
+        -:  700:    @brief dump an integer
+        -:  701:
+        -:  702:    Dump a given integer to output stream @a o. Works internally with
+        -:  703:    @a number_buffer.
+        -:  704:
+        -:  705:    @param[in] x  integer number (signed or unsigned) to dump
+        -:  706:    @tparam NumberType either @a number_integer_t or @a number_unsigned_t
+        -:  707:    */
+        -:  708:    template < typename NumberType, detail::enable_if_t <
+        -:  709:                   std::is_integral<NumberType>::value ||
+        -:  710:                   std::is_same<NumberType, number_unsigned_t>::value ||
+        -:  711:                   std::is_same<NumberType, number_integer_t>::value ||
+        -:  712:                   std::is_same<NumberType, binary_char_t>::value,
+        -:  713:                   int > = 0 >
+    #####:  714:    void dump_integer(NumberType x)
+        -:  715:    {
+        -:  716:        static constexpr std::array<std::array<char, 2>, 100> digits_to_99
+        -:  717:        {
+        -:  718:            {
+        -:  719:                {{'0', '0'}}, {{'0', '1'}}, {{'0', '2'}}, {{'0', '3'}}, {{'0', '4'}}, {{'0', '5'}}, {{'0', '6'}}, {{'0', '7'}}, {{'0', '8'}}, {{'0', '9'}},
+        -:  720:                {{'1', '0'}}, {{'1', '1'}}, {{'1', '2'}}, {{'1', '3'}}, {{'1', '4'}}, {{'1', '5'}}, {{'1', '6'}}, {{'1', '7'}}, {{'1', '8'}}, {{'1', '9'}},
+        -:  721:                {{'2', '0'}}, {{'2', '1'}}, {{'2', '2'}}, {{'2', '3'}}, {{'2', '4'}}, {{'2', '5'}}, {{'2', '6'}}, {{'2', '7'}}, {{'2', '8'}}, {{'2', '9'}},
+        -:  722:                {{'3', '0'}}, {{'3', '1'}}, {{'3', '2'}}, {{'3', '3'}}, {{'3', '4'}}, {{'3', '5'}}, {{'3', '6'}}, {{'3', '7'}}, {{'3', '8'}}, {{'3', '9'}},
+        -:  723:                {{'4', '0'}}, {{'4', '1'}}, {{'4', '2'}}, {{'4', '3'}}, {{'4', '4'}}, {{'4', '5'}}, {{'4', '6'}}, {{'4', '7'}}, {{'4', '8'}}, {{'4', '9'}},
+        -:  724:                {{'5', '0'}}, {{'5', '1'}}, {{'5', '2'}}, {{'5', '3'}}, {{'5', '4'}}, {{'5', '5'}}, {{'5', '6'}}, {{'5', '7'}}, {{'5', '8'}}, {{'5', '9'}},
+        -:  725:                {{'6', '0'}}, {{'6', '1'}}, {{'6', '2'}}, {{'6', '3'}}, {{'6', '4'}}, {{'6', '5'}}, {{'6', '6'}}, {{'6', '7'}}, {{'6', '8'}}, {{'6', '9'}},
+        -:  726:                {{'7', '0'}}, {{'7', '1'}}, {{'7', '2'}}, {{'7', '3'}}, {{'7', '4'}}, {{'7', '5'}}, {{'7', '6'}}, {{'7', '7'}}, {{'7', '8'}}, {{'7', '9'}},
+        -:  727:                {{'8', '0'}}, {{'8', '1'}}, {{'8', '2'}}, {{'8', '3'}}, {{'8', '4'}}, {{'8', '5'}}, {{'8', '6'}}, {{'8', '7'}}, {{'8', '8'}}, {{'8', '9'}},
+        -:  728:                {{'9', '0'}}, {{'9', '1'}}, {{'9', '2'}}, {{'9', '3'}}, {{'9', '4'}}, {{'9', '5'}}, {{'9', '6'}}, {{'9', '7'}}, {{'9', '8'}}, {{'9', '9'}},
+        -:  729:            }
+        -:  730:        };
+        -:  731:
+        -:  732:        // special case for "0"
+    #####:  733:        if (x == 0)
+        -:  734:        {
+    #####:  735:            o->write_character('0');
+    #####:  736:            return;
+        -:  737:        }
+        -:  738:
+        -:  739:        // use a pointer to fill the buffer
+    #####:  740:        auto buffer_ptr = number_buffer.begin(); // NOLINT(llvm-qualified-auto,readability-qualified-auto,cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+        -:  741:
+        -:  742:        number_unsigned_t abs_value;
+        -:  743:
+    #####:  744:        unsigned int n_chars{};
+        -:  745:
+    #####:  746:        if (is_negative_number(x))
+        -:  747:        {
+    #####:  748:            *buffer_ptr = '-';
+    #####:  749:            abs_value = remove_sign(static_cast<number_integer_t>(x));
+        -:  750:
+        -:  751:            // account one more byte for the minus sign
+    #####:  752:            n_chars = 1 + count_digits(abs_value);
+        -:  753:        }
+        -:  754:        else
+        -:  755:        {
+    #####:  756:            abs_value = static_cast<number_unsigned_t>(x);
+    #####:  757:            n_chars = count_digits(abs_value);
+        -:  758:        }
+        -:  759:
+        -:  760:        // spare 1 byte for '\0'
+    #####:  761:        JSON_ASSERT(n_chars < number_buffer.size() - 1);
+        -:  762:
+        -:  763:        // jump to the end to generate the string from backward,
+        -:  764:        // so we later avoid reversing the result
+    #####:  765:        buffer_ptr += n_chars;
+        -:  766:
+        -:  767:        // Fast int2ascii implementation inspired by "Fastware" talk by Andrei Alexandrescu
+        -:  768:        // See: https://www.youtube.com/watch?v=o4-CwDo2zpg
+    #####:  769:        while (abs_value >= 100)
+        -:  770:        {
+    #####:  771:            const auto digits_index = static_cast<unsigned>((abs_value % 100));
+    #####:  772:            abs_value /= 100;
+    #####:  773:            *(--buffer_ptr) = digits_to_99[digits_index][1];
+    #####:  774:            *(--buffer_ptr) = digits_to_99[digits_index][0];
+        -:  775:        }
+        -:  776:
+    #####:  777:        if (abs_value >= 10)
+        -:  778:        {
+    #####:  779:            const auto digits_index = static_cast<unsigned>(abs_value);
+    #####:  780:            *(--buffer_ptr) = digits_to_99[digits_index][1];
+    #####:  781:            *(--buffer_ptr) = digits_to_99[digits_index][0];
+        -:  782:        }
+        -:  783:        else
+        -:  784:        {
+    #####:  785:            *(--buffer_ptr) = static_cast<char>('0' + abs_value);
+        -:  786:        }
+        -:  787:
+    #####:  788:        o->write_characters(number_buffer.data(), n_chars);
+        -:  789:    }
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail10serializerINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE12dump_integerIxLi0EEEvT_:
+function _ZN8nlohmann16json_abi_v3_11_36detail10serializerINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE12dump_integerIxLi0EEEvT_ called 0 returned 0% blocks executed 0%
+    #####:  714:    void dump_integer(NumberType x)
+        -:  715:    {
+        -:  716:        static constexpr std::array<std::array<char, 2>, 100> digits_to_99
+        -:  717:        {
+        -:  718:            {
+        -:  719:                {{'0', '0'}}, {{'0', '1'}}, {{'0', '2'}}, {{'0', '3'}}, {{'0', '4'}}, {{'0', '5'}}, {{'0', '6'}}, {{'0', '7'}}, {{'0', '8'}}, {{'0', '9'}},
+        -:  720:                {{'1', '0'}}, {{'1', '1'}}, {{'1', '2'}}, {{'1', '3'}}, {{'1', '4'}}, {{'1', '5'}}, {{'1', '6'}}, {{'1', '7'}}, {{'1', '8'}}, {{'1', '9'}},
+        -:  721:                {{'2', '0'}}, {{'2', '1'}}, {{'2', '2'}}, {{'2', '3'}}, {{'2', '4'}}, {{'2', '5'}}, {{'2', '6'}}, {{'2', '7'}}, {{'2', '8'}}, {{'2', '9'}},
+        -:  722:                {{'3', '0'}}, {{'3', '1'}}, {{'3', '2'}}, {{'3', '3'}}, {{'3', '4'}}, {{'3', '5'}}, {{'3', '6'}}, {{'3', '7'}}, {{'3', '8'}}, {{'3', '9'}},
+        -:  723:                {{'4', '0'}}, {{'4', '1'}}, {{'4', '2'}}, {{'4', '3'}}, {{'4', '4'}}, {{'4', '5'}}, {{'4', '6'}}, {{'4', '7'}}, {{'4', '8'}}, {{'4', '9'}},
+        -:  724:                {{'5', '0'}}, {{'5', '1'}}, {{'5', '2'}}, {{'5', '3'}}, {{'5', '4'}}, {{'5', '5'}}, {{'5', '6'}}, {{'5', '7'}}, {{'5', '8'}}, {{'5', '9'}},
+        -:  725:                {{'6', '0'}}, {{'6', '1'}}, {{'6', '2'}}, {{'6', '3'}}, {{'6', '4'}}, {{'6', '5'}}, {{'6', '6'}}, {{'6', '7'}}, {{'6', '8'}}, {{'6', '9'}},
+        -:  726:                {{'7', '0'}}, {{'7', '1'}}, {{'7', '2'}}, {{'7', '3'}}, {{'7', '4'}}, {{'7', '5'}}, {{'7', '6'}}, {{'7', '7'}}, {{'7', '8'}}, {{'7', '9'}},
+        -:  727:                {{'8', '0'}}, {{'8', '1'}}, {{'8', '2'}}, {{'8', '3'}}, {{'8', '4'}}, {{'8', '5'}}, {{'8', '6'}}, {{'8', '7'}}, {{'8', '8'}}, {{'8', '9'}},
+        -:  728:                {{'9', '0'}}, {{'9', '1'}}, {{'9', '2'}}, {{'9', '3'}}, {{'9', '4'}}, {{'9', '5'}}, {{'9', '6'}}, {{'9', '7'}}, {{'9', '8'}}, {{'9', '9'}},
+        -:  729:            }
+        -:  730:        };
+        -:  731:
+        -:  732:        // special case for "0"
+    #####:  733:        if (x == 0)
+    %%%%%:  733-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  734:        {
+    #####:  735:            o->write_character('0');
+    %%%%%:  735-block  0
+call    0 never executed
+call    1 never executed
+    #####:  736:            return;
+        -:  737:        }
+        -:  738:
+        -:  739:        // use a pointer to fill the buffer
+    #####:  740:        auto buffer_ptr = number_buffer.begin(); // NOLINT(llvm-qualified-auto,readability-qualified-auto,cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+        -:  741:
+        -:  742:        number_unsigned_t abs_value;
+        -:  743:
+    #####:  744:        unsigned int n_chars{};
+        -:  745:
+    #####:  746:        if (is_negative_number(x))
+    %%%%%:  746-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+        -:  747:        {
+    #####:  748:            *buffer_ptr = '-';
+    #####:  749:            abs_value = remove_sign(static_cast<number_integer_t>(x));
+    %%%%%:  749-block  0
+call    0 never executed
+        -:  750:
+        -:  751:            // account one more byte for the minus sign
+    #####:  752:            n_chars = 1 + count_digits(abs_value);
+call    0 never executed
+        -:  753:        }
+        -:  754:        else
+        -:  755:        {
+    #####:  756:            abs_value = static_cast<number_unsigned_t>(x);
+    #####:  757:            n_chars = count_digits(abs_value);
+    %%%%%:  757-block  0
+call    0 never executed
+        -:  758:        }
+        -:  759:
+        -:  760:        // spare 1 byte for '\0'
+    #####:  761:        JSON_ASSERT(n_chars < number_buffer.size() - 1);
+    %%%%%:  761-block  0
+    %%%%%:  761-block  1
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    %%%%%:  761-block  2
+call    2 never executed
+    %%%%%:  761-block  3
+        -:  762:
+        -:  763:        // jump to the end to generate the string from backward,
+        -:  764:        // so we later avoid reversing the result
+    #####:  765:        buffer_ptr += n_chars;
+        -:  766:
+        -:  767:        // Fast int2ascii implementation inspired by "Fastware" talk by Andrei Alexandrescu
+        -:  768:        // See: https://www.youtube.com/watch?v=o4-CwDo2zpg
+    #####:  769:        while (abs_value >= 100)
+    %%%%%:  769-block  0
+    %%%%%:  769-block  1
+branch  0 never executed
+branch  1 never executed (fallthrough)
+        -:  770:        {
+    #####:  771:            const auto digits_index = static_cast<unsigned>((abs_value % 100));
+    #####:  772:            abs_value /= 100;
+    #####:  773:            *(--buffer_ptr) = digits_to_99[digits_index][1];
+    %%%%%:  773-block  0
+call    0 never executed
+call    1 never executed
+    #####:  774:            *(--buffer_ptr) = digits_to_99[digits_index][0];
+call    0 never executed
+call    1 never executed
+        -:  775:        }
+        -:  776:
+    #####:  777:        if (abs_value >= 10)
+    %%%%%:  777-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  778:        {
+    #####:  779:            const auto digits_index = static_cast<unsigned>(abs_value);
+    #####:  780:            *(--buffer_ptr) = digits_to_99[digits_index][1];
+    %%%%%:  780-block  0
+call    0 never executed
+call    1 never executed
+    #####:  781:            *(--buffer_ptr) = digits_to_99[digits_index][0];
+call    0 never executed
+call    1 never executed
+        -:  782:        }
+        -:  783:        else
+        -:  784:        {
+    #####:  785:            *(--buffer_ptr) = static_cast<char>('0' + abs_value);
+    %%%%%:  785-block  0
+        -:  786:        }
+        -:  787:
+    #####:  788:        o->write_characters(number_buffer.data(), n_chars);
+    %%%%%:  788-block  0
+call    0 never executed
+    %%%%%:  788-block  1
+call    1 never executed
+        -:  789:    }
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail10serializerINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE12dump_integerIyLi0EEEvT_:
+function _ZN8nlohmann16json_abi_v3_11_36detail10serializerINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE12dump_integerIyLi0EEEvT_ called 0 returned 0% blocks executed 0%
+    #####:  714:    void dump_integer(NumberType x)
+        -:  715:    {
+        -:  716:        static constexpr std::array<std::array<char, 2>, 100> digits_to_99
+        -:  717:        {
+        -:  718:            {
+        -:  719:                {{'0', '0'}}, {{'0', '1'}}, {{'0', '2'}}, {{'0', '3'}}, {{'0', '4'}}, {{'0', '5'}}, {{'0', '6'}}, {{'0', '7'}}, {{'0', '8'}}, {{'0', '9'}},
+        -:  720:                {{'1', '0'}}, {{'1', '1'}}, {{'1', '2'}}, {{'1', '3'}}, {{'1', '4'}}, {{'1', '5'}}, {{'1', '6'}}, {{'1', '7'}}, {{'1', '8'}}, {{'1', '9'}},
+        -:  721:                {{'2', '0'}}, {{'2', '1'}}, {{'2', '2'}}, {{'2', '3'}}, {{'2', '4'}}, {{'2', '5'}}, {{'2', '6'}}, {{'2', '7'}}, {{'2', '8'}}, {{'2', '9'}},
+        -:  722:                {{'3', '0'}}, {{'3', '1'}}, {{'3', '2'}}, {{'3', '3'}}, {{'3', '4'}}, {{'3', '5'}}, {{'3', '6'}}, {{'3', '7'}}, {{'3', '8'}}, {{'3', '9'}},
+        -:  723:                {{'4', '0'}}, {{'4', '1'}}, {{'4', '2'}}, {{'4', '3'}}, {{'4', '4'}}, {{'4', '5'}}, {{'4', '6'}}, {{'4', '7'}}, {{'4', '8'}}, {{'4', '9'}},
+        -:  724:                {{'5', '0'}}, {{'5', '1'}}, {{'5', '2'}}, {{'5', '3'}}, {{'5', '4'}}, {{'5', '5'}}, {{'5', '6'}}, {{'5', '7'}}, {{'5', '8'}}, {{'5', '9'}},
+        -:  725:                {{'6', '0'}}, {{'6', '1'}}, {{'6', '2'}}, {{'6', '3'}}, {{'6', '4'}}, {{'6', '5'}}, {{'6', '6'}}, {{'6', '7'}}, {{'6', '8'}}, {{'6', '9'}},
+        -:  726:                {{'7', '0'}}, {{'7', '1'}}, {{'7', '2'}}, {{'7', '3'}}, {{'7', '4'}}, {{'7', '5'}}, {{'7', '6'}}, {{'7', '7'}}, {{'7', '8'}}, {{'7', '9'}},
+        -:  727:                {{'8', '0'}}, {{'8', '1'}}, {{'8', '2'}}, {{'8', '3'}}, {{'8', '4'}}, {{'8', '5'}}, {{'8', '6'}}, {{'8', '7'}}, {{'8', '8'}}, {{'8', '9'}},
+        -:  728:                {{'9', '0'}}, {{'9', '1'}}, {{'9', '2'}}, {{'9', '3'}}, {{'9', '4'}}, {{'9', '5'}}, {{'9', '6'}}, {{'9', '7'}}, {{'9', '8'}}, {{'9', '9'}},
+        -:  729:            }
+        -:  730:        };
+        -:  731:
+        -:  732:        // special case for "0"
+    #####:  733:        if (x == 0)
+    %%%%%:  733-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  734:        {
+    #####:  735:            o->write_character('0');
+    %%%%%:  735-block  0
+call    0 never executed
+call    1 never executed
+    #####:  736:            return;
+        -:  737:        }
+        -:  738:
+        -:  739:        // use a pointer to fill the buffer
+    #####:  740:        auto buffer_ptr = number_buffer.begin(); // NOLINT(llvm-qualified-auto,readability-qualified-auto,cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+        -:  741:
+        -:  742:        number_unsigned_t abs_value;
+        -:  743:
+    #####:  744:        unsigned int n_chars{};
+        -:  745:
+    #####:  746:        if (is_negative_number(x))
+    %%%%%:  746-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+        -:  747:        {
+    #####:  748:            *buffer_ptr = '-';
+    #####:  749:            abs_value = remove_sign(static_cast<number_integer_t>(x));
+    %%%%%:  749-block  0
+call    0 never executed
+        -:  750:
+        -:  751:            // account one more byte for the minus sign
+    #####:  752:            n_chars = 1 + count_digits(abs_value);
+call    0 never executed
+        -:  753:        }
+        -:  754:        else
+        -:  755:        {
+    #####:  756:            abs_value = static_cast<number_unsigned_t>(x);
+    #####:  757:            n_chars = count_digits(abs_value);
+    %%%%%:  757-block  0
+call    0 never executed
+        -:  758:        }
+        -:  759:
+        -:  760:        // spare 1 byte for '\0'
+    #####:  761:        JSON_ASSERT(n_chars < number_buffer.size() - 1);
+    %%%%%:  761-block  0
+    %%%%%:  761-block  1
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    %%%%%:  761-block  2
+call    2 never executed
+    %%%%%:  761-block  3
+        -:  762:
+        -:  763:        // jump to the end to generate the string from backward,
+        -:  764:        // so we later avoid reversing the result
+    #####:  765:        buffer_ptr += n_chars;
+        -:  766:
+        -:  767:        // Fast int2ascii implementation inspired by "Fastware" talk by Andrei Alexandrescu
+        -:  768:        // See: https://www.youtube.com/watch?v=o4-CwDo2zpg
+    #####:  769:        while (abs_value >= 100)
+    %%%%%:  769-block  0
+    %%%%%:  769-block  1
+branch  0 never executed
+branch  1 never executed (fallthrough)
+        -:  770:        {
+    #####:  771:            const auto digits_index = static_cast<unsigned>((abs_value % 100));
+    #####:  772:            abs_value /= 100;
+    #####:  773:            *(--buffer_ptr) = digits_to_99[digits_index][1];
+    %%%%%:  773-block  0
+call    0 never executed
+call    1 never executed
+    #####:  774:            *(--buffer_ptr) = digits_to_99[digits_index][0];
+call    0 never executed
+call    1 never executed
+        -:  775:        }
+        -:  776:
+    #####:  777:        if (abs_value >= 10)
+    %%%%%:  777-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  778:        {
+    #####:  779:            const auto digits_index = static_cast<unsigned>(abs_value);
+    #####:  780:            *(--buffer_ptr) = digits_to_99[digits_index][1];
+    %%%%%:  780-block  0
+call    0 never executed
+call    1 never executed
+    #####:  781:            *(--buffer_ptr) = digits_to_99[digits_index][0];
+call    0 never executed
+call    1 never executed
+        -:  782:        }
+        -:  783:        else
+        -:  784:        {
+    #####:  785:            *(--buffer_ptr) = static_cast<char>('0' + abs_value);
+    %%%%%:  785-block  0
+        -:  786:        }
+        -:  787:
+    #####:  788:        o->write_characters(number_buffer.data(), n_chars);
+    %%%%%:  788-block  0
+call    0 never executed
+    %%%%%:  788-block  1
+call    1 never executed
+        -:  789:    }
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail10serializerINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE12dump_integerIhLi0EEEvT_:
+function _ZN8nlohmann16json_abi_v3_11_36detail10serializerINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE12dump_integerIhLi0EEEvT_ called 0 returned 0% blocks executed 0%
+    #####:  714:    void dump_integer(NumberType x)
+        -:  715:    {
+        -:  716:        static constexpr std::array<std::array<char, 2>, 100> digits_to_99
+        -:  717:        {
+        -:  718:            {
+        -:  719:                {{'0', '0'}}, {{'0', '1'}}, {{'0', '2'}}, {{'0', '3'}}, {{'0', '4'}}, {{'0', '5'}}, {{'0', '6'}}, {{'0', '7'}}, {{'0', '8'}}, {{'0', '9'}},
+        -:  720:                {{'1', '0'}}, {{'1', '1'}}, {{'1', '2'}}, {{'1', '3'}}, {{'1', '4'}}, {{'1', '5'}}, {{'1', '6'}}, {{'1', '7'}}, {{'1', '8'}}, {{'1', '9'}},
+        -:  721:                {{'2', '0'}}, {{'2', '1'}}, {{'2', '2'}}, {{'2', '3'}}, {{'2', '4'}}, {{'2', '5'}}, {{'2', '6'}}, {{'2', '7'}}, {{'2', '8'}}, {{'2', '9'}},
+        -:  722:                {{'3', '0'}}, {{'3', '1'}}, {{'3', '2'}}, {{'3', '3'}}, {{'3', '4'}}, {{'3', '5'}}, {{'3', '6'}}, {{'3', '7'}}, {{'3', '8'}}, {{'3', '9'}},
+        -:  723:                {{'4', '0'}}, {{'4', '1'}}, {{'4', '2'}}, {{'4', '3'}}, {{'4', '4'}}, {{'4', '5'}}, {{'4', '6'}}, {{'4', '7'}}, {{'4', '8'}}, {{'4', '9'}},
+        -:  724:                {{'5', '0'}}, {{'5', '1'}}, {{'5', '2'}}, {{'5', '3'}}, {{'5', '4'}}, {{'5', '5'}}, {{'5', '6'}}, {{'5', '7'}}, {{'5', '8'}}, {{'5', '9'}},
+        -:  725:                {{'6', '0'}}, {{'6', '1'}}, {{'6', '2'}}, {{'6', '3'}}, {{'6', '4'}}, {{'6', '5'}}, {{'6', '6'}}, {{'6', '7'}}, {{'6', '8'}}, {{'6', '9'}},
+        -:  726:                {{'7', '0'}}, {{'7', '1'}}, {{'7', '2'}}, {{'7', '3'}}, {{'7', '4'}}, {{'7', '5'}}, {{'7', '6'}}, {{'7', '7'}}, {{'7', '8'}}, {{'7', '9'}},
+        -:  727:                {{'8', '0'}}, {{'8', '1'}}, {{'8', '2'}}, {{'8', '3'}}, {{'8', '4'}}, {{'8', '5'}}, {{'8', '6'}}, {{'8', '7'}}, {{'8', '8'}}, {{'8', '9'}},
+        -:  728:                {{'9', '0'}}, {{'9', '1'}}, {{'9', '2'}}, {{'9', '3'}}, {{'9', '4'}}, {{'9', '5'}}, {{'9', '6'}}, {{'9', '7'}}, {{'9', '8'}}, {{'9', '9'}},
+        -:  729:            }
+        -:  730:        };
+        -:  731:
+        -:  732:        // special case for "0"
+    #####:  733:        if (x == 0)
+    %%%%%:  733-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  734:        {
+    #####:  735:            o->write_character('0');
+    %%%%%:  735-block  0
+call    0 never executed
+call    1 never executed
+    #####:  736:            return;
+        -:  737:        }
+        -:  738:
+        -:  739:        // use a pointer to fill the buffer
+    #####:  740:        auto buffer_ptr = number_buffer.begin(); // NOLINT(llvm-qualified-auto,readability-qualified-auto,cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+        -:  741:
+        -:  742:        number_unsigned_t abs_value;
+        -:  743:
+    #####:  744:        unsigned int n_chars{};
+        -:  745:
+    #####:  746:        if (is_negative_number(x))
+    %%%%%:  746-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+        -:  747:        {
+    #####:  748:            *buffer_ptr = '-';
+    #####:  749:            abs_value = remove_sign(static_cast<number_integer_t>(x));
+    %%%%%:  749-block  0
+call    0 never executed
+        -:  750:
+        -:  751:            // account one more byte for the minus sign
+    #####:  752:            n_chars = 1 + count_digits(abs_value);
+call    0 never executed
+        -:  753:        }
+        -:  754:        else
+        -:  755:        {
+    #####:  756:            abs_value = static_cast<number_unsigned_t>(x);
+    #####:  757:            n_chars = count_digits(abs_value);
+    %%%%%:  757-block  0
+call    0 never executed
+        -:  758:        }
+        -:  759:
+        -:  760:        // spare 1 byte for '\0'
+    #####:  761:        JSON_ASSERT(n_chars < number_buffer.size() - 1);
+    %%%%%:  761-block  0
+    %%%%%:  761-block  1
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    %%%%%:  761-block  2
+call    2 never executed
+    %%%%%:  761-block  3
+        -:  762:
+        -:  763:        // jump to the end to generate the string from backward,
+        -:  764:        // so we later avoid reversing the result
+    #####:  765:        buffer_ptr += n_chars;
+        -:  766:
+        -:  767:        // Fast int2ascii implementation inspired by "Fastware" talk by Andrei Alexandrescu
+        -:  768:        // See: https://www.youtube.com/watch?v=o4-CwDo2zpg
+    #####:  769:        while (abs_value >= 100)
+    %%%%%:  769-block  0
+    %%%%%:  769-block  1
+branch  0 never executed
+branch  1 never executed (fallthrough)
+        -:  770:        {
+    #####:  771:            const auto digits_index = static_cast<unsigned>((abs_value % 100));
+    #####:  772:            abs_value /= 100;
+    #####:  773:            *(--buffer_ptr) = digits_to_99[digits_index][1];
+    %%%%%:  773-block  0
+call    0 never executed
+call    1 never executed
+    #####:  774:            *(--buffer_ptr) = digits_to_99[digits_index][0];
+call    0 never executed
+call    1 never executed
+        -:  775:        }
+        -:  776:
+    #####:  777:        if (abs_value >= 10)
+    %%%%%:  777-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  778:        {
+    #####:  779:            const auto digits_index = static_cast<unsigned>(abs_value);
+    #####:  780:            *(--buffer_ptr) = digits_to_99[digits_index][1];
+    %%%%%:  780-block  0
+call    0 never executed
+call    1 never executed
+    #####:  781:            *(--buffer_ptr) = digits_to_99[digits_index][0];
+call    0 never executed
+call    1 never executed
+        -:  782:        }
+        -:  783:        else
+        -:  784:        {
+    #####:  785:            *(--buffer_ptr) = static_cast<char>('0' + abs_value);
+    %%%%%:  785-block  0
+        -:  786:        }
+        -:  787:
+    #####:  788:        o->write_characters(number_buffer.data(), n_chars);
+    %%%%%:  788-block  0
+call    0 never executed
+    %%%%%:  788-block  1
+call    1 never executed
+        -:  789:    }
+------------------
+        -:  790:
+        -:  791:    /*!
+        -:  792:    @brief dump a floating-point number
+        -:  793:
+        -:  794:    Dump a given floating-point number to output stream @a o. Works internally
+        -:  795:    with @a number_buffer.
+        -:  796:
+        -:  797:    @param[in] x  floating-point number to dump
+        -:  798:    */
+function _ZN8nlohmann16json_abi_v3_11_36detail10serializerINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE10dump_floatEd called 0 returned 0% blocks executed 0%
+    #####:  799:    void dump_float(number_float_t x)
+        -:  800:    {
+        -:  801:        // NaN / inf
+    #####:  802:        if (!std::isfinite(x))
+    %%%%%:  802-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+        -:  803:        {
+    #####:  804:            o->write_characters("null", 4);
+    %%%%%:  804-block  0
+call    0 never executed
+call    1 never executed
+    #####:  805:            return;
+        -:  806:        }
+        -:  807:
+        -:  808:        // If number_float_t is an IEEE-754 single or double precision number,
+        -:  809:        // use the Grisu2 algorithm to produce short numbers which are
+        -:  810:        // guaranteed to round-trip, using strtof and strtod, resp.
+        -:  811:        //
+        -:  812:        // NB: The test below works if <long double> == <double>.
+        -:  813:        static constexpr bool is_ieee_single_or_double
+        -:  814:            = (std::numeric_limits<number_float_t>::is_iec559 && std::numeric_limits<number_float_t>::digits == 24 && std::numeric_limits<number_float_t>::max_exponent == 128) ||
+        -:  815:              (std::numeric_limits<number_float_t>::is_iec559 && std::numeric_limits<number_float_t>::digits == 53 && std::numeric_limits<number_float_t>::max_exponent == 1024);
+        -:  816:
+    #####:  817:        dump_float(x, std::integral_constant<bool, is_ieee_single_or_double>());
+    %%%%%:  817-block  0
+call    0 never executed
+        -:  818:    }
+        -:  819:
+function _ZN8nlohmann16json_abi_v3_11_36detail10serializerINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE10dump_floatEdSt17integral_constantIbLb1EE called 0 returned 0% blocks executed 0%
+    #####:  820:    void dump_float(number_float_t x, std::true_type /*is_ieee_single_or_double*/)
+        -:  821:    {
+    #####:  822:        auto* begin = number_buffer.data();
+    %%%%%:  822-block  0
+    #####:  823:        auto* end = ::nlohmann::detail::to_chars(begin, begin + number_buffer.size(), x);
+    %%%%%:  823-block  0
+    %%%%%:  823-block  1
+call    0 never executed
+        -:  824:
+    #####:  825:        o->write_characters(begin, static_cast<size_t>(end - begin));
+call    0 never executed
+call    1 never executed
+    #####:  826:    }
+        -:  827:
+        -:  828:    void dump_float(number_float_t x, std::false_type /*is_ieee_single_or_double*/)
+        -:  829:    {
+        -:  830:        // get number of digits for a float -> text -> float round-trip
+        -:  831:        static constexpr auto d = std::numeric_limits<number_float_t>::max_digits10;
+        -:  832:
+        -:  833:        // the actual conversion
+        -:  834:        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+        -:  835:        std::ptrdiff_t len = (std::snprintf)(number_buffer.data(), number_buffer.size(), "%.*g", d, x);
+        -:  836:
+        -:  837:        // negative value indicates an error
+        -:  838:        JSON_ASSERT(len > 0);
+        -:  839:        // check if buffer was large enough
+        -:  840:        JSON_ASSERT(static_cast<std::size_t>(len) < number_buffer.size());
+        -:  841:
+        -:  842:        // erase thousands separator
+        -:  843:        if (thousands_sep != '\0')
+        -:  844:        {
+        -:  845:            // NOLINTNEXTLINE(readability-qualified-auto,llvm-qualified-auto): std::remove returns an iterator, see https://github.com/nlohmann/json/issues/3081
+        -:  846:            const auto end = std::remove(number_buffer.begin(), number_buffer.begin() + len, thousands_sep);
+        -:  847:            std::fill(end, number_buffer.end(), '\0');
+        -:  848:            JSON_ASSERT((end - number_buffer.begin()) <= len);
+        -:  849:            len = (end - number_buffer.begin());
+        -:  850:        }
+        -:  851:
+        -:  852:        // convert decimal point to '.'
+        -:  853:        if (decimal_point != '\0' && decimal_point != '.')
+        -:  854:        {
+        -:  855:            // NOLINTNEXTLINE(readability-qualified-auto,llvm-qualified-auto): std::find returns an iterator, see https://github.com/nlohmann/json/issues/3081
+        -:  856:            const auto dec_pos = std::find(number_buffer.begin(), number_buffer.end(), decimal_point);
+        -:  857:            if (dec_pos != number_buffer.end())
+        -:  858:            {
+        -:  859:                *dec_pos = '.';
+        -:  860:            }
+        -:  861:        }
+        -:  862:
+        -:  863:        o->write_characters(number_buffer.data(), static_cast<std::size_t>(len));
+        -:  864:
+        -:  865:        // determine if we need to append ".0"
+        -:  866:        const bool value_is_int_like =
+        -:  867:            std::none_of(number_buffer.begin(), number_buffer.begin() + len + 1,
+        -:  868:                         [](char c)
+        -:  869:        {
+        -:  870:            return c == '.' || c == 'e';
+        -:  871:        });
+        -:  872:
+        -:  873:        if (value_is_int_like)
+        -:  874:        {
+        -:  875:            o->write_characters(".0", 2);
+        -:  876:        }
+        -:  877:    }
+        -:  878:
+        -:  879:    /*!
+        -:  880:    @brief check whether a string is UTF-8 encoded
+        -:  881:
+        -:  882:    The function checks each byte of a string whether it is UTF-8 encoded. The
+        -:  883:    result of the check is stored in the @a state parameter. The function must
+        -:  884:    be called initially with state 0 (accept). State 1 means the string must
+        -:  885:    be rejected, because the current byte is not allowed. If the string is
+        -:  886:    completely processed, but the state is non-zero, the string ended
+        -:  887:    prematurely; that is, the last byte indicated more bytes should have
+        -:  888:    followed.
+        -:  889:
+        -:  890:    @param[in,out] state  the state of the decoding
+        -:  891:    @param[in,out] codep  codepoint (valid only if resulting state is UTF8_ACCEPT)
+        -:  892:    @param[in] byte       next byte to decode
+        -:  893:    @return               new state
+        -:  894:
+        -:  895:    @note The function has been edited: a std::array is used.
+        -:  896:
+        -:  897:    @copyright Copyright (c) 2008-2009 Bjoern Hoehrmann <bjoern@hoehrmann.de>
+        -:  898:    @sa http://bjoern.hoehrmann.de/utf-8/decoder/dfa/
+        -:  899:    */
+function _ZN8nlohmann16json_abi_v3_11_36detail10serializerINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE6decodeERhRjh called 0 returned 0% blocks executed 0%
+    #####:  900:    static std::uint8_t decode(std::uint8_t& state, std::uint32_t& codep, const std::uint8_t byte) noexcept
+        -:  901:    {
+        -:  902:        static const std::array<std::uint8_t, 400> utf8d =
+        -:  903:        {
+        -:  904:            {
+        -:  905:                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 00..1F
+        -:  906:                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 20..3F
+        -:  907:                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 40..5F
+        -:  908:                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 60..7F
+        -:  909:                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, // 80..9F
+        -:  910:                7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, // A0..BF
+        -:  911:                8, 8, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, // C0..DF
+        -:  912:                0xA, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x4, 0x3, 0x3, // E0..EF
+        -:  913:                0xB, 0x6, 0x6, 0x6, 0x5, 0x8, 0x8, 0x8, 0x8, 0x8, 0x8, 0x8, 0x8, 0x8, 0x8, 0x8, // F0..FF
+        -:  914:                0x0, 0x1, 0x2, 0x3, 0x5, 0x8, 0x7, 0x1, 0x1, 0x1, 0x4, 0x6, 0x1, 0x1, 0x1, 0x1, // s0..s0
+        -:  915:                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, // s1..s2
+        -:  916:                1, 2, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, // s3..s4
+        -:  917:                1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 1, 3, 1, 1, 1, 1, 1, 1, // s5..s6
+        -:  918:                1, 3, 1, 1, 1, 1, 1, 3, 1, 3, 1, 1, 1, 1, 1, 1, 1, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 // s7..s8
+        -:  919:            }
+        -:  920:        };
+        -:  921:
+    #####:  922:        JSON_ASSERT(byte < utf8d.size());
+    %%%%%:  922-block  0
+    %%%%%:  922-block  1
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    %%%%%:  922-block  2
+call    2 never executed
+    %%%%%:  922-block  3
+    #####:  923:        const std::uint8_t type = utf8d[byte];
+    %%%%%:  923-block  0
+call    0 never executed
+        -:  924:
+    #####:  925:        codep = (state != UTF8_ACCEPT)
+    #####:  926:                ? (byte & 0x3fu) | (codep << 6u)
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    %%%%%:  926-block  0
+    #####:  927:                : (0xFFu >> type) & (byte);
+    %%%%%:  927-block  0
+        -:  928:
+    #####:  929:        const std::size_t index = 256u + static_cast<size_t>(state) * 16u + static_cast<size_t>(type);
+    %%%%%:  929-block  0
+    #####:  930:        JSON_ASSERT(index < utf8d.size());
+    %%%%%:  930-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    %%%%%:  930-block  1
+call    2 never executed
+    %%%%%:  930-block  2
+    #####:  931:        state = utf8d[index];
+    %%%%%:  931-block  0
+call    0 never executed
+    #####:  932:        return state;
+        -:  933:    }
+        -:  934:
+        -:  935:    /*
+        -:  936:     * Overload to make the compiler happy while it is instantiating
+        -:  937:     * dump_integer for number_unsigned_t.
+        -:  938:     * Must never be called.
+        -:  939:     */
+        -:  940:    number_unsigned_t remove_sign(number_unsigned_t x)
+        -:  941:    {
+        -:  942:        JSON_ASSERT(false); // NOLINT(cert-dcl03-c,hicpp-static-assert,misc-static-assert) LCOV_EXCL_LINE
+        -:  943:        return x; // LCOV_EXCL_LINE
+        -:  944:    }
+        -:  945:
+        -:  946:    /*
+        -:  947:     * Helper function for dump_integer
+        -:  948:     *
+        -:  949:     * This function takes a negative signed integer and returns its absolute
+        -:  950:     * value as unsigned integer. The plus/minus shuffling is necessary as we can
+        -:  951:     * not directly remove the sign of an arbitrary signed integer as the
+        -:  952:     * absolute values of INT_MIN and INT_MAX are usually not the same. See
+        -:  953:     * #1708 for details.
+        -:  954:     */
+function _ZN8nlohmann16json_abi_v3_11_36detail10serializerINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE11remove_signEx called 0 returned 0% blocks executed 0%
+    #####:  955:    inline number_unsigned_t remove_sign(number_integer_t x) noexcept
+        -:  956:    {
+    #####:  957:        JSON_ASSERT(x < 0 && x < (std::numeric_limits<number_integer_t>::max)()); // NOLINT(misc-redundant-expression)
+    %%%%%:  957-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    %%%%%:  957-block  1
+call    2 never executed
+branch  3 never executed (fallthrough)
+branch  4 never executed
+    %%%%%:  957-block  2
+call    5 never executed
+    %%%%%:  957-block  3
+    #####:  958:        return static_cast<number_unsigned_t>(-(x + 1)) + 1;
+    %%%%%:  958-block  0
+        -:  959:    }
+        -:  960:
+        -:  961:  private:
+        -:  962:    /// the output of the serializer
+        -:  963:    output_adapter_t<char> o = nullptr;
+        -:  964:
+        -:  965:    /// a (hopefully) large enough character buffer
+        -:  966:    std::array<char, 64> number_buffer{{}};
+        -:  967:
+        -:  968:    /// the locale
+        -:  969:    const std::lconv* loc = nullptr;
+        -:  970:    /// the locale's thousand separator character
+        -:  971:    const char thousands_sep = '\0';
+        -:  972:    /// the locale's decimal point character
+        -:  973:    const char decimal_point = '\0';
+        -:  974:
+        -:  975:    /// string buffer
+        -:  976:    std::array<char, 512> string_buffer{{}};
+        -:  977:
+        -:  978:    /// the indentation character
+        -:  979:    const char indent_char;
+        -:  980:    /// the indentation string
+        -:  981:    string_t indent_string;
+        -:  982:
+        -:  983:    /// error_handler how to react on decoding errors
+        -:  984:    const error_handler_t error_handler;
+        -:  985:};
+        -:  986:
+        -:  987:}  // namespace detail
+        -:  988:NLOHMANN_JSON_NAMESPACE_END
