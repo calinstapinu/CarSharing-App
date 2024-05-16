@@ -1,0 +1,1828 @@
+        -:    0:Source:C:/Users/rares/CLionProjects/OOP/Json-test/Repositories/AutoRepo/AutoRepo.cpp
+        -:    0:Graph:C:\Users\rares\CLionProjects\OOP\Json-test\cmake-build-debug-coverage\CMakeFiles\Json_test.dir\Repositories\AutoRepo\AutoRepo.cpp.gcno
+        -:    0:Data:C:\Users\rares\CLionProjects\OOP\Json-test\cmake-build-debug-coverage\CMakeFiles\Json_test.dir\Repositories\AutoRepo\AutoRepo.cpp.gcda
+        -:    0:Runs:1
+        -:    1:#include <iostream>
+        -:    2:#include <string>
+        -:    3:#include <fstream>
+        -:    4:#include "nlohmann/json.hpp"
+        -:    5:#include "AutoRepo.h"
+        -:    6:#include <typeinfo>
+        -:    7:#include <cctype>
+        -:    8:
+        -:    9:using namespace std;
+        -:   10:
+        -:   11:/// FUNCTII AJUTATOARE
+        -:   12:// convert Kennzeichen la majuscule
+function _Z18convertToUpperCaseRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE called 40 returned 100% blocks executed 87%
+       40:   13:std::string convertToUpperCase(const std::string& input) {
+       40:   14:    std::string result;
+       40:   14-block  0
+call    0 returned 40
+      281:   15:    for (char c : input) {
+call    0 returned 40
+call    1 returned 40
+      241:   15-block  0
+call    2 returned 241
+      241:   15-block  1
+call    3 returned 241
+      281:   15-block  2
+call    4 returned 281
+branch  5 taken 241
+branch  6 taken 40 (fallthrough)
+      241:   16:        if (std::isdigit(c)) {
+branch  0 taken 117 (fallthrough)
+branch  1 taken 124
+      117:   17:            result += c;
+      117:   17-block  0
+call    0 returned 117
+branch  1 taken 117 (fallthrough)
+branch  2 taken 0 (throw)
+        -:   18:        } else {
+      124:   19:            result += std::toupper(c);
+      124:   19-block  0
+call    0 returned 124
+branch  1 taken 124 (fallthrough)
+branch  2 taken 0 (throw)
+        -:   20:        }
+        -:   21:    }
+       40:   22:    return result;
+       40:   22-block  0
+       40:   22-block  1
+    =====:   23:}
+    $$$$$:   23-block  0
+call    0 never executed
+        -:   24:
+function _Z18convertToLowerCaseRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE called 7 returned 100% blocks executed 80%
+        7:   25:std::string convertToLowerCase(const std::string& input) {
+        7:   26:    std::string result;
+        7:   26-block  0
+call    0 returned 7
+       56:   27:    for (char c : input) {
+call    0 returned 7
+call    1 returned 7
+       49:   27-block  0
+call    2 returned 49
+       49:   27-block  1
+call    3 returned 49
+       56:   27-block  2
+call    4 returned 56
+branch  5 taken 49
+branch  6 taken 7 (fallthrough)
+       49:   28:        if (std::isdigit(c)) {
+branch  0 taken 0 (fallthrough)
+branch  1 taken 49
+    #####:   29:            result += c;
+    %%%%%:   29-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+        -:   30:        } else {
+       49:   31:            result += std::tolower(c);
+       49:   31-block  0
+call    0 returned 49
+branch  1 taken 49 (fallthrough)
+branch  2 taken 0 (throw)
+        -:   32:        }
+        -:   33:    }
+        7:   34:    return result;
+        7:   34-block  0
+        7:   34-block  1
+    =====:   35:}
+    $$$$$:   35-block  0
+call    0 never executed
+        -:   36:
+function _Z9verifyVINRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE called 15 returned 100% blocks executed 100%
+       15:   37:bool verifyVIN(const std::string& kennzeichen){
+      101:   38:    for (char c: kennzeichen)
+       15:   38-block  0
+call    0 returned 15
+call    1 returned 15
+       87:   38-block  1
+call    2 returned 87
+       86:   38-block  2
+call    3 returned 86
+      101:   38-block  3
+call    4 returned 101
+branch  5 taken 87
+branch  6 taken 14 (fallthrough)
+       87:   39:        if (!std::isdigit(c) && !std::isalpha(c))
+branch  0 taken 45 (fallthrough)
+branch  1 taken 42
+       45:   39-block  0
+branch  2 taken 1 (fallthrough)
+branch  3 taken 44
+        1:   40:            return false;
+        1:   40-block  0
+       14:   41:    return true;
+       14:   41-block  0
+        -:   42:}
+        -:   43:
+        -:   44:/// IMPLEMENTARE REPO
+        -:   45:// La startul programului, array-ul cars primeste toate obiectele json din fisier
+function _ZN8AutoRepoC2ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE called 6 returned 100% blocks executed 67%
+        6:   46:AutoRepo::AutoRepo(const std::string& filename) {
+        6:   46-block  0
+call    0 returned 6
+call    1 returned 6
+        6:   47:    this->filename = filename;
+call    0 returned 6
+branch  1 taken 6 (fallthrough)
+branch  2 taken 0 (throw)
+        6:   48:    this->read_from_file(this->filename);
+        6:   48-block  0
+call    0 returned 6
+branch  1 taken 6 (fallthrough)
+branch  2 taken 0 (throw)
+        6:   49:}
+        6:   49-block  0
+    $$$$$:   49-block  1
+call    0 never executed
+    $$$$$:   49-block  2
+call    1 never executed
+        -:   50:
+function _ZN8AutoRepo7add_carE4Auto called 16 returned 50% blocks executed 54%
+       16:   51:void AutoRepo::add_car(Auto car) {
+       24:   52:    this->verify_car(car);
+       16:   52-block  0
+call    0 returned 16
+branch  1 taken 16 (fallthrough)
+branch  2 taken 0 (throw)
+       16:   52-block  1
+call    3 returned 16
+branch  4 taken 8 (fallthrough)
+branch  5 taken 8 (throw)
+        8:   52-block  2
+call    6 returned 8
+        8:   52-block  3
+call    7 returned 8
+        8:   52-block  4
+        -:   53:
+        8:   54:    json j;
+call    0 returned 8
+        8:   55:    j["kennzeichen"] = convertToUpperCase(car.getKennzeichen());
+call    0 returned 8
+branch  1 taken 8 (fallthrough)
+branch  2 taken 0 (throw)
+        8:   55-block  0
+call    3 returned 8
+branch  4 taken 8 (fallthrough)
+branch  5 taken 0 (throw)
+        8:   55-block  1
+call    6 returned 8
+branch  7 taken 8 (fallthrough)
+branch  8 taken 0 (throw)
+        8:   55-block  2
+call    9 returned 8
+branch 10 taken 8 (fallthrough)
+branch 11 taken 0 (throw)
+        8:   55-block  3
+call   12 returned 8
+call   13 returned 8
+call   14 returned 8
+call   15 returned 8
+    $$$$$:   55-block  4
+call   16 never executed
+    $$$$$:   55-block  5
+call   17 never executed
+    $$$$$:   55-block  6
+call   18 never executed
+    $$$$$:   55-block  7
+    $$$$$:   55-block  8
+    $$$$$:   55-block  9
+        8:   56:    j["modell"] = car.getModell();
+call    0 returned 8
+branch  1 taken 8 (fallthrough)
+branch  2 taken 0 (throw)
+        8:   56-block  0
+call    3 returned 8
+branch  4 taken 8 (fallthrough)
+branch  5 taken 0 (throw)
+        8:   56-block  1
+call    6 returned 8
+branch  7 taken 8 (fallthrough)
+branch  8 taken 0 (throw)
+        8:   56-block  2
+call    9 returned 8
+call   10 returned 8
+call   11 returned 8
+    $$$$$:   56-block  3
+call   12 never executed
+    $$$$$:   56-block  4
+call   13 never executed
+    $$$$$:   56-block  5
+    $$$$$:   56-block  6
+        8:   57:    j["marke"] = car.getMarke();
+call    0 returned 8
+branch  1 taken 8 (fallthrough)
+branch  2 taken 0 (throw)
+        8:   57-block  0
+call    3 returned 8
+branch  4 taken 8 (fallthrough)
+branch  5 taken 0 (throw)
+        8:   57-block  1
+call    6 returned 8
+branch  7 taken 8 (fallthrough)
+branch  8 taken 0 (throw)
+        8:   57-block  2
+call    9 returned 8
+call   10 returned 8
+call   11 returned 8
+    $$$$$:   57-block  3
+call   12 never executed
+    $$$$$:   57-block  4
+call   13 never executed
+    $$$$$:   57-block  5
+    $$$$$:   57-block  6
+        8:   58:    j["erstzulassungsjahr"] = car.getErstzulassungsjahr();
+call    0 returned 8
+branch  1 taken 8 (fallthrough)
+branch  2 taken 0 (throw)
+        8:   58-block  0
+call    3 returned 8
+call    4 returned 8
+branch  5 taken 8 (fallthrough)
+branch  6 taken 0 (throw)
+        8:   58-block  1
+call    7 returned 8
+call    8 returned 8
+    $$$$$:   58-block  2
+call    9 never executed
+    $$$$$:   58-block  3
+    $$$$$:   58-block  4
+        8:   59:    j["kilometerstand"] = car.getKilometerstand();
+call    0 returned 8
+branch  1 taken 8 (fallthrough)
+branch  2 taken 0 (throw)
+        8:   59-block  0
+call    3 returned 8
+call    4 returned 8
+branch  5 taken 8 (fallthrough)
+branch  6 taken 0 (throw)
+        8:   59-block  1
+call    7 returned 8
+call    8 returned 8
+    $$$$$:   59-block  2
+call    9 never executed
+    $$$$$:   59-block  3
+    $$$$$:   59-block  4
+        8:   60:    j["tagespreis"] = car.getTagespreis();
+call    0 returned 8
+branch  1 taken 8 (fallthrough)
+branch  2 taken 0 (throw)
+        8:   60-block  0
+call    3 returned 8
+call    4 returned 8
+branch  5 taken 8 (fallthrough)
+branch  6 taken 0 (throw)
+        8:   60-block  1
+call    7 returned 8
+call    8 returned 8
+    $$$$$:   60-block  2
+call    9 never executed
+    $$$$$:   60-block  3
+    $$$$$:   60-block  4
+        8:   61:    j["kraftstoffart"] = car.getKraftstoffart();
+call    0 returned 8
+branch  1 taken 8 (fallthrough)
+branch  2 taken 0 (throw)
+        8:   61-block  0
+call    3 returned 8
+branch  4 taken 8 (fallthrough)
+branch  5 taken 0 (throw)
+        8:   61-block  1
+call    6 returned 8
+branch  7 taken 8 (fallthrough)
+branch  8 taken 0 (throw)
+        8:   61-block  2
+call    9 returned 8
+call   10 returned 8
+call   11 returned 8
+    $$$$$:   61-block  3
+call   12 never executed
+    $$$$$:   61-block  4
+call   13 never executed
+    $$$$$:   61-block  5
+    $$$$$:   61-block  6
+        8:   62:    j["getriebe"] = car.getGetriebe();
+call    0 returned 8
+branch  1 taken 8 (fallthrough)
+branch  2 taken 0 (throw)
+        8:   62-block  0
+call    3 returned 8
+branch  4 taken 8 (fallthrough)
+branch  5 taken 0 (throw)
+        8:   62-block  1
+call    6 returned 8
+branch  7 taken 8 (fallthrough)
+branch  8 taken 0 (throw)
+        8:   62-block  2
+call    9 returned 8
+call   10 returned 8
+call   11 returned 8
+    $$$$$:   62-block  3
+call   12 never executed
+    $$$$$:   62-block  4
+call   13 never executed
+    $$$$$:   62-block  5
+    $$$$$:   62-block  6
+        8:   63:    j["farbe"] = car.getFarbe();
+call    0 returned 8
+branch  1 taken 8 (fallthrough)
+branch  2 taken 0 (throw)
+        8:   63-block  0
+call    3 returned 8
+branch  4 taken 8 (fallthrough)
+branch  5 taken 0 (throw)
+        8:   63-block  1
+call    6 returned 8
+branch  7 taken 8 (fallthrough)
+branch  8 taken 0 (throw)
+        8:   63-block  2
+call    9 returned 8
+call   10 returned 8
+call   11 returned 8
+    $$$$$:   63-block  3
+call   12 never executed
+    $$$$$:   63-block  4
+call   13 never executed
+    $$$$$:   63-block  5
+    $$$$$:   63-block  6
+       20:   64:    j["bemerkung"] = (car.getBemerkung() != "") ? car.getBemerkung() : "";
+call    0 returned 8
+branch  1 taken 8 (fallthrough)
+branch  2 taken 0 (throw)
+        8:   64-block  0
+call    3 returned 8
+branch  4 taken 8 (fallthrough)
+branch  5 taken 0 (throw)
+        8:   64-block  1
+branch  6 taken 2 (fallthrough)
+branch  7 taken 6
+        2:   64-block  2
+call    8 returned 2
+branch  9 taken 2 (fallthrough)
+branch 10 taken 0 (throw)
+        6:   64-block  3
+call   11 returned 6
+branch 12 taken 6 (fallthrough)
+branch 13 taken 0 (throw)
+        8:   64-block  4
+call   14 returned 8
+branch 15 taken 8 (fallthrough)
+branch 16 taken 0 (throw)
+        8:   64-block  5
+call   17 returned 8
+branch 18 taken 8 (fallthrough)
+branch 19 taken 0 (throw)
+        8:   64-block  6
+call   20 returned 8
+call   21 returned 8
+call   22 returned 8
+branch 23 taken 6 (fallthrough)
+branch 24 taken 2
+        8:   64-block  7
+call   25 returned 8
+    $$$$$:   64-block  8
+call   26 never executed
+    $$$$$:   64-block  9
+call   27 never executed
+    $$$$$:   64-block 10
+branch 28 never executed (fallthrough)
+branch 29 never executed
+    $$$$$:   64-block 11
+    $$$$$:   64-block 12
+call   30 never executed
+    $$$$$:   64-block 13
+    $$$$$:   64-block 14
+    $$$$$:   64-block 15
+        8:   65:    j["aktiv"] = "ja";
+call    0 returned 8
+branch  1 taken 8 (fallthrough)
+branch  2 taken 0 (throw)
+        8:   65-block  0
+call    3 returned 8
+branch  4 taken 8 (fallthrough)
+branch  5 taken 0 (throw)
+        8:   65-block  1
+call    6 returned 8
+call    7 returned 8
+    $$$$$:   65-block  2
+call    8 never executed
+    $$$$$:   65-block  3
+        8:   66:    j["bestellt"] = "nein";
+call    0 returned 8
+branch  1 taken 8 (fallthrough)
+branch  2 taken 0 (throw)
+        8:   66-block  0
+call    3 returned 8
+branch  4 taken 8 (fallthrough)
+branch  5 taken 0 (throw)
+        8:   66-block  1
+call    6 returned 8
+call    7 returned 8
+    $$$$$:   66-block  2
+call    8 never executed
+    $$$$$:   66-block  3
+        -:   67:
+        8:   68:    this->cars.push_back(j);
+call    0 returned 8
+branch  1 taken 8 (fallthrough)
+branch  2 taken 0 (throw)
+        8:   69:    this->write_to_file(this->filename);
+        8:   69-block  0
+call    0 returned 8
+branch  1 taken 8 (fallthrough)
+branch  2 taken 0 (throw)
+        8:   69-block  1
+call    3 returned 8
+branch  4 taken 8 (fallthrough)
+branch  5 taken 0 (throw)
+        8:   69-block  2
+call    6 returned 8
+    $$$$$:   69-block  3
+call    7 never executed
+    $$$$$:   69-block  4
+        -:   70:
+        8:   71:}
+call    0 returned 8
+    $$$$$:   71-block  0
+call    1 never executed
+        -:   72:
+function _ZN8AutoRepo10remove_carERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE called 11 returned 73% blocks executed 66%
+       11:   73:void AutoRepo::remove_car(const std::string& identifier) {
+       11:   74:    string converted_identifier = convertToUpperCase(identifier);
+       11:   74-block  0
+call    0 returned 11
+branch  1 taken 11 (fallthrough)
+branch  2 taken 0 (throw)
+       11:   75:    auto it = std::remove_if(this->cars.begin(), this->cars.end(),
+call    0 returned 11
+    $$$$$:   75-block  0
+    $$$$$:   75-block  1
+function _ZZN8AutoRepo10remove_carERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEENKUlRKN8nlohmann16json_abi_v3_11_310basic_jsonISt3mapSt6vectorS5_bxydSaNS9_14adl_serializerESC_IhSaIhEEvEEE_clESI_ called 13 returned 100% blocks executed 83%
+       13:   76:                             [&converted_identifier](const json& carJson) {
+       13:   77:                                 return carJson["kennzeichen"] == converted_identifier && carJson["bestellt"] != "ja";
+       13:   77-block  0
+call    0 returned 13
+branch  1 taken 13 (fallthrough)
+branch  2 taken 0 (throw)
+       13:   77-block  1
+call    3 returned 13
+branch  4 taken 13 (fallthrough)
+branch  5 taken 0 (throw)
+       13:   77-block  2
+call    6 returned 13
+branch  7 taken 8 (fallthrough)
+branch  8 taken 5
+        8:   77-block  3
+call    9 returned 8
+branch 10 taken 8 (fallthrough)
+branch 11 taken 0 (throw)
+        8:   77-block  4
+call   12 returned 8
+branch 13 taken 8 (fallthrough)
+branch 14 taken 0
+        8:   77-block  5
+        5:   77-block  6
+       13:   77-block  7
+       13:   77-block  8
+branch 15 taken 13 (fallthrough)
+branch 16 taken 0
+       13:   77-block  9
+call   17 returned 13
+       13:   77-block 10
+       13:   77-block 11
+    $$$$$:   77-block 12
+branch 18 never executed (fallthrough)
+branch 19 never executed
+    $$$$$:   77-block 13
+call   20 never executed
+       22:   78:                             });
+       11:   78-block  0
+call    0 returned 11
+call    1 returned 11
+branch  2 taken 11 (fallthrough)
+branch  3 taken 0 (throw)
+        -:   79:
+       11:   80:    if (it != this->cars.end() && (*it)["bestellt"] != "ja") {
+       11:   80-block  0
+call    0 returned 11
+call    1 returned 11
+branch  2 taken 11 (fallthrough)
+branch  3 taken 0 (throw)
+       11:   80-block  1
+branch  4 taken 8 (fallthrough)
+branch  5 taken 3
+        8:   80-block  2
+call    6 returned 8
+branch  7 taken 8 (fallthrough)
+branch  8 taken 0 (throw)
+        8:   80-block  3
+call    9 returned 8
+branch 10 taken 8 (fallthrough)
+branch 11 taken 0 (throw)
+        8:   80-block  4
+call   12 returned 8
+branch 13 taken 8 (fallthrough)
+branch 14 taken 0
+        8:   80-block  5
+        3:   80-block  6
+       11:   80-block  7
+branch 15 taken 8 (fallthrough)
+branch 16 taken 3
+    $$$$$:   80-block  8
+        8:   81:        this->cars.erase(it, this->cars.end());
+        8:   81-block  0
+call    0 returned 8
+call    1 returned 8
+call    2 returned 8
+branch  3 taken 8 (fallthrough)
+branch  4 taken 0 (throw)
+    $$$$$:   81-block  1
+    $$$$$:   81-block  2
+    $$$$$:   81-block  3
+        8:   82:        this->write_to_file(this->filename);
+        8:   82-block  0
+call    0 returned 8
+branch  1 taken 8 (fallthrough)
+branch  2 taken 0 (throw)
+        8:   82-block  1
+call    3 returned 8
+branch  4 taken 8 (fallthrough)
+branch  5 taken 0 (throw)
+        8:   82-block  2
+call    6 returned 8
+    $$$$$:   82-block  3
+call    7 never executed
+    $$$$$:   82-block  4
+        8:   83:        return;
+        8:   83-block  0
+        -:   84:    }
+        3:   85:    throw runtime_error("Auto mit Kennzeichen: " + converted_identifier + " existiert nicht oder hat eine aktive Bestellung.");
+        3:   85-block  0
+call    0 returned 3
+call    1 returned 3
+branch  2 taken 3 (fallthrough)
+branch  3 taken 0 (throw)
+        3:   85-block  1
+call    4 returned 3
+branch  5 taken 3 (fallthrough)
+branch  6 taken 0 (throw)
+        3:   85-block  2
+call    7 returned 3
+branch  8 taken 3 (fallthrough)
+branch  9 taken 0 (throw)
+        3:   85-block  3
+call   10 returned 3
+call   11 returned 3
+call   12 returned 3
+    $$$$$:   85-block  4
+call   13 never executed
+    $$$$$:   85-block  5
+call   14 never executed
+    $$$$$:   85-block  6
+    $$$$$:   85-block  7
+    $$$$$:   85-block  8
+call   15 never executed
+       11:   86:}
+call    0 returned 8
+        3:   86-block  0
+call    1 returned 3
+        -:   87:
+        -:   88:/// PRIVATE METHODEN
+function _ZN8AutoRepo13write_to_fileENSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE called 23 returned 100% blocks executed 42%
+       23:   89:void AutoRepo::write_to_file(std::string filename) {
+       23:   90:        std::ofstream file(filename);
+       23:   90-block  0
+call    0 returned 23
+branch  1 taken 23 (fallthrough)
+branch  2 taken 0 (throw)
+       23:   91:        if(file.is_open()) {
+       23:   91-block  0
+call    0 returned 23
+branch  1 taken 23 (fallthrough)
+branch  2 taken 0
+       23:   92:            file << this->cars.dump(4); // array-ul intreg este scris in fisier
+       23:   92-block  0
+call    0 returned 23
+branch  1 taken 23 (fallthrough)
+branch  2 taken 0 (throw)
+       23:   92-block  1
+call    3 returned 23
+branch  4 taken 23 (fallthrough)
+branch  5 taken 0 (throw)
+       23:   92-block  2
+call    6 returned 23
+    $$$$$:   92-block  3
+call    7 never executed
+    $$$$$:   92-block  4
+       23:   93:            file.close();                      // cu indent 4
+call    0 returned 23
+branch  1 taken 23 (fallthrough)
+branch  2 taken 0 (throw)
+       23:   94:            return;
+       23:   94-block  0
+        -:   95:        }
+    #####:   96:        throw runtime_error("Error opening " + filename);
+    %%%%%:   96-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    %%%%%:   96-block  1
+call    4 never executed
+branch  5 never executed (fallthrough)
+branch  6 never executed (throw)
+    %%%%%:   96-block  2
+call    7 never executed
+call    8 never executed
+    $$$$$:   96-block  3
+call    9 never executed
+    $$$$$:   96-block  4
+    $$$$$:   96-block  5
+call   10 never executed
+       23:   97:}
+       23:   97-block  0
+call    0 returned 23
+    $$$$$:   97-block  1
+call    1 never executed
+        -:   98:
+function _ZN8AutoRepo14read_from_fileERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE called 6 returned 100% blocks executed 73%
+        6:   99:void AutoRepo::read_from_file(const std::string& filename) {
+        6:  100:    std::ifstream file(filename);
+        6:  100-block  0
+call    0 returned 6
+branch  1 taken 6 (fallthrough)
+branch  2 taken 0 (throw)
+        -:  101:
+        6:  102:    if (!file.is_open()) {
+        6:  102-block  0
+call    0 returned 6
+branch  1 taken 0 (fallthrough)
+branch  2 taken 6
+    #####:  103:        std::cerr << "Failed to open file for reading." << std::endl;
+    %%%%%:  103-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  103-block  1
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+    #####:  104:        return;
+    %%%%%:  104-block  0
+        -:  105:    }
+        -:  106:
+        6:  107:    json j;
+        6:  107-block  0
+call    0 returned 6
+        6:  108:    file >> j; // se citeste tot array-ul din fisier
+call    0 returned 6
+branch  1 taken 6 (fallthrough)
+branch  2 taken 0 (throw)
+        -:  109:
+        6:  110:    if (j.is_array())
+        6:  110-block  0
+call    0 returned 6
+branch  1 taken 6 (fallthrough)
+branch  2 taken 0
+       12:  111:        for (const auto& carJson : j)
+        6:  111-block  0
+call    0 returned 6
+call    1 returned 6
+        6:  111-block  1
+call    2 returned 6
+branch  3 taken 6 (fallthrough)
+branch  4 taken 0 (throw)
+        6:  111-block  2
+call    5 returned 6
+branch  6 taken 6 (fallthrough)
+branch  7 taken 0 (throw)
+       12:  111-block  3
+call    8 returned 12
+branch  9 taken 12 (fallthrough)
+branch 10 taken 0 (throw)
+       12:  111-block  4
+branch 11 taken 6
+branch 12 taken 6 (fallthrough)
+        6:  112:            this->cars.push_back(carJson); // fiecare obiect json din array este
+        6:  112-block  0
+call    0 returned 6
+branch  1 taken 6 (fallthrough)
+branch  2 taken 0 (throw)
+        6:  113:    file.close();                              // introdus in array
+        6:  113-block  0
+call    0 returned 6
+branch  1 taken 6 (fallthrough)
+branch  2 taken 0 (throw)
+        6:  114:}
+        6:  114-block  0
+call    0 returned 6
+        6:  114-block  1
+call    1 returned 6
+branch  2 taken 6 (fallthrough)
+branch  3 taken 0
+    $$$$$:  114-block  2
+call    4 never executed
+    $$$$$:  114-block  3
+call    5 never executed
+        -:  115:
+function _ZNK8AutoRepo10search_carERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE called 30 returned 100% blocks executed 83%
+       30:  116:bool AutoRepo::search_car(const std::string& kennzeichen) const {
+       39:  117:    for (const auto& obj : this->cars) {
+       30:  117-block  0
+call    0 returned 30
+call    1 returned 30
+       19:  117-block  1
+call    2 returned 19
+branch  3 taken 19 (fallthrough)
+branch  4 taken 0 (throw)
+        9:  117-block  2
+call    5 returned 9
+branch  6 taken 9 (fallthrough)
+branch  7 taken 0 (throw)
+       39:  117-block  3
+call    8 returned 39
+branch  9 taken 39 (fallthrough)
+branch 10 taken 0 (throw)
+       39:  117-block  4
+branch 11 taken 19
+branch 12 taken 20 (fallthrough)
+       19:  118:        if (obj["kennzeichen"] == kennzeichen)
+       19:  118-block  0
+call    0 returned 19
+branch  1 taken 19 (fallthrough)
+branch  2 taken 0 (throw)
+       19:  118-block  1
+call    3 returned 19
+branch  4 taken 19 (fallthrough)
+branch  5 taken 0 (throw)
+       19:  118-block  2
+call    6 returned 19
+call    7 returned 19
+branch  8 taken 10 (fallthrough)
+branch  9 taken 9
+    $$$$$:  118-block  3
+call   10 never executed
+    $$$$$:  118-block  4
+       10:  119:            return true;
+       10:  119-block  0
+        -:  120:    }
+       20:  121:    return false;
+       20:  121-block  0
+        -:  122:}
+        -:  123:
+        -:  124:/// VERIFICARE INAINTE DE ADD
+function _ZNK8AutoRepo10verify_carE4Auto called 16 returned 50% blocks executed 54%
+       16:  125:bool AutoRepo::verify_car(const Auto car) const{
+       16:  126:    if (car.getKennzeichen().empty() || !verifyVIN(car.getKennzeichen()))
+       16:  126-block  0
+call    0 returned 16
+branch  1 taken 16 (fallthrough)
+branch  2 taken 0 (throw)
+       16:  126-block  1
+call    3 returned 16
+branch  4 taken 15 (fallthrough)
+branch  5 taken 1
+       15:  126-block  2
+call    6 returned 15
+branch  7 taken 15 (fallthrough)
+branch  8 taken 0 (throw)
+       15:  126-block  3
+call    9 returned 15
+branch 10 taken 1 (fallthrough)
+branch 11 taken 14
+        2:  126-block  4
+       14:  126-block  5
+       16:  126-block  6
+branch 12 taken 15 (fallthrough)
+branch 13 taken 1
+       15:  126-block  7
+call   14 returned 15
+       16:  126-block  8
+branch 15 taken 16 (fallthrough)
+branch 16 taken 0
+       16:  126-block  9
+call   17 returned 16
+       16:  126-block 10
+branch 18 taken 2 (fallthrough)
+branch 19 taken 14
+    $$$$$:  126-block 11
+branch 20 never executed (fallthrough)
+branch 21 never executed
+    $$$$$:  126-block 12
+call   22 never executed
+    $$$$$:  126-block 13
+    $$$$$:  126-block 14
+branch 23 never executed (fallthrough)
+branch 24 never executed
+    $$$$$:  126-block 15
+call   25 never executed
+    $$$$$:  126-block 16
+call   26 never executed
+        2:  127:        throw runtime_error("Invalid Kennzeichen.");
+        2:  127-block  0
+call    0 returned 2
+call    1 returned 2
+branch  2 taken 2 (fallthrough)
+branch  3 taken 0 (throw)
+        2:  127-block  1
+call    4 returned 0
+    $$$$$:  127-block  2
+call    5 never executed
+       14:  128:    if (search_car(convertToUpperCase(car.getKennzeichen())))
+       14:  128-block  0
+call    0 returned 14
+branch  1 taken 14 (fallthrough)
+branch  2 taken 0 (throw)
+       14:  128-block  1
+call    3 returned 14
+branch  4 taken 14 (fallthrough)
+branch  5 taken 0 (throw)
+       14:  128-block  2
+call    6 returned 14
+branch  7 taken 14 (fallthrough)
+branch  8 taken 0 (throw)
+       14:  128-block  3
+call    9 returned 14
+call   10 returned 14
+branch 11 taken 0 (fallthrough)
+branch 12 taken 14
+    $$$$$:  128-block  4
+call   13 never executed
+    $$$$$:  128-block  5
+call   14 never executed
+    $$$$$:  128-block  6
+    $$$$$:  128-block  7
+call   15 never executed
+    #####:  129:        throw runtime_error("Auto mit Kennzeichen: " + convertToUpperCase(car.getKennzeichen()) + " existiert schon.");
+    %%%%%:  129-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    %%%%%:  129-block  1
+call    4 never executed
+branch  5 never executed (fallthrough)
+branch  6 never executed (throw)
+    %%%%%:  129-block  2
+call    7 never executed
+branch  8 never executed (fallthrough)
+branch  9 never executed (throw)
+    %%%%%:  129-block  3
+call   10 never executed
+branch 11 never executed (fallthrough)
+branch 12 never executed (throw)
+    %%%%%:  129-block  4
+call   13 never executed
+branch 14 never executed (fallthrough)
+branch 15 never executed (throw)
+    %%%%%:  129-block  5
+call   16 never executed
+call   17 never executed
+call   18 never executed
+call   19 never executed
+call   20 never executed
+    $$$$$:  129-block  6
+call   21 never executed
+    $$$$$:  129-block  7
+call   22 never executed
+    $$$$$:  129-block  8
+call   23 never executed
+    $$$$$:  129-block  9
+call   24 never executed
+    $$$$$:  129-block 10
+    $$$$$:  129-block 11
+    $$$$$:  129-block 12
+    $$$$$:  129-block 13
+    $$$$$:  129-block 14
+call   25 never executed
+       14:  130:    if (car.getTagespreis() < 0)
+       14:  130-block  0
+call    0 returned 14
+branch  1 taken 1 (fallthrough)
+branch  2 taken 13
+        1:  131:        throw runtime_error("Tagespreis kann nicht kleiner als Null sein.");
+        1:  131-block  0
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  131-block  1
+call    4 returned 0
+    $$$$$:  131-block  2
+call    5 never executed
+       13:  132:    if (car.getErstzulassungsjahr() > 2024 || car.getErstzulassungsjahr() < 2000)
+       13:  132-block  0
+call    0 returned 13
+branch  1 taken 12 (fallthrough)
+branch  2 taken 1
+       12:  132-block  1
+call    3 returned 12
+branch  4 taken 1 (fallthrough)
+branch  5 taken 11
+        2:  132-block  2
+       11:  132-block  3
+       13:  132-block  4
+branch  6 taken 2 (fallthrough)
+branch  7 taken 11
+        2:  133:        throw runtime_error("Ersatzlassungsjahr soll zwischen 2000 und 2024 sein.");
+        2:  133-block  0
+call    0 returned 2
+call    1 returned 2
+branch  2 taken 2 (fallthrough)
+branch  3 taken 0 (throw)
+        2:  133-block  1
+call    4 returned 0
+    $$$$$:  133-block  2
+call    5 never executed
+       11:  134:    if (car.getKilometerstand() < 0)
+       11:  134-block  0
+call    0 returned 11
+branch  1 taken 1 (fallthrough)
+branch  2 taken 10
+        1:  135:        throw runtime_error("Kilometerstand darf nicht negativ sein");
+        1:  135-block  0
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  135-block  1
+call    4 returned 0
+    $$$$$:  135-block  2
+call    5 never executed
+       19:  136:    if (car.getKraftstoffart() != "Diesel" && car.getKraftstoffart() != "Benzin" &&
+        9:  136-block  0
+call    0 returned 9
+branch  1 taken 9 (fallthrough)
+branch  2 taken 0 (throw)
+        9:  136-block  1
+call    3 returned 9
+branch  4 taken 9 (fallthrough)
+branch  5 taken 0 (throw)
+        9:  136-block  2
+branch  6 taken 7 (fallthrough)
+branch  7 taken 2
+        9:  136-block  3
+call    8 returned 9
+       10:  136-block  4
+branch  9 taken 10 (fallthrough)
+branch 10 taken 0
+       10:  136-block  5
+call   11 returned 10
+       10:  136-block  6
+branch 12 taken 1 (fallthrough)
+branch 13 taken 9
+    $$$$$:  136-block  7
+branch 14 never executed (fallthrough)
+branch 15 never executed
+    $$$$$:  136-block  8
+call   16 never executed
+    $$$$$:  136-block  9
+    $$$$$:  136-block 10
+branch 17 never executed (fallthrough)
+branch 18 never executed
+    $$$$$:  136-block 11
+call   19 never executed
+    $$$$$:  136-block 12
+call   20 never executed
+       19:  137:            car.getKraftstoffart() != "Electric" && car.getKraftstoffart() != "Gas")
+       10:  137-block  0
+call    0 returned 10
+branch  1 taken 10 (fallthrough)
+branch  2 taken 0 (throw)
+       10:  137-block  1
+call    3 returned 10
+branch  4 taken 10 (fallthrough)
+branch  5 taken 0 (throw)
+       10:  137-block  2
+branch  6 taken 9 (fallthrough)
+branch  7 taken 1
+        7:  137-block  3
+call    8 returned 7
+branch  9 taken 7 (fallthrough)
+branch 10 taken 0 (throw)
+        7:  137-block  4
+call   11 returned 7
+branch 12 taken 7 (fallthrough)
+branch 13 taken 0 (throw)
+        7:  137-block  5
+branch 14 taken 1 (fallthrough)
+branch 15 taken 6
+        1:  137-block  6
+call   16 returned 1
+branch 17 taken 1 (fallthrough)
+branch 18 taken 0 (throw)
+        1:  137-block  7
+call   19 returned 1
+branch 20 taken 1 (fallthrough)
+branch 21 taken 0 (throw)
+        1:  137-block  8
+branch 22 taken 1 (fallthrough)
+branch 23 taken 0
+        1:  137-block  9
+        9:  137-block 10
+       10:  137-block 11
+branch 24 taken 1 (fallthrough)
+branch 25 taken 9
+        1:  137-block 12
+call   26 returned 1
+       10:  137-block 13
+branch 27 taken 7 (fallthrough)
+branch 28 taken 3
+        7:  137-block 14
+call   29 returned 7
+       10:  137-block 15
+branch 30 taken 9 (fallthrough)
+branch 31 taken 1
+    $$$$$:  137-block 16
+branch 32 never executed (fallthrough)
+branch 33 never executed
+    $$$$$:  137-block 17
+call   34 never executed
+    $$$$$:  137-block 18
+    $$$$$:  137-block 19
+branch 35 never executed (fallthrough)
+branch 36 never executed
+    $$$$$:  137-block 20
+call   37 never executed
+    $$$$$:  137-block 21
+        1:  138:        throw runtime_error("Invalid Kraftstoffart: Diesel/Benzin/Electric/Gas");
+        1:  138-block  0
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  138-block  1
+call    4 returned 0
+    $$$$$:  138-block  2
+call    5 never executed
+        9:  139:    if (car.getGetriebe() != "Automatik" && car.getGetriebe() != "Schaltgetriebe")
+        9:  139-block  0
+call    0 returned 9
+branch  1 taken 9 (fallthrough)
+branch  2 taken 0 (throw)
+        9:  139-block  1
+call    3 returned 9
+branch  4 taken 9 (fallthrough)
+branch  5 taken 0 (throw)
+        9:  139-block  2
+branch  6 taken 1 (fallthrough)
+branch  7 taken 8
+        1:  139-block  3
+call    8 returned 1
+branch  9 taken 1 (fallthrough)
+branch 10 taken 0 (throw)
+        1:  139-block  4
+call   11 returned 1
+branch 12 taken 1 (fallthrough)
+branch 13 taken 0 (throw)
+        1:  139-block  5
+branch 14 taken 1 (fallthrough)
+branch 15 taken 0
+        1:  139-block  6
+        8:  139-block  7
+        9:  139-block  8
+branch 16 taken 1 (fallthrough)
+branch 17 taken 8
+        1:  139-block  9
+call   18 returned 1
+        9:  139-block 10
+branch 19 taken 9 (fallthrough)
+branch 20 taken 0
+        9:  139-block 11
+call   21 returned 9
+        9:  139-block 12
+branch 22 taken 1 (fallthrough)
+branch 23 taken 8
+    $$$$$:  139-block 13
+branch 24 never executed (fallthrough)
+branch 25 never executed
+    $$$$$:  139-block 14
+call   26 never executed
+    $$$$$:  139-block 15
+    $$$$$:  139-block 16
+branch 27 never executed (fallthrough)
+branch 28 never executed
+    $$$$$:  139-block 17
+call   29 never executed
+    $$$$$:  139-block 18
+call   30 never executed
+        1:  140:        throw runtime_error("Invalid Getriebe: Automatik/Schaltgetriebe");
+        1:  140-block  0
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  140-block  1
+call    4 returned 0
+    $$$$$:  140-block  2
+call    5 never executed
+        8:  141:    return true;
+        8:  141-block  0
+        8:  141-block  1
+        -:  142:}
+        -:  143:
+function _ZN8AutoRepo13get_cars_jsonB5cxx11Ev called 6 returned 100% blocks executed 100%
+        6:  144:json AutoRepo::get_cars_json() {
+        6:  145:    return this->cars;
+        6:  145-block  0
+call    0 returned 6
+        -:  146:}
+        -:  147:
+function _ZN8AutoRepo10modify_carERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEES7_S7_ called 7 returned 100% blocks executed 41%
+        7:  148:void AutoRepo::modify_car(const std::string& kennzeichen, const std::string& attribute, const std::string& value) {
+        7:  149:    string kennezeichen_gross = convertToUpperCase(kennzeichen);
+        7:  149-block  0
+call    0 returned 7
+branch  1 taken 7 (fallthrough)
+branch  2 taken 0 (throw)
+        7:  150:    string convertedAttribute = convertToLowerCase(attribute);
+        7:  150-block  0
+call    0 returned 7
+branch  1 taken 7 (fallthrough)
+branch  2 taken 0 (throw)
+       14:  151:    if (convertedAttribute != "kennzeichen" && convertedAttribute != "modell" && convertedAttribute != "marke" && convertedAttribute != "tagespreis" &&
+        7:  151-block  0
+call    0 returned 7
+branch  1 taken 7 (fallthrough)
+branch  2 taken 0 (throw)
+        7:  151-block  1
+call    3 returned 7
+branch  4 taken 7 (fallthrough)
+branch  5 taken 0 (throw)
+        7:  151-block  2
+branch  6 taken 6 (fallthrough)
+branch  7 taken 1
+        6:  151-block  3
+call    8 returned 6
+branch  9 taken 6 (fallthrough)
+branch 10 taken 0 (throw)
+        6:  151-block  4
+branch 11 taken 6 (fallthrough)
+branch 12 taken 0
+        6:  151-block  5
+call   13 returned 6
+branch 14 taken 6 (fallthrough)
+branch 15 taken 0 (throw)
+        6:  151-block  6
+branch 16 taken 6 (fallthrough)
+branch 17 taken 0
+        6:  152:            convertedAttribute != "erstzulassungsjahr" && convertedAttribute != "kilometerstand" && convertedAttribute != "kraftstoffart" &&
+        6:  152-block  0
+call    0 returned 6
+branch  1 taken 6 (fallthrough)
+branch  2 taken 0 (throw)
+        6:  152-block  1
+branch  3 taken 5 (fallthrough)
+branch  4 taken 1
+        5:  152-block  2
+call    5 returned 5
+branch  6 taken 5 (fallthrough)
+branch  7 taken 0 (throw)
+        5:  152-block  3
+branch  8 taken 5 (fallthrough)
+branch  9 taken 0
+        5:  152-block  4
+call   10 returned 5
+branch 11 taken 5 (fallthrough)
+branch 12 taken 0 (throw)
+        5:  152-block  5
+branch 13 taken 5 (fallthrough)
+branch 14 taken 0
+        5:  153:            convertedAttribute != "getriebe" && convertedAttribute != "farbe" && convertedAttribute != "bemerkung" &&
+        5:  153-block  0
+call    0 returned 5
+branch  1 taken 5 (fallthrough)
+branch  2 taken 0 (throw)
+        5:  153-block  1
+branch  3 taken 5 (fallthrough)
+branch  4 taken 0
+        5:  153-block  2
+call    5 returned 5
+branch  6 taken 5 (fallthrough)
+branch  7 taken 0 (throw)
+        5:  153-block  3
+branch  8 taken 3 (fallthrough)
+branch  9 taken 2
+        3:  153-block  4
+call   10 returned 3
+branch 11 taken 3 (fallthrough)
+branch 12 taken 0 (throw)
+        3:  153-block  5
+branch 13 taken 3 (fallthrough)
+branch 14 taken 0
+      14*:  154:            convertedAttribute != "aktiv" && convertedAttribute != "bestellt")
+        7:  154-block  0
+branch  0 taken 7 (fallthrough)
+branch  1 taken 0
+        3:  154-block  1
+call    2 returned 3
+branch  3 taken 3 (fallthrough)
+branch  4 taken 0 (throw)
+        3:  154-block  2
+branch  5 taken 0 (fallthrough)
+branch  6 taken 3
+    %%%%%:  154-block  3
+call    7 never executed
+branch  8 never executed (fallthrough)
+branch  9 never executed (throw)
+    %%%%%:  154-block  4
+branch 10 never executed (fallthrough)
+branch 11 never executed
+    %%%%%:  154-block  5
+        7:  154-block  6
+        7:  154-block  7
+branch 12 taken 0 (fallthrough)
+branch 13 taken 7
+    #####:  155:        throw runtime_error("Invalid attribute.");
+    %%%%%:  155-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    %%%%%:  155-block  1
+call    4 never executed
+    $$$$$:  155-block  2
+call    5 never executed
+        -:  156:
+        7:  157:    if (!this->search_car(kennezeichen_gross))
+        7:  157-block  0
+call    0 returned 7
+branch  1 taken 7 (fallthrough)
+branch  2 taken 0 (throw)
+        7:  157-block  1
+branch  3 taken 0 (fallthrough)
+branch  4 taken 7
+    #####:  158:        throw runtime_error("Auto mit Kennzeichen: " + kennezeichen_gross + " existiert nicht.");
+    %%%%%:  158-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    %%%%%:  158-block  1
+call    4 never executed
+branch  5 never executed (fallthrough)
+branch  6 never executed (throw)
+    %%%%%:  158-block  2
+call    7 never executed
+branch  8 never executed (fallthrough)
+branch  9 never executed (throw)
+    %%%%%:  158-block  3
+call   10 never executed
+call   11 never executed
+call   12 never executed
+    $$$$$:  158-block  4
+call   13 never executed
+    $$$$$:  158-block  5
+call   14 never executed
+    $$$$$:  158-block  6
+    $$$$$:  158-block  7
+    $$$$$:  158-block  8
+call   15 never executed
+        -:  159:
+        -:  160:
+        8:  161:    for (auto& obj : this->cars) {
+        7:  161-block  0
+call    0 returned 7
+call    1 returned 7
+        8:  161-block  1
+call    2 returned 8
+branch  3 taken 8 (fallthrough)
+branch  4 taken 0 (throw)
+        1:  161-block  2
+call    5 returned 1
+branch  6 taken 1 (fallthrough)
+branch  7 taken 0 (throw)
+        8:  161-block  3
+call    8 returned 8
+branch  9 taken 8 (fallthrough)
+branch 10 taken 0 (throw)
+        8:  161-block  4
+branch 11 taken 8
+branch 12 taken 0 (fallthrough)
+        8:  162:        if (obj["kennzeichen"] == kennezeichen_gross) {
+        8:  162-block  0
+call    0 returned 8
+branch  1 taken 8 (fallthrough)
+branch  2 taken 0 (throw)
+        8:  162-block  1
+call    3 returned 8
+branch  4 taken 8 (fallthrough)
+branch  5 taken 0 (throw)
+        8:  162-block  2
+call    6 returned 8
+call    7 returned 8
+branch  8 taken 7 (fallthrough)
+branch  9 taken 1
+    $$$$$:  162-block  3
+call   10 never executed
+    $$$$$:  162-block  4
+        7:  163:            if (convertedAttribute == "erstzulassungsjahr" || convertedAttribute == "kilometerstand") {
+        7:  163-block  0
+call    0 returned 7
+branch  1 taken 7 (fallthrough)
+branch  2 taken 0 (throw)
+        7:  163-block  1
+branch  3 taken 6 (fallthrough)
+branch  4 taken 1
+        6:  163-block  2
+call    5 returned 6
+branch  6 taken 6 (fallthrough)
+branch  7 taken 0 (throw)
+        6:  163-block  3
+branch  8 taken 0 (fallthrough)
+branch  9 taken 6
+        1:  163-block  4
+        6:  163-block  5
+        7:  163-block  6
+branch 10 taken 1 (fallthrough)
+branch 11 taken 6
+       1*:  164:                if (convertedAttribute == "erstzulassungsjahr" && stoi(value) >= 2000 && stoi(value) <= 2024)
+        1:  164-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:  164-block  1
+branch  3 taken 1 (fallthrough)
+branch  4 taken 0
+        1:  164-block  2
+call    5 returned 1
+branch  6 taken 1 (fallthrough)
+branch  7 taken 0 (throw)
+        1:  164-block  3
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0
+        1:  164-block  4
+call   10 returned 1
+branch 11 taken 1 (fallthrough)
+branch 12 taken 0 (throw)
+        1:  164-block  5
+branch 13 taken 1 (fallthrough)
+branch 14 taken 0
+        1:  164-block  6
+    %%%%%:  164-block  7
+        1:  164-block  8
+branch 15 taken 1 (fallthrough)
+branch 16 taken 0
+        1:  165:                    obj[convertedAttribute] = stoi(value);
+        1:  165-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:  165-block  1
+call    3 returned 1
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  165-block  2
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:  165-block  3
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+    $$$$$:  165-block  4
+call   13 never executed
+    $$$$$:  165-block  5
+    $$$$$:  165-block  6
+call   14 never executed
+    $$$$$:  165-block  7
+    $$$$$:  165-block  8
+    #####:  166:                else if(convertedAttribute == "kilometerstand" && stoi(value) >= 0)
+    %%%%%:  166-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  166-block  1
+branch  3 never executed (fallthrough)
+branch  4 never executed
+    %%%%%:  166-block  2
+call    5 never executed
+branch  6 never executed (fallthrough)
+branch  7 never executed (throw)
+    %%%%%:  166-block  3
+branch  8 never executed (fallthrough)
+branch  9 never executed
+    %%%%%:  166-block  4
+    %%%%%:  166-block  5
+    %%%%%:  166-block  6
+branch 10 never executed (fallthrough)
+branch 11 never executed
+    #####:  167:                    obj[convertedAttribute] = stoi(value);
+    %%%%%:  167-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  167-block  1
+call    3 never executed
+call    4 never executed
+branch  5 never executed (fallthrough)
+branch  6 never executed (throw)
+    %%%%%:  167-block  2
+call    7 never executed
+branch  8 never executed (fallthrough)
+branch  9 never executed (throw)
+    %%%%%:  167-block  3
+call   10 never executed
+call   11 never executed
+call   12 never executed
+    $$$$$:  167-block  4
+call   13 never executed
+    $$$$$:  167-block  5
+    $$$$$:  167-block  6
+call   14 never executed
+    $$$$$:  167-block  7
+    $$$$$:  167-block  8
+        -:  168:                else
+    #####:  169:                    throw runtime_error("Invalide Veranderungen.");
+    %%%%%:  169-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    %%%%%:  169-block  1
+call    4 never executed
+    $$$$$:  169-block  2
+call    5 never executed
+        -:  170:            }
+        6:  171:            else if (convertedAttribute == "tagespreis") {
+        6:  171-block  0
+call    0 returned 6
+branch  1 taken 6 (fallthrough)
+branch  2 taken 0 (throw)
+        6:  171-block  1
+branch  3 taken 0 (fallthrough)
+branch  4 taken 6
+    #####:  172:                if (stod(value) >= 0)
+    %%%%%:  172-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  172-block  1
+branch  3 never executed (fallthrough)
+branch  4 never executed
+    #####:  173:                    obj[convertedAttribute] = stod(value);
+    %%%%%:  173-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  173-block  1
+call    3 never executed
+call    4 never executed
+branch  5 never executed (fallthrough)
+branch  6 never executed (throw)
+    %%%%%:  173-block  2
+call    7 never executed
+branch  8 never executed (fallthrough)
+branch  9 never executed (throw)
+    %%%%%:  173-block  3
+call   10 never executed
+call   11 never executed
+call   12 never executed
+    $$$$$:  173-block  4
+call   13 never executed
+    $$$$$:  173-block  5
+    $$$$$:  173-block  6
+call   14 never executed
+    $$$$$:  173-block  7
+    $$$$$:  173-block  8
+        -:  174:                else
+    #####:  175:                    throw runtime_error("Invalide Veranderungen.");
+    %%%%%:  175-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    %%%%%:  175-block  1
+call    4 never executed
+    $$$$$:  175-block  2
+call    5 never executed
+        -:  176:            }
+       6*:  177:            else if (convertedAttribute == "kraftstoffart" && value != "Diesel" && value != "Benzin" && value != "Electric" && value != "Gas")
+        6:  177-block  0
+call    0 returned 6
+branch  1 taken 6 (fallthrough)
+branch  2 taken 0 (throw)
+        6:  177-block  1
+branch  3 taken 0 (fallthrough)
+branch  4 taken 6
+    %%%%%:  177-block  2
+call    5 never executed
+branch  6 never executed (fallthrough)
+branch  7 never executed (throw)
+    %%%%%:  177-block  3
+branch  8 never executed (fallthrough)
+branch  9 never executed
+    %%%%%:  177-block  4
+call   10 never executed
+branch 11 never executed (fallthrough)
+branch 12 never executed (throw)
+    %%%%%:  177-block  5
+branch 13 never executed (fallthrough)
+branch 14 never executed
+    %%%%%:  177-block  6
+call   15 never executed
+branch 16 never executed (fallthrough)
+branch 17 never executed (throw)
+    %%%%%:  177-block  7
+branch 18 never executed (fallthrough)
+branch 19 never executed
+    %%%%%:  177-block  8
+call   20 never executed
+branch 21 never executed (fallthrough)
+branch 22 never executed (throw)
+    %%%%%:  177-block  9
+branch 23 never executed (fallthrough)
+branch 24 never executed
+    %%%%%:  177-block 10
+        6:  177-block 11
+        6:  177-block 12
+branch 25 taken 0 (fallthrough)
+branch 26 taken 6
+    #####:  178:                throw runtime_error("Invalide Kraftstoffart: Diesel/Benzin/Electric/Gas");
+    %%%%%:  178-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    %%%%%:  178-block  1
+call    4 never executed
+    $$$$$:  178-block  2
+call    5 never executed
+       6*:  179:            else if (convertedAttribute == "getriebe" && value != "Automatik" && value != "Schaltgetriebe")
+        6:  179-block  0
+call    0 returned 6
+branch  1 taken 6 (fallthrough)
+branch  2 taken 0 (throw)
+        6:  179-block  1
+branch  3 taken 0 (fallthrough)
+branch  4 taken 6
+    %%%%%:  179-block  2
+call    5 never executed
+branch  6 never executed (fallthrough)
+branch  7 never executed (throw)
+    %%%%%:  179-block  3
+branch  8 never executed (fallthrough)
+branch  9 never executed
+    %%%%%:  179-block  4
+call   10 never executed
+branch 11 never executed (fallthrough)
+branch 12 never executed (throw)
+    %%%%%:  179-block  5
+branch 13 never executed (fallthrough)
+branch 14 never executed
+    %%%%%:  179-block  6
+        6:  179-block  7
+        6:  179-block  8
+branch 15 taken 0 (fallthrough)
+branch 16 taken 6
+    #####:  180:                throw runtime_error("Invalide Getriebe: Automatik/Schaltgetriebe");
+    %%%%%:  180-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    %%%%%:  180-block  1
+call    4 never executed
+    $$$$$:  180-block  2
+call    5 never executed
+       6*:  181:            else if (convertedAttribute == "aktiv" && value != "ja" && value != "nein")
+        6:  181-block  0
+call    0 returned 6
+branch  1 taken 6 (fallthrough)
+branch  2 taken 0 (throw)
+        6:  181-block  1
+branch  3 taken 3 (fallthrough)
+branch  4 taken 3
+        3:  181-block  2
+call    5 returned 3
+branch  6 taken 3 (fallthrough)
+branch  7 taken 0 (throw)
+        3:  181-block  3
+branch  8 taken 2 (fallthrough)
+branch  9 taken 1
+        2:  181-block  4
+call   10 returned 2
+branch 11 taken 2 (fallthrough)
+branch 12 taken 0 (throw)
+        2:  181-block  5
+branch 13 taken 0 (fallthrough)
+branch 14 taken 2
+    %%%%%:  181-block  6
+        6:  181-block  7
+        6:  181-block  8
+branch 15 taken 0 (fallthrough)
+branch 16 taken 6
+    #####:  182:                throw runtime_error("Invalid Aktiv Status: ja/nein");
+    %%%%%:  182-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    %%%%%:  182-block  1
+call    4 never executed
+    $$$$$:  182-block  2
+call    5 never executed
+       6*:  183:            else if (convertedAttribute == "bestellt" && value != "ja" && value != "nein")
+        6:  183-block  0
+call    0 returned 6
+branch  1 taken 6 (fallthrough)
+branch  2 taken 0 (throw)
+        6:  183-block  1
+branch  3 taken 0 (fallthrough)
+branch  4 taken 6
+    %%%%%:  183-block  2
+call    5 never executed
+branch  6 never executed (fallthrough)
+branch  7 never executed (throw)
+    %%%%%:  183-block  3
+branch  8 never executed (fallthrough)
+branch  9 never executed
+    %%%%%:  183-block  4
+call   10 never executed
+branch 11 never executed (fallthrough)
+branch 12 never executed (throw)
+    %%%%%:  183-block  5
+branch 13 never executed (fallthrough)
+branch 14 never executed
+    %%%%%:  183-block  6
+        6:  183-block  7
+        6:  183-block  8
+branch 15 taken 0 (fallthrough)
+branch 16 taken 6
+    #####:  184:                throw runtime_error("Invalid Bestellt Status: ja/nein");
+    %%%%%:  184-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    %%%%%:  184-block  1
+call    4 never executed
+    $$$$$:  184-block  2
+call    5 never executed
+        -:  185:            else {
+       6*:  186:                if (convertedAttribute == "aktiv" && obj["aktiv"] == "ja" && obj["bestellt"] == "ja" && value == "nein")
+        6:  186-block  0
+call    0 returned 6
+branch  1 taken 6 (fallthrough)
+branch  2 taken 0 (throw)
+        6:  186-block  1
+branch  3 taken 3 (fallthrough)
+branch  4 taken 3
+        3:  186-block  2
+call    5 returned 3
+branch  6 taken 3 (fallthrough)
+branch  7 taken 0 (throw)
+        3:  186-block  3
+call    8 returned 3
+branch  9 taken 1 (fallthrough)
+branch 10 taken 2
+        1:  186-block  4
+call   11 returned 1
+branch 12 taken 1 (fallthrough)
+branch 13 taken 0 (throw)
+        1:  186-block  5
+call   14 returned 1
+branch 15 taken 0 (fallthrough)
+branch 16 taken 1
+    %%%%%:  186-block  6
+call   17 never executed
+branch 18 never executed (fallthrough)
+branch 19 never executed (throw)
+    %%%%%:  186-block  7
+branch 20 never executed (fallthrough)
+branch 21 never executed
+    %%%%%:  186-block  8
+        6:  186-block  9
+        6:  186-block 10
+branch 22 taken 0 (fallthrough)
+branch 23 taken 6
+    #####:  187:                    throw runtime_error("Verboten. Man darf nicht das Auto " + kennezeichen_gross + " deaktivieren, weil es eine aktive Bestellung hat.");
+    %%%%%:  187-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    %%%%%:  187-block  1
+call    4 never executed
+branch  5 never executed (fallthrough)
+branch  6 never executed (throw)
+    %%%%%:  187-block  2
+call    7 never executed
+branch  8 never executed (fallthrough)
+branch  9 never executed (throw)
+    %%%%%:  187-block  3
+call   10 never executed
+call   11 never executed
+call   12 never executed
+    $$$$$:  187-block  4
+call   13 never executed
+    $$$$$:  187-block  5
+call   14 never executed
+    $$$$$:  187-block  6
+    $$$$$:  187-block  7
+    $$$$$:  187-block  8
+call   15 never executed
+        6:  188:                obj[convertedAttribute] = value;
+        6:  188-block  0
+call    0 returned 6
+branch  1 taken 6 (fallthrough)
+branch  2 taken 0 (throw)
+        6:  188-block  1
+call    3 returned 6
+branch  4 taken 6 (fallthrough)
+branch  5 taken 0 (throw)
+        6:  188-block  2
+call    6 returned 6
+branch  7 taken 6 (fallthrough)
+branch  8 taken 0 (throw)
+        6:  188-block  3
+call    9 returned 6
+call   10 returned 6
+call   11 returned 6
+    $$$$$:  188-block  4
+call   12 never executed
+    $$$$$:  188-block  5
+    $$$$$:  188-block  6
+call   13 never executed
+    $$$$$:  188-block  7
+        -:  189:            }
+        7:  190:            break;
+        7:  190-block  0
+        -:  191:        }
+        -:  192:    }
+        7:  193:    this->write_to_file(this->filename);
+        7:  193-block  0
+call    0 returned 7
+branch  1 taken 7 (fallthrough)
+branch  2 taken 0 (throw)
+        7:  193-block  1
+call    3 returned 7
+branch  4 taken 7 (fallthrough)
+branch  5 taken 0 (throw)
+        7:  193-block  2
+call    6 returned 7
+    $$$$$:  193-block  3
+call    7 never executed
+    $$$$$:  193-block  4
+        7:  194:}
+call    0 returned 7
+call    1 returned 7
+    $$$$$:  194-block  0
+call    2 never executed
+    $$$$$:  194-block  1
+call    3 never executed
+        -:  195:
+function _ZN8AutoRepo4saveEv called 0 returned 0% blocks executed 0%
+    #####:  196:void AutoRepo::save() {
+    #####:  197:    this->write_to_file(this->filename);
+    %%%%%:  197-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  197-block  1
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+    %%%%%:  197-block  2
+call    6 never executed
+    $$$$$:  197-block  3
+call    7 never executed
+    #####:  198:}
+        -:  199:
+        -:  200:/// Metode suplimentare
+        -:  201://void AutoRepo::print_cars() {
+        -:  202://    for (const auto& obj : this->cars) {
+        -:  203://        cout << obj["kennzeichen"] << " " << " " << obj["modell"] << " " << obj["marke"] << " " << obj["erstzulassungsjahr"]
+        -:  204://             << " " << obj["kilometerstand"] << " " << obj["tagespreis"] << " " << obj["kraftstoffart"] << " "
+        -:  205://             << obj["getriebe"] << " " << obj["farbe"] << " " << obj["bemerkung"]  << "\n";
+        -:  206://    }
+        -:  207://}
+        -:  208://
+        -:  209://
+        -:  210://list<Auto>&AutoRepo::get_cars() {
+        -:  211://    for (auto& obj : this->cars){
+        -:  212://        string kennzeichen = obj["kennzeichen"];
+        -:  213://        string modell = obj["modell"];
+        -:  214://        string marke = obj["marke"];
+        -:  215://        int erstzulassungsjahr = int(obj["erstzulassungsjahr"]);
+        -:  216://        int kilometerstand = int(obj["kilometerstand"]);
+        -:  217://        double tagespreis = double(obj["tagespreis"]);
+        -:  218://        string kraftstoffart = obj["kraftstoffart"];
+        -:  219://        string getriebe = obj["getriebe"];
+        -:  220://        string farbe = obj["farbe"];
+        -:  221://        string bemerkung;
+        -:  222://        if (!obj["bemerkung"].empty()){
+        -:  223://            bemerkung = obj["bemerkung"];
+        -:  224://            this->cars_obj.push_back(Auto(kennzeichen, modell, marke, erstzulassungsjahr, kilometerstand,
+        -:  225://                                          tagespreis, kraftstoffart, getriebe, farbe, bemerkung));
+        -:  226://        }
+        -:  227://        else
+        -:  228://            this->cars_obj.push_back(Auto(kennzeichen, modell, marke, erstzulassungsjahr, kilometerstand,
+        -:  229://                                          tagespreis, kraftstoffart, getriebe, farbe));
+        -:  230://    }
+        -:  231://    return this->cars_obj;
+        -:  232://}

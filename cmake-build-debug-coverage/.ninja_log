@@ -1,0 +1,7 @@
+# ninja log v5
+38	6055	7365343758669679	CMakeFiles/Json_test.dir/Repositories/AutoRepo/TestsAutoRepo/testsAutoRepo.cpp.obj	76007532c75f036d
+22	866	7365343706867501	CMakeFiles/Json_test.dir/Domain/Auto.cpp.obj	f576b0390fb66cfe
+3	284	7371248991248318	build.ninja	23607f637449d40c
+7	2726	7365350553140852	CMakeFiles/Json_test.dir/main.cpp.obj	cbbaf015ba80c0aa
+9	8846	7365343786482199	CMakeFiles/Json_test.dir/Repositories/AutoRepo/AutoRepo.cpp.obj	36d50ec782809160
+2727	4813	7365350573856486	Json_test.exe	143c2213da3ac765

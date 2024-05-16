@@ -1,0 +1,429 @@
+        -:    0:Source:C:/Users/rares/CLionProjects/OOP/Json-test/include/nlohmann/detail/exceptions.hpp
+        -:    0:Graph:C:\Users\rares\CLionProjects\OOP\Json-test\cmake-build-debug-coverage\CMakeFiles\Json_test.dir\Repositories\AutoRepo\TestsAutoRepo\testsAutoRepo.cpp.gcno
+        -:    0:Data:C:\Users\rares\CLionProjects\OOP\Json-test\cmake-build-debug-coverage\CMakeFiles\Json_test.dir\Repositories\AutoRepo\TestsAutoRepo\testsAutoRepo.cpp.gcda
+        -:    0:Runs:1
+        -:    1://     __ _____ _____ _____
+        -:    2://  __|  |   __|     |   | |  JSON for Modern C++
+        -:    3:// |  |  |__   |  |  | | | |  version 3.11.3
+        -:    4:// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+        -:    5://
+        -:    6:// SPDX-FileCopyrightText: 2013-2023 Niels Lohmann <https://nlohmann.me>
+        -:    7:// SPDX-License-Identifier: MIT
+        -:    8:
+        -:    9:#pragma once
+        -:   10:
+        -:   11:#include <cstddef> // nullptr_t
+        -:   12:#include <exception> // exception
+        -:   13:#if JSON_DIAGNOSTICS
+        -:   14:    #include <numeric> // accumulate
+        -:   15:#endif
+        -:   16:#include <stdexcept> // runtime_error
+        -:   17:#include <string> // to_string
+        -:   18:#include <vector> // vector
+        -:   19:
+        -:   20:#include <nlohmann/detail/value_t.hpp>
+        -:   21:#include <nlohmann/detail/string_escape.hpp>
+        -:   22:#include <nlohmann/detail/input/position_t.hpp>
+        -:   23:#include <nlohmann/detail/macro_scope.hpp>
+        -:   24:#include <nlohmann/detail/meta/cpp_future.hpp>
+        -:   25:#include <nlohmann/detail/meta/type_traits.hpp>
+        -:   26:#include <nlohmann/detail/string_concat.hpp>
+        -:   27:
+        -:   28:NLOHMANN_JSON_NAMESPACE_BEGIN
+        -:   29:namespace detail
+        -:   30:{
+        -:   31:
+        -:   32:////////////////
+        -:   33:// exceptions //
+        -:   34:////////////////
+        -:   35:
+        -:   36:/// @brief general exception of the @ref basic_json class
+        -:   37:/// @sa https://json.nlohmann.me/api/basic_json/exception/
+        -:   38:class exception : public std::exception
+        -:   39:{
+        -:   40:  public:
+        -:   41:    /// returns the explanatory string
+function _ZNK8nlohmann16json_abi_v3_11_36detail9exception4whatEv called 0 returned 0% blocks executed 0%
+    #####:   42:    const char* what() const noexcept override
+        -:   43:    {
+    #####:   44:        return m.what();
+    %%%%%:   44-block  0
+call    0 never executed
+        -:   45:    }
+        -:   46:
+        -:   47:    /// the id of the exception
+        -:   48:    const int id; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
+        -:   49:
+        -:   50:  protected:
+        -:   51:    JSON_HEDLEY_NON_NULL(3)
+function _ZN8nlohmann16json_abi_v3_11_36detail9exceptionC2EiPKc called 0 returned 0% blocks executed 0%
+    #####:   52:    exception(int id_, const char* what_arg) : id(id_), m(what_arg) {} // NOLINT(bugprone-throw-keyword-missing)
+    %%%%%:   52-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    %%%%%:   52-block  1
+    $$$$$:   52-block  2
+call    4 never executed
+        -:   53:
+function _ZN8nlohmann16json_abi_v3_11_36detail9exception4nameERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEi called 0 returned 0% blocks executed 0%
+    #####:   54:    static std::string name(const std::string& ename, int id_)
+        -:   55:    {
+    #####:   56:        return concat("[json.exception.", ename, '.', std::to_string(id_), "] ");
+    %%%%%:   56-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    %%%%%:   56-block  1
+    %%%%%:   56-block  2
+call    4 never executed
+    %%%%%:   56-block  3
+    $$$$$:   56-block  4
+    $$$$$:   56-block  5
+call    5 never executed
+        -:   57:    }
+        -:   58:
+function _ZN8nlohmann16json_abi_v3_11_36detail9exception11diagnosticsB5cxx11EDn called 0 returned 0% blocks executed 0%
+    #####:   59:    static std::string diagnostics(std::nullptr_t /*leaf_element*/)
+    %%%%%:   59-block  0
+        -:   60:    {
+    #####:   61:        return "";
+    %%%%%:   61-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:   61-block  1
+        -:   62:    }
+        -:   63:
+        -:   64:    template<typename BasicJsonType>
+function _ZN8nlohmann16json_abi_v3_11_36detail9exception11diagnosticsINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES6_IhSaIhEEvEEEESC_PKT_ called 0 returned 0% blocks executed 0%
+    #####:   65:    static std::string diagnostics(const BasicJsonType* leaf_element)
+    %%%%%:   65-block  0
+        -:   66:    {
+        -:   67:#if JSON_DIAGNOSTICS
+        -:   68:        std::vector<std::string> tokens;
+        -:   69:        for (const auto* current = leaf_element; current != nullptr && current->m_parent != nullptr; current = current->m_parent)
+        -:   70:        {
+        -:   71:            switch (current->m_parent->type())
+        -:   72:            {
+        -:   73:                case value_t::array:
+        -:   74:                {
+        -:   75:                    for (std::size_t i = 0; i < current->m_parent->m_data.m_value.array->size(); ++i)
+        -:   76:                    {
+        -:   77:                        if (&current->m_parent->m_data.m_value.array->operator[](i) == current)
+        -:   78:                        {
+        -:   79:                            tokens.emplace_back(std::to_string(i));
+        -:   80:                            break;
+        -:   81:                        }
+        -:   82:                    }
+        -:   83:                    break;
+        -:   84:                }
+        -:   85:
+        -:   86:                case value_t::object:
+        -:   87:                {
+        -:   88:                    for (const auto& element : *current->m_parent->m_data.m_value.object)
+        -:   89:                    {
+        -:   90:                        if (&element.second == current)
+        -:   91:                        {
+        -:   92:                            tokens.emplace_back(element.first.c_str());
+        -:   93:                            break;
+        -:   94:                        }
+        -:   95:                    }
+        -:   96:                    break;
+        -:   97:                }
+        -:   98:
+        -:   99:                case value_t::null: // LCOV_EXCL_LINE
+        -:  100:                case value_t::string: // LCOV_EXCL_LINE
+        -:  101:                case value_t::boolean: // LCOV_EXCL_LINE
+        -:  102:                case value_t::number_integer: // LCOV_EXCL_LINE
+        -:  103:                case value_t::number_unsigned: // LCOV_EXCL_LINE
+        -:  104:                case value_t::number_float: // LCOV_EXCL_LINE
+        -:  105:                case value_t::binary: // LCOV_EXCL_LINE
+        -:  106:                case value_t::discarded: // LCOV_EXCL_LINE
+        -:  107:                default:   // LCOV_EXCL_LINE
+        -:  108:                    break; // LCOV_EXCL_LINE
+        -:  109:            }
+        -:  110:        }
+        -:  111:
+        -:  112:        if (tokens.empty())
+        -:  113:        {
+        -:  114:            return "";
+        -:  115:        }
+        -:  116:
+        -:  117:        auto str = std::accumulate(tokens.rbegin(), tokens.rend(), std::string{},
+        -:  118:                                   [](const std::string & a, const std::string & b)
+        -:  119:        {
+        -:  120:            return concat(a, '/', detail::escape(b));
+        -:  121:        });
+        -:  122:        return concat('(', str, ") ");
+        -:  123:#else
+        -:  124:        static_cast<void>(leaf_element);
+    #####:  125:        return "";
+    %%%%%:  125-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  125-block  1
+        -:  126:#endif
+        -:  127:    }
+        -:  128:
+        -:  129:  private:
+        -:  130:    /// an exception object as storage for error messages
+        -:  131:    std::runtime_error m;
+        -:  132:};
+        -:  133:
+        -:  134:/// @brief exception indicating a parse error
+        -:  135:/// @sa https://json.nlohmann.me/api/basic_json/parse_error/
+        -:  136:class parse_error : public exception
+        -:  137:{
+        -:  138:  public:
+        -:  139:    /*!
+        -:  140:    @brief create a parse error exception
+        -:  141:    @param[in] id_       the id of the exception
+        -:  142:    @param[in] pos       the position where the error occurred (or with
+        -:  143:                         chars_read_total=0 if the position cannot be
+        -:  144:                         determined)
+        -:  145:    @param[in] what_arg  the explanatory string
+        -:  146:    @return parse_error object
+        -:  147:    */
+        -:  148:    template<typename BasicJsonContext, enable_if_t<is_basic_json_context<BasicJsonContext>::value, int> = 0>
+        -:  149:    static parse_error create(int id_, const position_t& pos, const std::string& what_arg, BasicJsonContext context)
+        -:  150:    {
+        -:  151:        const std::string w = concat(exception::name("parse_error", id_), "parse error",
+        -:  152:                                     position_string(pos), ": ", exception::diagnostics(context), what_arg);
+        -:  153:        return {id_, pos.chars_read_total, w.c_str()};
+        -:  154:    }
+        -:  155:
+        -:  156:    template<typename BasicJsonContext, enable_if_t<is_basic_json_context<BasicJsonContext>::value, int> = 0>
+        -:  157:    static parse_error create(int id_, std::size_t byte_, const std::string& what_arg, BasicJsonContext context)
+        -:  158:    {
+        -:  159:        const std::string w = concat(exception::name("parse_error", id_), "parse error",
+        -:  160:                                     (byte_ != 0 ? (concat(" at byte ", std::to_string(byte_))) : ""),
+        -:  161:                                     ": ", exception::diagnostics(context), what_arg);
+        -:  162:        return {id_, byte_, w.c_str()};
+        -:  163:    }
+        -:  164:
+        -:  165:    /*!
+        -:  166:    @brief byte index of the parse error
+        -:  167:
+        -:  168:    The byte index of the last read character in the input file.
+        -:  169:
+        -:  170:    @note For an input with n bytes, 1 is the index of the first character and
+        -:  171:          n+1 is the index of the terminating null byte or the end of file.
+        -:  172:          This also holds true when reading a byte vector (CBOR or MessagePack).
+        -:  173:    */
+        -:  174:    const std::size_t byte;
+        -:  175:
+        -:  176:  private:
+        -:  177:    parse_error(int id_, std::size_t byte_, const char* what_arg)
+        -:  178:        : exception(id_, what_arg), byte(byte_) {}
+        -:  179:
+        -:  180:    static std::string position_string(const position_t& pos)
+        -:  181:    {
+        -:  182:        return concat(" at line ", std::to_string(pos.lines_read + 1),
+        -:  183:                      ", column ", std::to_string(pos.chars_read_current_line));
+        -:  184:    }
+        -:  185:};
+        -:  186:
+        -:  187:/// @brief exception indicating errors with iterators
+        -:  188:/// @sa https://json.nlohmann.me/api/basic_json/invalid_iterator/
+        -:  189:class invalid_iterator : public exception
+        -:  190:{
+        -:  191:  public:
+        -:  192:    template<typename BasicJsonContext, enable_if_t<is_basic_json_context<BasicJsonContext>::value, int> = 0>
+function _ZN8nlohmann16json_abi_v3_11_36detail16invalid_iterator6createIPNS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES6_IhSaIhEEvEELi0EEES2_iRKSC_T_ called 0 returned 0% blocks executed 0%
+    #####:  193:    static invalid_iterator create(int id_, const std::string& what_arg, BasicJsonContext context)
+        -:  194:    {
+    #####:  195:        const std::string w = concat(exception::name("invalid_iterator", id_), exception::diagnostics(context), what_arg);
+    %%%%%:  195-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  195-block  1
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+    %%%%%:  195-block  2
+call    6 never executed
+branch  7 never executed (fallthrough)
+branch  8 never executed (throw)
+    %%%%%:  195-block  3
+call    9 never executed
+branch 10 never executed (fallthrough)
+branch 11 never executed (throw)
+    %%%%%:  195-block  4
+call   12 never executed
+call   13 never executed
+call   14 never executed
+    $$$$$:  195-block  5
+call   15 never executed
+    $$$$$:  195-block  6
+call   16 never executed
+    $$$$$:  195-block  7
+    $$$$$:  195-block  8
+    $$$$$:  195-block  9
+    $$$$$:  195-block 10
+call   17 never executed
+    $$$$$:  195-block 11
+    #####:  196:        return {id_, w.c_str()};
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    %%%%%:  196-block  0
+    #####:  197:    }
+    %%%%%:  197-block  0
+call    0 never executed
+    $$$$$:  197-block  1
+call    1 never executed
+        -:  198:
+        -:  199:  private:
+        -:  200:    JSON_HEDLEY_NON_NULL(3)
+function _ZN8nlohmann16json_abi_v3_11_36detail16invalid_iteratorC1EiPKc called 0 returned 0% blocks executed 0%
+    #####:  201:    invalid_iterator(int id_, const char* what_arg)
+    #####:  202:        : exception(id_, what_arg) {}
+    %%%%%:  202-block  0
+call    0 never executed
+        -:  203:};
+        -:  204:
+        -:  205:/// @brief exception indicating executing a member function with a wrong type
+        -:  206:/// @sa https://json.nlohmann.me/api/basic_json/type_error/
+        -:  207:class type_error : public exception
+        -:  208:{
+        -:  209:  public:
+        -:  210:    template<typename BasicJsonContext, enable_if_t<is_basic_json_context<BasicJsonContext>::value, int> = 0>
+function _ZN8nlohmann16json_abi_v3_11_36detail10type_error6createIPNS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES6_IhSaIhEEvEELi0EEES2_iRKSC_T_ called 0 returned 0% blocks executed 0%
+    #####:  211:    static type_error create(int id_, const std::string& what_arg, BasicJsonContext context)
+        -:  212:    {
+    #####:  213:        const std::string w = concat(exception::name("type_error", id_), exception::diagnostics(context), what_arg);
+    %%%%%:  213-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  213-block  1
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+    %%%%%:  213-block  2
+call    6 never executed
+branch  7 never executed (fallthrough)
+branch  8 never executed (throw)
+    %%%%%:  213-block  3
+call    9 never executed
+branch 10 never executed (fallthrough)
+branch 11 never executed (throw)
+    %%%%%:  213-block  4
+call   12 never executed
+call   13 never executed
+call   14 never executed
+    $$$$$:  213-block  5
+call   15 never executed
+    $$$$$:  213-block  6
+call   16 never executed
+    $$$$$:  213-block  7
+    $$$$$:  213-block  8
+    $$$$$:  213-block  9
+    $$$$$:  213-block 10
+call   17 never executed
+    $$$$$:  213-block 11
+    #####:  214:        return {id_, w.c_str()};
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    %%%%%:  214-block  0
+    #####:  215:    }
+    %%%%%:  215-block  0
+call    0 never executed
+    $$$$$:  215-block  1
+call    1 never executed
+        -:  216:
+        -:  217:  private:
+        -:  218:    JSON_HEDLEY_NON_NULL(3)
+function _ZN8nlohmann16json_abi_v3_11_36detail10type_errorC1EiPKc called 0 returned 0% blocks executed 0%
+    #####:  219:    type_error(int id_, const char* what_arg) : exception(id_, what_arg) {}
+    %%%%%:  219-block  0
+call    0 never executed
+        -:  220:};
+        -:  221:
+        -:  222:/// @brief exception indicating access out of the defined range
+        -:  223:/// @sa https://json.nlohmann.me/api/basic_json/out_of_range/
+        -:  224:class out_of_range : public exception
+        -:  225:{
+        -:  226:  public:
+        -:  227:    template<typename BasicJsonContext, enable_if_t<is_basic_json_context<BasicJsonContext>::value, int> = 0>
+        -:  228:    static out_of_range create(int id_, const std::string& what_arg, BasicJsonContext context)
+        -:  229:    {
+        -:  230:        const std::string w = concat(exception::name("out_of_range", id_), exception::diagnostics(context), what_arg);
+        -:  231:        return {id_, w.c_str()};
+        -:  232:    }
+        -:  233:
+        -:  234:  private:
+        -:  235:    JSON_HEDLEY_NON_NULL(3)
+        -:  236:    out_of_range(int id_, const char* what_arg) : exception(id_, what_arg) {}
+        -:  237:};
+        -:  238:
+        -:  239:/// @brief exception indicating other library errors
+        -:  240:/// @sa https://json.nlohmann.me/api/basic_json/other_error/
+        -:  241:class other_error : public exception
+        -:  242:{
+        -:  243:  public:
+        -:  244:    template<typename BasicJsonContext, enable_if_t<is_basic_json_context<BasicJsonContext>::value, int> = 0>
+function _ZN8nlohmann16json_abi_v3_11_36detail11other_error6createIDnLi0EEES2_iRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEET_ called 0 returned 0% blocks executed 0%
+    #####:  245:    static other_error create(int id_, const std::string& what_arg, BasicJsonContext context)
+        -:  246:    {
+    #####:  247:        const std::string w = concat(exception::name("other_error", id_), exception::diagnostics(context), what_arg);
+    %%%%%:  247-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  247-block  1
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+    %%%%%:  247-block  2
+call    6 never executed
+branch  7 never executed (fallthrough)
+branch  8 never executed (throw)
+    %%%%%:  247-block  3
+call    9 never executed
+branch 10 never executed (fallthrough)
+branch 11 never executed (throw)
+    %%%%%:  247-block  4
+call   12 never executed
+call   13 never executed
+call   14 never executed
+    $$$$$:  247-block  5
+call   15 never executed
+    $$$$$:  247-block  6
+call   16 never executed
+    $$$$$:  247-block  7
+    $$$$$:  247-block  8
+    $$$$$:  247-block  9
+    $$$$$:  247-block 10
+call   17 never executed
+    $$$$$:  247-block 11
+    #####:  248:        return {id_, w.c_str()};
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    %%%%%:  248-block  0
+    #####:  249:    }
+    %%%%%:  249-block  0
+call    0 never executed
+    $$$$$:  249-block  1
+call    1 never executed
+        -:  250:
+        -:  251:  private:
+        -:  252:    JSON_HEDLEY_NON_NULL(3)
+function _ZN8nlohmann16json_abi_v3_11_36detail11other_errorC1EiPKc called 0 returned 0% blocks executed 0%
+    #####:  253:    other_error(int id_, const char* what_arg) : exception(id_, what_arg) {}
+    %%%%%:  253-block  0
+call    0 never executed
+        -:  254:};
+        -:  255:
+        -:  256:}  // namespace detail
+        -:  257:NLOHMANN_JSON_NAMESPACE_END

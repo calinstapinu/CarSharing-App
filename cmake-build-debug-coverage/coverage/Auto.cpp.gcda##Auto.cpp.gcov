@@ -1,0 +1,166 @@
+        -:    0:Source:C:/Users/rares/CLionProjects/OOP/Json-test/Domain/Auto.cpp
+        -:    0:Graph:C:\Users\rares\CLionProjects\OOP\Json-test\cmake-build-debug-coverage\CMakeFiles\Json_test.dir\Domain\Auto.cpp.gcno
+        -:    0:Data:C:\Users\rares\CLionProjects\OOP\Json-test\cmake-build-debug-coverage\CMakeFiles\Json_test.dir\Domain\Auto.cpp.gcda
+        -:    0:Runs:1
+        -:    1:#include "Auto.h"
+        -:    2:#include <string>
+        -:    3:
+        -:    4:// Constructor
+function _ZN4AutoC2ENSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEES5_S5_iidS5_S5_S5_S5_ called 3 returned 100% blocks executed 45%
+        3:    5:Auto::Auto(std::string kennz, std::string mod, std::string mark, int erstJahr,
+        -:    6:           int kmStand, double tagPreis, std::string kraft, std::string getr,
+        3:    7:           std::string farb, std::string bemerk) :
+        3:    8:        kennzeichen(kennz), modell(mod), marke(mark), erstzulassungsjahr(erstJahr),
+        3:    8-block  0
+call    0 returned 3
+call    1 returned 3
+branch  2 taken 3 (fallthrough)
+branch  3 taken 0 (throw)
+        3:    8-block  1
+call    4 returned 3
+branch  5 taken 3 (fallthrough)
+branch  6 taken 0 (throw)
+        3:    9:        kilometerstand(kmStand), tagespreis(tagPreis), kraftstoffart(kraft),
+        3:    9-block  0
+call    0 returned 3
+branch  1 taken 3 (fallthrough)
+branch  2 taken 0 (throw)
+        3:   10:        getriebe(getr), farbe(farb), bemerkung(bemerk) {}
+        3:   10-block  0
+call    0 returned 3
+branch  1 taken 3 (fallthrough)
+branch  2 taken 0 (throw)
+        3:   10-block  1
+call    3 returned 3
+branch  4 taken 3 (fallthrough)
+branch  5 taken 0 (throw)
+        3:   10-block  2
+call    6 returned 3
+branch  7 taken 3 (fallthrough)
+branch  8 taken 0 (throw)
+        3:   10-block  3
+    $$$$$:   10-block  4
+call    9 never executed
+    $$$$$:   10-block  5
+call   10 never executed
+    $$$$$:   10-block  6
+call   11 never executed
+    $$$$$:   10-block  7
+call   12 never executed
+    $$$$$:   10-block  8
+call   13 never executed
+    $$$$$:   10-block  9
+call   14 never executed
+        -:   11:
+function _ZN4AutoC2ENSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEES5_S5_iidS5_S5_S5_ called 18 returned 100% blocks executed 46%
+       18:   12:Auto::Auto(std::string kennz, std::string mod, std::string mark, int erstJahr, int kmStand, double tagPreis,
+       18:   13:           std::string kraft, std::string getr, std::string farb):
+       18:   14:           kennzeichen(kennz), modell(mod), marke(mark), erstzulassungsjahr(erstJahr),
+       18:   14-block  0
+call    0 returned 18
+call    1 returned 18
+branch  2 taken 18 (fallthrough)
+branch  3 taken 0 (throw)
+       18:   14-block  1
+call    4 returned 18
+branch  5 taken 18 (fallthrough)
+branch  6 taken 0 (throw)
+       18:   15:           kilometerstand(kmStand), tagespreis(tagPreis), kraftstoffart(kraft),
+       18:   15-block  0
+call    0 returned 18
+branch  1 taken 18 (fallthrough)
+branch  2 taken 0 (throw)
+       54:   16:           getriebe(getr), farbe(farb), bemerkung("") {}
+       18:   16-block  0
+call    0 returned 18
+branch  1 taken 18 (fallthrough)
+branch  2 taken 0 (throw)
+       18:   16-block  1
+call    3 returned 18
+branch  4 taken 18 (fallthrough)
+branch  5 taken 0 (throw)
+       18:   16-block  2
+       18:   16-block  3
+call    6 returned 18
+branch  7 taken 18 (fallthrough)
+branch  8 taken 0 (throw)
+    $$$$$:   16-block  4
+    $$$$$:   16-block  5
+call    9 never executed
+    $$$$$:   16-block  6
+call   10 never executed
+    $$$$$:   16-block  7
+call   11 never executed
+    $$$$$:   16-block  8
+call   12 never executed
+    $$$$$:   16-block  9
+call   13 never executed
+    $$$$$:   16-block 10
+call   14 never executed
+        -:   17:
+function _ZNK4Auto14getKennzeichenB5cxx11Ev called 53 returned 100% blocks executed 100%
+       53:   18:std::string Auto::getKennzeichen() const {
+       53:   19:    return kennzeichen;
+       53:   19-block  0
+call    0 returned 53
+        -:   20:}
+        -:   21:
+function _ZNK4Auto9getModellB5cxx11Ev called 8 returned 100% blocks executed 100%
+        8:   22:std::string Auto::getModell() const {
+        8:   23:    return modell;
+        8:   23-block  0
+call    0 returned 8
+        -:   24:}
+        -:   25:
+function _ZNK4Auto8getMarkeB5cxx11Ev called 8 returned 100% blocks executed 100%
+        8:   26:std::string Auto::getMarke() const {
+        8:   27:    return marke;
+        8:   27-block  0
+call    0 returned 8
+        -:   28:}
+        -:   29:
+function _ZNK4Auto21getErstzulassungsjahrEv called 33 returned 100% blocks executed 100%
+       33:   30:int Auto::getErstzulassungsjahr() const {
+       33:   31:    return erstzulassungsjahr;
+       33:   31-block  0
+        -:   32:}
+        -:   33:
+function _ZNK4Auto17getKilometerstandEv called 19 returned 100% blocks executed 100%
+       19:   34:int Auto::getKilometerstand() const {
+       19:   35:    return kilometerstand;
+       19:   35-block  0
+        -:   36:}
+        -:   37:
+function _ZNK4Auto13getTagespreisEv called 22 returned 100% blocks executed 100%
+       22:   38:double Auto::getTagespreis() const {
+       22:   39:    return tagespreis;
+       22:   39-block  0
+        -:   40:}
+        -:   41:
+function _ZNK4Auto16getKraftstoffartB5cxx11Ev called 35 returned 100% blocks executed 100%
+       35:   42:std::string Auto::getKraftstoffart() const {
+       35:   43:    return kraftstoffart;
+       35:   43-block  0
+call    0 returned 35
+        -:   44:}
+        -:   45:
+function _ZNK4Auto11getGetriebeB5cxx11Ev called 18 returned 100% blocks executed 100%
+       18:   46:std::string Auto::getGetriebe() const {
+       18:   47:    return getriebe;
+       18:   47-block  0
+call    0 returned 18
+        -:   48:}
+        -:   49:
+function _ZNK4Auto8getFarbeB5cxx11Ev called 8 returned 100% blocks executed 100%
+        8:   50:std::string Auto::getFarbe() const {
+        8:   51:    return farbe;
+        8:   51-block  0
+call    0 returned 8
+        -:   52:}
+        -:   53:
+function _ZNK4Auto12getBemerkungB5cxx11Ev called 10 returned 100% blocks executed 100%
+       10:   54:std::string Auto::getBemerkung() const {
+       10:   55:    return bemerkung;
+       10:   55-block  0
+call    0 returned 10
+        -:   56:}

@@ -1,0 +1,146 @@
+        -:    0:Source:C:/Users/rares/CLionProjects/OOP/Json-test/include/nlohmann/detail/iterators/primitive_iterator.hpp
+        -:    0:Graph:C:\Users\rares\CLionProjects\OOP\Json-test\cmake-build-debug-coverage\CMakeFiles\Json_test.dir\Repositories\AutoRepo\AutoRepo.cpp.gcno
+        -:    0:Data:C:\Users\rares\CLionProjects\OOP\Json-test\cmake-build-debug-coverage\CMakeFiles\Json_test.dir\Repositories\AutoRepo\AutoRepo.cpp.gcda
+        -:    0:Runs:1
+        -:    1://     __ _____ _____ _____
+        -:    2://  __|  |   __|     |   | |  JSON for Modern C++
+        -:    3:// |  |  |__   |  |  | | | |  version 3.11.3
+        -:    4:// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+        -:    5://
+        -:    6:// SPDX-FileCopyrightText: 2013-2023 Niels Lohmann <https://nlohmann.me>
+        -:    7:// SPDX-License-Identifier: MIT
+        -:    8:
+        -:    9:#pragma once
+        -:   10:
+        -:   11:#include <cstddef> // ptrdiff_t
+        -:   12:#include <limits>  // numeric_limits
+        -:   13:
+        -:   14:#include <nlohmann/detail/macro_scope.hpp>
+        -:   15:
+        -:   16:NLOHMANN_JSON_NAMESPACE_BEGIN
+        -:   17:namespace detail
+        -:   18:{
+        -:   19:
+        -:   20:/*
+        -:   21:@brief an iterator for primitive JSON types
+        -:   22:
+        -:   23:This class models an iterator for primitive JSON types (boolean, number,
+        -:   24:string). It's only purpose is to allow the iterator/const_iterator classes
+        -:   25:to "iterate" over primitive values. Internally, the iterator is modeled by
+        -:   26:a `difference_type` variable. Value begin_value (`0`) models the begin,
+        -:   27:end_value (`1`) models past the end.
+        -:   28:*/
+        -:   29:class primitive_iterator_t
+        -:   30:{
+        -:   31:  private:
+        -:   32:    using difference_type = std::ptrdiff_t;
+        -:   33:    static constexpr difference_type begin_value = 0;
+        -:   34:    static constexpr difference_type end_value = begin_value + 1;
+        -:   35:
+        -:   36:  JSON_PRIVATE_UNLESS_TESTED:
+        -:   37:    /// iterator as signed integer type
+        -:   38:    difference_type m_it = (std::numeric_limits<std::ptrdiff_t>::min)();
+        -:   39:
+        -:   40:  public:
+        -:   41:    constexpr difference_type get_value() const noexcept
+        -:   42:    {
+        -:   43:        return m_it;
+        -:   44:    }
+        -:   45:
+        -:   46:    /// set iterator to a defined beginning
+function _ZN8nlohmann16json_abi_v3_11_36detail20primitive_iterator_t9set_beginEv called 0 returned 0% blocks executed 0%
+    #####:   47:    void set_begin() noexcept
+        -:   48:    {
+    #####:   49:        m_it = begin_value;
+    #####:   50:    }
+        -:   51:
+        -:   52:    /// set iterator to a defined past the end
+function _ZN8nlohmann16json_abi_v3_11_36detail20primitive_iterator_t7set_endEv called 23 returned 100% blocks executed 100%
+       23:   53:    void set_end() noexcept
+        -:   54:    {
+       23:   55:        m_it = end_value;
+       23:   56:    }
+        -:   57:
+        -:   58:    /// return whether the iterator can be dereferenced
+function _ZNK8nlohmann16json_abi_v3_11_36detail20primitive_iterator_t8is_beginEv called 0 returned 0% blocks executed 0%
+    #####:   59:    constexpr bool is_begin() const noexcept
+        -:   60:    {
+    #####:   61:        return m_it == begin_value;
+    %%%%%:   61-block  0
+        -:   62:    }
+        -:   63:
+        -:   64:    /// return whether the iterator is at end
+function _ZNK8nlohmann16json_abi_v3_11_36detail20primitive_iterator_t6is_endEv called 0 returned 0% blocks executed 0%
+    #####:   65:    constexpr bool is_end() const noexcept
+        -:   66:    {
+    #####:   67:        return m_it == end_value;
+    %%%%%:   67-block  0
+        -:   68:    }
+        -:   69:
+function _ZN8nlohmann16json_abi_v3_11_36detaileqENS1_20primitive_iterator_tES2_ called 13 returned 100% blocks executed 100%
+       13:   70:    friend constexpr bool operator==(primitive_iterator_t lhs, primitive_iterator_t rhs) noexcept
+        -:   71:    {
+       13:   72:        return lhs.m_it == rhs.m_it;
+       13:   72-block  0
+        -:   73:    }
+        -:   74:
+        -:   75:    friend constexpr bool operator<(primitive_iterator_t lhs, primitive_iterator_t rhs) noexcept
+        -:   76:    {
+        -:   77:        return lhs.m_it < rhs.m_it;
+        -:   78:    }
+        -:   79:
+        -:   80:    primitive_iterator_t operator+(difference_type n) noexcept
+        -:   81:    {
+        -:   82:        auto result = *this;
+        -:   83:        result += n;
+        -:   84:        return result;
+        -:   85:    }
+        -:   86:
+        -:   87:    friend constexpr difference_type operator-(primitive_iterator_t lhs, primitive_iterator_t rhs) noexcept
+        -:   88:    {
+        -:   89:        return lhs.m_it - rhs.m_it;
+        -:   90:    }
+        -:   91:
+function _ZN8nlohmann16json_abi_v3_11_36detail20primitive_iterator_tppEv called 0 returned 0% blocks executed 0%
+    #####:   92:    primitive_iterator_t& operator++() noexcept
+        -:   93:    {
+    #####:   94:        ++m_it;
+    #####:   95:        return *this;
+    %%%%%:   95-block  0
+        -:   96:    }
+        -:   97:
+        -:   98:    primitive_iterator_t operator++(int)& noexcept // NOLINT(cert-dcl21-cpp)
+        -:   99:    {
+        -:  100:        auto result = *this;
+        -:  101:        ++m_it;
+        -:  102:        return result;
+        -:  103:    }
+        -:  104:
+        -:  105:    primitive_iterator_t& operator--() noexcept
+        -:  106:    {
+        -:  107:        --m_it;
+        -:  108:        return *this;
+        -:  109:    }
+        -:  110:
+        -:  111:    primitive_iterator_t operator--(int)& noexcept // NOLINT(cert-dcl21-cpp)
+        -:  112:    {
+        -:  113:        auto result = *this;
+        -:  114:        --m_it;
+        -:  115:        return result;
+        -:  116:    }
+        -:  117:
+        -:  118:    primitive_iterator_t& operator+=(difference_type n) noexcept
+        -:  119:    {
+        -:  120:        m_it += n;
+        -:  121:        return *this;
+        -:  122:    }
+        -:  123:
+        -:  124:    primitive_iterator_t& operator-=(difference_type n) noexcept
+        -:  125:    {
+        -:  126:        m_it -= n;
+        -:  127:        return *this;
+        -:  128:    }
+        -:  129:};
+        -:  130:
+        -:  131:}  // namespace detail
+        -:  132:NLOHMANN_JSON_NAMESPACE_END

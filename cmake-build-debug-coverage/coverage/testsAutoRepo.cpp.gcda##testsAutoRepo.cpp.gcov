@@ -1,0 +1,2984 @@
+        -:    0:Source:C:/Users/rares/CLionProjects/OOP/Json-test/Repositories/AutoRepo/TestsAutoRepo/testsAutoRepo.cpp
+        -:    0:Graph:C:\Users\rares\CLionProjects\OOP\Json-test\cmake-build-debug-coverage\CMakeFiles\Json_test.dir\Repositories\AutoRepo\TestsAutoRepo\testsAutoRepo.cpp.gcno
+        -:    0:Data:C:\Users\rares\CLionProjects\OOP\Json-test\cmake-build-debug-coverage\CMakeFiles\Json_test.dir\Repositories\AutoRepo\TestsAutoRepo\testsAutoRepo.cpp.gcda
+        -:    0:Runs:1
+        -:    1:#include <cassert>
+        -:    2:#include "../AutoRepo.h"
+        -:    3:#include "../../../Domain/Auto.h"
+        -:    4:#include "../../../include/nlohmann/json.hpp"
+        -:    5:#include <string>
+        -:    6:
+        -:    7:
+function _Z12test_add_carv called 1 returned 100% blocks executed 48%
+        1:    8:void test_add_car() {
+        1:    8-block  0
+        2:    9:    AutoRepo repo("TestsAutoRepo/tests.json");
+        1:    9-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:    9-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:    9-block  2
+call    6 returned 1
+    $$$$$:    9-block  3
+call    7 never executed
+    $$$$$:    9-block  4
+    $$$$$:    9-block  5
+       12:   10:    Auto car("ABC123", "ModelX", "Tesla", 2023, 10000, 200, "Electric", "Automatik", "Black");
+        1:   10-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   10-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:   10-block  2
+call    6 returned 1
+branch  7 taken 1 (fallthrough)
+branch  8 taken 0 (throw)
+        1:   10-block  3
+call    9 returned 1
+branch 10 taken 1 (fallthrough)
+branch 11 taken 0 (throw)
+        1:   10-block  4
+call   12 returned 1
+branch 13 taken 1 (fallthrough)
+branch 14 taken 0 (throw)
+        1:   10-block  5
+call   15 returned 1
+branch 16 taken 1 (fallthrough)
+branch 17 taken 0 (throw)
+        1:   10-block  6
+call   18 returned 1
+branch 19 taken 1 (fallthrough)
+branch 20 taken 0 (throw)
+        1:   10-block  7
+call   21 returned 1
+call   22 returned 1
+call   23 returned 1
+call   24 returned 1
+call   25 returned 1
+call   26 returned 1
+    $$$$$:   10-block  8
+call   27 never executed
+    $$$$$:   10-block  9
+    $$$$$:   10-block 10
+    $$$$$:   10-block 11
+call   28 never executed
+    $$$$$:   10-block 12
+    $$$$$:   10-block 13
+    $$$$$:   10-block 14
+call   29 never executed
+    $$$$$:   10-block 15
+    $$$$$:   10-block 16
+    $$$$$:   10-block 17
+call   30 never executed
+    $$$$$:   10-block 18
+    $$$$$:   10-block 19
+    $$$$$:   10-block 20
+call   31 never executed
+    $$$$$:   10-block 21
+    $$$$$:   10-block 22
+    $$$$$:   10-block 23
+call   32 never executed
+    $$$$$:   10-block 24
+    $$$$$:   10-block 25
+       14:   11:    Auto car2("AFF245", "ModelX", "Tesla", 2023, 10000, 200, "Electric", "Automatik", "Black", "Damaged");
+        1:   11-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   11-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:   11-block  2
+call    6 returned 1
+branch  7 taken 1 (fallthrough)
+branch  8 taken 0 (throw)
+        1:   11-block  3
+call    9 returned 1
+branch 10 taken 1 (fallthrough)
+branch 11 taken 0 (throw)
+        1:   11-block  4
+call   12 returned 1
+branch 13 taken 1 (fallthrough)
+branch 14 taken 0 (throw)
+        1:   11-block  5
+call   15 returned 1
+branch 16 taken 1 (fallthrough)
+branch 17 taken 0 (throw)
+        1:   11-block  6
+call   18 returned 1
+branch 19 taken 1 (fallthrough)
+branch 20 taken 0 (throw)
+        1:   11-block  7
+call   21 returned 1
+branch 22 taken 1 (fallthrough)
+branch 23 taken 0 (throw)
+        1:   11-block  8
+call   24 returned 1
+call   25 returned 1
+call   26 returned 1
+call   27 returned 1
+call   28 returned 1
+call   29 returned 1
+call   30 returned 1
+    $$$$$:   11-block  9
+call   31 never executed
+    $$$$$:   11-block 10
+    $$$$$:   11-block 11
+    $$$$$:   11-block 12
+call   32 never executed
+    $$$$$:   11-block 13
+    $$$$$:   11-block 14
+    $$$$$:   11-block 15
+call   33 never executed
+    $$$$$:   11-block 16
+    $$$$$:   11-block 17
+    $$$$$:   11-block 18
+call   34 never executed
+    $$$$$:   11-block 19
+    $$$$$:   11-block 20
+    $$$$$:   11-block 21
+call   35 never executed
+    $$$$$:   11-block 22
+    $$$$$:   11-block 23
+    $$$$$:   11-block 24
+call   36 never executed
+    $$$$$:   11-block 25
+    $$$$$:   11-block 26
+    $$$$$:   11-block 27
+call   37 never executed
+    $$$$$:   11-block 28
+    $$$$$:   11-block 29
+       13:   12:    Auto car3("AFF246", "ModelX", "Tesla", 2023, 555, 200, "Electric", "Automatik", "Black", "Damaged");
+        1:   12-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   12-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:   12-block  2
+call    6 returned 1
+branch  7 taken 1 (fallthrough)
+branch  8 taken 0 (throw)
+        1:   12-block  3
+call    9 returned 1
+branch 10 taken 1 (fallthrough)
+branch 11 taken 0 (throw)
+        1:   12-block  4
+call   12 returned 1
+branch 13 taken 1 (fallthrough)
+branch 14 taken 0 (throw)
+        1:   12-block  5
+call   15 returned 1
+branch 16 taken 1 (fallthrough)
+branch 17 taken 0 (throw)
+        1:   12-block  6
+call   18 returned 1
+branch 19 taken 1 (fallthrough)
+branch 20 taken 0 (throw)
+        1:   12-block  7
+call   21 returned 1
+branch 22 taken 1 (fallthrough)
+branch 23 taken 0 (throw)
+        1:   12-block  8
+call   24 returned 1
+call   25 returned 1
+call   26 returned 1
+call   27 returned 1
+call   28 returned 1
+call   29 returned 1
+call   30 returned 1
+    $$$$$:   12-block  9
+call   31 never executed
+    $$$$$:   12-block 10
+    $$$$$:   12-block 11
+    $$$$$:   12-block 12
+call   32 never executed
+    $$$$$:   12-block 13
+    $$$$$:   12-block 14
+    $$$$$:   12-block 15
+call   33 never executed
+    $$$$$:   12-block 16
+    $$$$$:   12-block 17
+    $$$$$:   12-block 18
+call   34 never executed
+    $$$$$:   12-block 19
+    $$$$$:   12-block 20
+    $$$$$:   12-block 21
+call   35 never executed
+    $$$$$:   12-block 22
+    $$$$$:   12-block 23
+    $$$$$:   12-block 24
+call   36 never executed
+    $$$$$:   12-block 25
+    $$$$$:   12-block 26
+    $$$$$:   12-block 27
+call   37 never executed
+    $$$$$:   12-block 28
+    $$$$$:   12-block 29
+        -:   13:
+        1:   14:    repo.add_car(car);
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   14-block  0
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:   14-block  1
+call    6 returned 1
+    $$$$$:   14-block  2
+call    7 never executed
+    $$$$$:   14-block  3
+        1:   15:    repo.add_car(car2);
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   15-block  0
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:   15-block  1
+call    6 returned 1
+    $$$$$:   15-block  2
+call    7 never executed
+    $$$$$:   15-block  3
+        1:   16:    repo.add_car(car3);
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   16-block  0
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:   16-block  1
+call    6 returned 1
+    $$$$$:   16-block  2
+call    7 never executed
+    $$$$$:   16-block  3
+        -:   17:
+       2*:   18:    assert(repo.search_car("ABC123"));
+        1:   18-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   18-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:   18-block  2
+branch  6 taken 0 (fallthrough)
+branch  7 taken 1
+    %%%%%:   18-block  3
+call    8 never executed
+        1:   18-block  4
+        1:   18-block  5
+branch  9 taken 1 (fallthrough)
+branch 10 taken 0
+        1:   18-block  6
+call   11 returned 1
+        1:   18-block  7
+branch 12 taken 1 (fallthrough)
+branch 13 taken 0
+    $$$$$:   18-block  8
+branch 14 never executed (fallthrough)
+branch 15 never executed
+    $$$$$:   18-block  9
+call   16 never executed
+    $$$$$:   18-block 10
+    $$$$$:   18-block 11
+branch 17 never executed (fallthrough)
+branch 18 never executed
+    $$$$$:   18-block 12
+       2*:   19:    assert(repo.search_car("AFF245"));
+        1:   19-block  0
+        1:   19-block  1
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   19-block  2
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:   19-block  3
+branch  6 taken 0 (fallthrough)
+branch  7 taken 1
+    %%%%%:   19-block  4
+call    8 never executed
+        1:   19-block  5
+        1:   19-block  6
+branch  9 taken 1 (fallthrough)
+branch 10 taken 0
+        1:   19-block  7
+call   11 returned 1
+        1:   19-block  8
+branch 12 taken 1 (fallthrough)
+branch 13 taken 0
+    $$$$$:   19-block  9
+branch 14 never executed (fallthrough)
+branch 15 never executed
+    $$$$$:   19-block 10
+call   16 never executed
+    $$$$$:   19-block 11
+    $$$$$:   19-block 12
+branch 17 never executed (fallthrough)
+branch 18 never executed
+    $$$$$:   19-block 13
+       3*:   20:    assert(repo.search_car("AFF246"));
+        1:   20-block  0
+        1:   20-block  1
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   20-block  2
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:   20-block  3
+branch  6 taken 0 (fallthrough)
+branch  7 taken 1
+    %%%%%:   20-block  4
+call    8 never executed
+        1:   20-block  5
+        1:   20-block  6
+branch  9 taken 1 (fallthrough)
+branch 10 taken 0
+        1:   20-block  7
+call   11 returned 1
+        1:   20-block  8
+branch 12 taken 1 (fallthrough)
+branch 13 taken 0
+        1:   20-block  9
+    $$$$$:   20-block 10
+branch 14 never executed (fallthrough)
+branch 15 never executed
+    $$$$$:   20-block 11
+call   16 never executed
+    $$$$$:   20-block 12
+    $$$$$:   20-block 13
+branch 17 never executed (fallthrough)
+branch 18 never executed
+    $$$$$:   20-block 14
+        -:   21:
+        2:   22:    repo.remove_car("ABC123");
+        1:   22-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   22-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:   22-block  2
+call    6 returned 1
+    $$$$$:   22-block  3
+call    7 never executed
+    $$$$$:   22-block  4
+    $$$$$:   22-block  5
+        2:   23:    repo.remove_car("AFF245");
+        1:   23-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   23-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:   23-block  2
+call    6 returned 1
+    $$$$$:   23-block  3
+call    7 never executed
+    $$$$$:   23-block  4
+    $$$$$:   23-block  5
+        1:   24:    repo.remove_car("AFF246");
+        1:   24-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   24-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:   24-block  2
+call    6 returned 1
+    $$$$$:   24-block  3
+call    7 never executed
+    $$$$$:   24-block  4
+    $$$$$:   24-block  5
+       2*:   25:    assert(!repo.search_car("ABC123"));
+        1:   25-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   25-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:   25-block  2
+branch  6 taken 0 (fallthrough)
+branch  7 taken 1
+    %%%%%:   25-block  3
+call    8 never executed
+        1:   25-block  4
+        1:   25-block  5
+branch  9 taken 1 (fallthrough)
+branch 10 taken 0
+        1:   25-block  6
+call   11 returned 1
+        1:   25-block  7
+branch 12 taken 1 (fallthrough)
+branch 13 taken 0
+    $$$$$:   25-block  8
+branch 14 never executed (fallthrough)
+branch 15 never executed
+    $$$$$:   25-block  9
+call   16 never executed
+    $$$$$:   25-block 10
+    $$$$$:   25-block 11
+branch 17 never executed (fallthrough)
+branch 18 never executed
+    $$$$$:   25-block 12
+       2*:   26:    assert(!repo.search_car("AFF245"));
+        1:   26-block  0
+        1:   26-block  1
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   26-block  2
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:   26-block  3
+branch  6 taken 0 (fallthrough)
+branch  7 taken 1
+    %%%%%:   26-block  4
+call    8 never executed
+        1:   26-block  5
+        1:   26-block  6
+branch  9 taken 1 (fallthrough)
+branch 10 taken 0
+        1:   26-block  7
+call   11 returned 1
+        1:   26-block  8
+branch 12 taken 1 (fallthrough)
+branch 13 taken 0
+    $$$$$:   26-block  9
+branch 14 never executed (fallthrough)
+branch 15 never executed
+    $$$$$:   26-block 10
+call   16 never executed
+    $$$$$:   26-block 11
+    $$$$$:   26-block 12
+branch 17 never executed (fallthrough)
+branch 18 never executed
+    $$$$$:   26-block 13
+       2*:   27:    assert(!repo.search_car("AFF246"));
+        1:   27-block  0
+        1:   27-block  1
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   27-block  2
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:   27-block  3
+branch  6 taken 0 (fallthrough)
+branch  7 taken 1
+    %%%%%:   27-block  4
+call    8 never executed
+        1:   27-block  5
+        1:   27-block  6
+branch  9 taken 1 (fallthrough)
+branch 10 taken 0
+        1:   27-block  7
+call   11 returned 1
+        1:   27-block  8
+branch 12 taken 1 (fallthrough)
+branch 13 taken 0
+    $$$$$:   27-block  9
+branch 14 never executed (fallthrough)
+branch 15 never executed
+    $$$$$:   27-block 10
+call   16 never executed
+    $$$$$:   27-block 11
+    $$$$$:   27-block 12
+branch 17 never executed (fallthrough)
+branch 18 never executed
+    $$$$$:   27-block 13
+        1:   28:}
+        1:   28-block  0
+call    0 returned 1
+call    1 returned 1
+call    2 returned 1
+call    3 returned 1
+    $$$$$:   28-block  1
+call    4 never executed
+    $$$$$:   28-block  2
+call    5 never executed
+    $$$$$:   28-block  3
+call    6 never executed
+    $$$$$:   28-block  4
+call    7 never executed
+        -:   29:
+function _Z15test_remove_carv called 1 returned 100% blocks executed 50%
+        1:   30:void test_remove_car() {
+        1:   30-block  0
+        2:   31:    AutoRepo repo("TestsAutoRepo/tests.json");
+        1:   31-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   31-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:   31-block  2
+call    6 returned 1
+    $$$$$:   31-block  3
+call    7 never executed
+    $$$$$:   31-block  4
+    $$$$$:   31-block  5
+       11:   32:    Auto car("ABC123", "ModelX", "Tesla", 2023, 10000, 200, "Electric", "Automatik", "Black");
+        1:   32-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   32-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:   32-block  2
+call    6 returned 1
+branch  7 taken 1 (fallthrough)
+branch  8 taken 0 (throw)
+        1:   32-block  3
+call    9 returned 1
+branch 10 taken 1 (fallthrough)
+branch 11 taken 0 (throw)
+        1:   32-block  4
+call   12 returned 1
+branch 13 taken 1 (fallthrough)
+branch 14 taken 0 (throw)
+        1:   32-block  5
+call   15 returned 1
+branch 16 taken 1 (fallthrough)
+branch 17 taken 0 (throw)
+        1:   32-block  6
+call   18 returned 1
+branch 19 taken 1 (fallthrough)
+branch 20 taken 0 (throw)
+        1:   32-block  7
+call   21 returned 1
+call   22 returned 1
+call   23 returned 1
+call   24 returned 1
+call   25 returned 1
+call   26 returned 1
+    $$$$$:   32-block  8
+call   27 never executed
+    $$$$$:   32-block  9
+    $$$$$:   32-block 10
+    $$$$$:   32-block 11
+call   28 never executed
+    $$$$$:   32-block 12
+    $$$$$:   32-block 13
+    $$$$$:   32-block 14
+call   29 never executed
+    $$$$$:   32-block 15
+    $$$$$:   32-block 16
+    $$$$$:   32-block 17
+call   30 never executed
+    $$$$$:   32-block 18
+    $$$$$:   32-block 19
+    $$$$$:   32-block 20
+call   31 never executed
+    $$$$$:   32-block 21
+    $$$$$:   32-block 22
+    $$$$$:   32-block 23
+call   32 never executed
+    $$$$$:   32-block 24
+    $$$$$:   32-block 25
+        -:   33:
+        1:   34:    repo.add_car(car);
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   34-block  0
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:   34-block  1
+call    6 returned 1
+    $$$$$:   34-block  2
+call    7 never executed
+    $$$$$:   34-block  3
+        -:   35:
+        1:   36:    repo.remove_car("ABC123");
+        1:   36-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   36-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:   36-block  2
+call    6 returned 1
+    $$$$$:   36-block  3
+call    7 never executed
+    $$$$$:   36-block  4
+    $$$$$:   36-block  5
+       3*:   37:    assert(!repo.search_car("ABC123"));
+        1:   37-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   37-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:   37-block  2
+branch  6 taken 0 (fallthrough)
+branch  7 taken 1
+    %%%%%:   37-block  3
+call    8 never executed
+        1:   37-block  4
+        1:   37-block  5
+branch  9 taken 1 (fallthrough)
+branch 10 taken 0
+        1:   37-block  6
+call   11 returned 1
+        1:   37-block  7
+branch 12 taken 1 (fallthrough)
+branch 13 taken 0
+        1:   37-block  8
+    $$$$$:   37-block  9
+branch 14 never executed (fallthrough)
+branch 15 never executed
+    $$$$$:   37-block 10
+call   16 never executed
+    $$$$$:   37-block 11
+    $$$$$:   37-block 12
+branch 17 never executed (fallthrough)
+branch 18 never executed
+    $$$$$:   37-block 13
+        -:   38:
+        -:   39:    try {
+       2*:   40:        repo.remove_car("XYZ789");
+        1:   40-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   40-block  1
+call    3 returned 1
+branch  4 taken 0 (fallthrough)
+branch  5 taken 1 (throw)
+    %%%%%:   40-block  2
+call    6 never executed
+        1:   40-block  3
+call    7 returned 1
+        1:   40-block  4
+        1:   40-block  5
+        1:   41:    } catch (const std::exception& e) {
+        1:   41-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 1
+        1:   41-block  1
+call    2 returned 1
+        2:   42:        assert(std::string(e.what()) == "Auto mit Kennzeichen: XYZ789 existiert nicht oder hat eine aktive Bestellung.");
+        1:   42-block  0
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   42-block  1
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   42-block  2
+branch  7 taken 0 (fallthrough)
+branch  8 taken 1
+    $$$$$:   42-block  3
+call    9 never executed
+        1:   42-block  4
+        1:   42-block  5
+branch 10 taken 1 (fallthrough)
+branch 11 taken 0
+        1:   42-block  6
+call   12 returned 1
+        1:   42-block  7
+branch 13 taken 1 (fallthrough)
+branch 14 taken 0
+    $$$$$:   42-block  8
+branch 15 never executed (fallthrough)
+branch 16 never executed
+    $$$$$:   42-block  9
+call   17 never executed
+    $$$$$:   42-block 10
+    $$$$$:   42-block 11
+branch 18 never executed (fallthrough)
+branch 19 never executed
+    $$$$$:   42-block 12
+        1:   43:    }
+        1:   43-block  0
+call    0 returned 1
+    $$$$$:   43-block  1
+call    1 never executed
+        -:   44:
+       12:   45:    Auto car2("DEF456", "ModelY", "BMW", 2022, 20000, 150, "Benzin", "Automatik", "Blue");
+        1:   45-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   45-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:   45-block  2
+call    6 returned 1
+branch  7 taken 1 (fallthrough)
+branch  8 taken 0 (throw)
+        1:   45-block  3
+call    9 returned 1
+branch 10 taken 1 (fallthrough)
+branch 11 taken 0 (throw)
+        1:   45-block  4
+call   12 returned 1
+branch 13 taken 1 (fallthrough)
+branch 14 taken 0 (throw)
+        1:   45-block  5
+call   15 returned 1
+branch 16 taken 1 (fallthrough)
+branch 17 taken 0 (throw)
+        1:   45-block  6
+call   18 returned 1
+branch 19 taken 1 (fallthrough)
+branch 20 taken 0 (throw)
+        1:   45-block  7
+call   21 returned 1
+call   22 returned 1
+call   23 returned 1
+call   24 returned 1
+call   25 returned 1
+call   26 returned 1
+    $$$$$:   45-block  8
+call   27 never executed
+    $$$$$:   45-block  9
+    $$$$$:   45-block 10
+    $$$$$:   45-block 11
+call   28 never executed
+    $$$$$:   45-block 12
+    $$$$$:   45-block 13
+    $$$$$:   45-block 14
+call   29 never executed
+    $$$$$:   45-block 15
+    $$$$$:   45-block 16
+    $$$$$:   45-block 17
+call   30 never executed
+    $$$$$:   45-block 18
+    $$$$$:   45-block 19
+    $$$$$:   45-block 20
+call   31 never executed
+    $$$$$:   45-block 21
+    $$$$$:   45-block 22
+    $$$$$:   45-block 23
+call   32 never executed
+    $$$$$:   45-block 24
+    $$$$$:   45-block 25
+       11:   46:    Auto car3("GHI789", "ModelZ", "Audi", 2021, 30000, 180, "Diesel", "Automatik", "Red");
+        1:   46-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   46-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:   46-block  2
+call    6 returned 1
+branch  7 taken 1 (fallthrough)
+branch  8 taken 0 (throw)
+        1:   46-block  3
+call    9 returned 1
+branch 10 taken 1 (fallthrough)
+branch 11 taken 0 (throw)
+        1:   46-block  4
+call   12 returned 1
+branch 13 taken 1 (fallthrough)
+branch 14 taken 0 (throw)
+        1:   46-block  5
+call   15 returned 1
+branch 16 taken 1 (fallthrough)
+branch 17 taken 0 (throw)
+        1:   46-block  6
+call   18 returned 1
+branch 19 taken 1 (fallthrough)
+branch 20 taken 0 (throw)
+        1:   46-block  7
+call   21 returned 1
+call   22 returned 1
+call   23 returned 1
+call   24 returned 1
+call   25 returned 1
+call   26 returned 1
+    $$$$$:   46-block  8
+call   27 never executed
+    $$$$$:   46-block  9
+    $$$$$:   46-block 10
+    $$$$$:   46-block 11
+call   28 never executed
+    $$$$$:   46-block 12
+    $$$$$:   46-block 13
+    $$$$$:   46-block 14
+call   29 never executed
+    $$$$$:   46-block 15
+    $$$$$:   46-block 16
+    $$$$$:   46-block 17
+call   30 never executed
+    $$$$$:   46-block 18
+    $$$$$:   46-block 19
+    $$$$$:   46-block 20
+call   31 never executed
+    $$$$$:   46-block 21
+    $$$$$:   46-block 22
+    $$$$$:   46-block 23
+call   32 never executed
+    $$$$$:   46-block 24
+    $$$$$:   46-block 25
+        1:   47:    repo.add_car(car2);
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   47-block  0
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:   47-block  1
+call    6 returned 1
+    $$$$$:   47-block  2
+call    7 never executed
+    $$$$$:   47-block  3
+        1:   48:    repo.add_car(car3);
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   48-block  0
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:   48-block  1
+call    6 returned 1
+    $$$$$:   48-block  2
+call    7 never executed
+    $$$$$:   48-block  3
+        -:   49:
+        1:   50:    repo.remove_car("DEF456");
+        1:   50-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   50-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:   50-block  2
+call    6 returned 1
+    $$$$$:   50-block  3
+call    7 never executed
+    $$$$$:   50-block  4
+    $$$$$:   50-block  5
+       3*:   51:    assert(!repo.search_car("DEF456"));
+        1:   51-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   51-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:   51-block  2
+branch  6 taken 0 (fallthrough)
+branch  7 taken 1
+    %%%%%:   51-block  3
+call    8 never executed
+        1:   51-block  4
+        1:   51-block  5
+branch  9 taken 1 (fallthrough)
+branch 10 taken 0
+        1:   51-block  6
+call   11 returned 1
+        1:   51-block  7
+branch 12 taken 1 (fallthrough)
+branch 13 taken 0
+        1:   51-block  8
+    $$$$$:   51-block  9
+branch 14 never executed (fallthrough)
+branch 15 never executed
+    $$$$$:   51-block 10
+call   16 never executed
+    $$$$$:   51-block 11
+    $$$$$:   51-block 12
+branch 17 never executed (fallthrough)
+branch 18 never executed
+    $$$$$:   51-block 13
+        -:   52:
+        -:   53:    try {
+       2*:   54:        repo.remove_car("XYZ000");
+        1:   54-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   54-block  1
+call    3 returned 1
+branch  4 taken 0 (fallthrough)
+branch  5 taken 1 (throw)
+    %%%%%:   54-block  2
+call    6 never executed
+        1:   54-block  3
+call    7 returned 1
+        1:   54-block  4
+        1:   54-block  5
+        1:   55:    } catch (const std::exception& e) {
+        1:   55-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 1
+        1:   55-block  1
+call    2 returned 1
+        2:   56:        assert(std::string(e.what()) == "Auto mit Kennzeichen: XYZ000 existiert nicht oder hat eine aktive Bestellung.");
+        1:   56-block  0
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   56-block  1
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   56-block  2
+branch  7 taken 0 (fallthrough)
+branch  8 taken 1
+    $$$$$:   56-block  3
+call    9 never executed
+        1:   56-block  4
+        1:   56-block  5
+branch 10 taken 1 (fallthrough)
+branch 11 taken 0
+        1:   56-block  6
+call   12 returned 1
+        1:   56-block  7
+branch 13 taken 1 (fallthrough)
+branch 14 taken 0
+    $$$$$:   56-block  8
+branch 15 never executed (fallthrough)
+branch 16 never executed
+    $$$$$:   56-block  9
+call   17 never executed
+    $$$$$:   56-block 10
+    $$$$$:   56-block 11
+branch 18 never executed (fallthrough)
+branch 19 never executed
+    $$$$$:   56-block 12
+        1:   57:    }
+        1:   57-block  0
+call    0 returned 1
+    $$$$$:   57-block  1
+call    1 never executed
+        -:   58:
+        1:   59:    repo.remove_car("GHI789");
+        1:   59-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   59-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:   59-block  2
+call    6 returned 1
+    $$$$$:   59-block  3
+call    7 never executed
+    $$$$$:   59-block  4
+    $$$$$:   59-block  5
+       2*:   60:    assert(!repo.search_car("GHI789"));
+        1:   60-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   60-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:   60-block  2
+branch  6 taken 0 (fallthrough)
+branch  7 taken 1
+    %%%%%:   60-block  3
+call    8 never executed
+        1:   60-block  4
+        1:   60-block  5
+branch  9 taken 1 (fallthrough)
+branch 10 taken 0
+        1:   60-block  6
+call   11 returned 1
+        1:   60-block  7
+branch 12 taken 1 (fallthrough)
+branch 13 taken 0
+    $$$$$:   60-block  8
+branch 14 never executed (fallthrough)
+branch 15 never executed
+    $$$$$:   60-block  9
+call   16 never executed
+    $$$$$:   60-block 10
+    $$$$$:   60-block 11
+branch 17 never executed (fallthrough)
+branch 18 never executed
+    $$$$$:   60-block 12
+        1:   61:}
+        1:   61-block  0
+call    0 returned 1
+call    1 returned 1
+call    2 returned 1
+call    3 returned 1
+    $$$$$:   61-block  1
+call    4 never executed
+    $$$$$:   61-block  2
+call    5 never executed
+    $$$$$:   61-block  3
+call    6 never executed
+    $$$$$:   61-block  4
+call    7 never executed
+        -:   62:
+function _Z16test_modify_car1v called 1 returned 100% blocks executed 54%
+        1:   63:void test_modify_car1() {
+        1:   63-block  0
+        2:   64:    AutoRepo repo("TestsAutoRepo/tests.json");
+        1:   64-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   64-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:   64-block  2
+call    6 returned 1
+    $$$$$:   64-block  3
+call    7 never executed
+    $$$$$:   64-block  4
+    $$$$$:   64-block  5
+       11:   65:    Auto car("ABC123", "ModelX", "Tesla", 2023, 10000, 200, "Electric", "Automatik", "Black");
+        1:   65-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   65-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:   65-block  2
+call    6 returned 1
+branch  7 taken 1 (fallthrough)
+branch  8 taken 0 (throw)
+        1:   65-block  3
+call    9 returned 1
+branch 10 taken 1 (fallthrough)
+branch 11 taken 0 (throw)
+        1:   65-block  4
+call   12 returned 1
+branch 13 taken 1 (fallthrough)
+branch 14 taken 0 (throw)
+        1:   65-block  5
+call   15 returned 1
+branch 16 taken 1 (fallthrough)
+branch 17 taken 0 (throw)
+        1:   65-block  6
+call   18 returned 1
+branch 19 taken 1 (fallthrough)
+branch 20 taken 0 (throw)
+        1:   65-block  7
+call   21 returned 1
+call   22 returned 1
+call   23 returned 1
+call   24 returned 1
+call   25 returned 1
+call   26 returned 1
+    $$$$$:   65-block  8
+call   27 never executed
+    $$$$$:   65-block  9
+    $$$$$:   65-block 10
+    $$$$$:   65-block 11
+call   28 never executed
+    $$$$$:   65-block 12
+    $$$$$:   65-block 13
+    $$$$$:   65-block 14
+call   29 never executed
+    $$$$$:   65-block 15
+    $$$$$:   65-block 16
+    $$$$$:   65-block 17
+call   30 never executed
+    $$$$$:   65-block 18
+    $$$$$:   65-block 19
+    $$$$$:   65-block 20
+call   31 never executed
+    $$$$$:   65-block 21
+    $$$$$:   65-block 22
+    $$$$$:   65-block 23
+call   32 never executed
+    $$$$$:   65-block 24
+    $$$$$:   65-block 25
+        -:   66:
+        1:   67:    repo.add_car(car);
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   67-block  0
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:   67-block  1
+call    6 returned 1
+    $$$$$:   67-block  2
+call    7 never executed
+    $$$$$:   67-block  3
+        -:   68:
+        5:   69:    repo.modify_car("ABC123", "farbe", "White");
+        1:   69-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   69-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:   69-block  2
+call    6 returned 1
+branch  7 taken 1 (fallthrough)
+branch  8 taken 0 (throw)
+        1:   69-block  3
+call    9 returned 1
+branch 10 taken 1 (fallthrough)
+branch 11 taken 0 (throw)
+        1:   69-block  4
+call   12 returned 1
+call   13 returned 1
+call   14 returned 1
+    $$$$$:   69-block  5
+call   15 never executed
+    $$$$$:   69-block  6
+    $$$$$:   69-block  7
+    $$$$$:   69-block  8
+call   16 never executed
+    $$$$$:   69-block  9
+    $$$$$:   69-block 10
+    $$$$$:   69-block 11
+call   17 never executed
+    $$$$$:   69-block 12
+    $$$$$:   69-block 13
+        -:   70:
+        1:   71:    json cars = repo.get_cars_json();
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   72:    bool found = false;
+       1*:   73:    for (auto obj : cars) {
+        1:   73-block  0
+call    0 returned 1
+call    1 returned 1
+        1:   73-block  1
+call    2 returned 1
+branch  3 taken 1 (fallthrough)
+branch  4 taken 0 (throw)
+        1:   73-block  2
+call    5 returned 1
+branch  6 taken 1 (fallthrough)
+branch  7 taken 0 (throw)
+    %%%%%:   73-block  3
+call    8 never executed
+branch  9 never executed (fallthrough)
+branch 10 never executed (throw)
+        1:   73-block  4
+call   11 returned 1
+branch 12 taken 1 (fallthrough)
+branch 13 taken 0 (throw)
+        1:   73-block  5
+branch 14 taken 1
+branch 15 taken 0 (fallthrough)
+        1:   74:        if (obj["kennzeichen"] == "ABC123") {
+        1:   74-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   74-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0
+       1*:   75:            assert(obj["farbe"] == "White");
+        1:   75-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   75-block  1
+call    3 returned 1
+branch  4 taken 0 (fallthrough)
+branch  5 taken 1
+    %%%%%:   75-block  2
+call    6 never executed
+        1:   75-block  3
+        1:   76:            found = true;
+        1:   77:            break;
+        1:   77-block  0
+        -:   78:        }
+       1*:   79:    }
+    %%%%%:   79-block  0
+        1:   79-block  1
+call    0 returned 1
+branch  1 taken 0 (fallthrough)
+branch  2 taken 1
+    $$$$$:   79-block  2
+call    3 never executed
+       1*:   80:    assert(found);
+        1:   80-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 1
+    %%%%%:   80-block  1
+call    2 never executed
+        1:   80-block  2
+        -:   81:
+        5:   82:    repo.modify_car("ABC123", "modell", "ModelY");
+        1:   82-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   82-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:   82-block  2
+call    6 returned 1
+branch  7 taken 1 (fallthrough)
+branch  8 taken 0 (throw)
+        1:   82-block  3
+call    9 returned 1
+branch 10 taken 1 (fallthrough)
+branch 11 taken 0 (throw)
+        1:   82-block  4
+call   12 returned 1
+call   13 returned 1
+call   14 returned 1
+    $$$$$:   82-block  5
+call   15 never executed
+    $$$$$:   82-block  6
+    $$$$$:   82-block  7
+    $$$$$:   82-block  8
+call   16 never executed
+    $$$$$:   82-block  9
+    $$$$$:   82-block 10
+    $$$$$:   82-block 11
+call   17 never executed
+    $$$$$:   82-block 12
+    $$$$$:   82-block 13
+        -:   83:
+        1:   84:    cars = repo.get_cars_json();
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   84-block  0
+call    3 returned 1
+call    4 returned 1
+    $$$$$:   84-block  1
+        1:   85:    found = false;
+       1*:   86:    for (auto obj : cars) {
+call    0 returned 1
+call    1 returned 1
+        1:   86-block  0
+call    2 returned 1
+branch  3 taken 1 (fallthrough)
+branch  4 taken 0 (throw)
+        1:   86-block  1
+call    5 returned 1
+branch  6 taken 1 (fallthrough)
+branch  7 taken 0 (throw)
+    %%%%%:   86-block  2
+call    8 never executed
+branch  9 never executed (fallthrough)
+branch 10 never executed (throw)
+        1:   86-block  3
+call   11 returned 1
+branch 12 taken 1 (fallthrough)
+branch 13 taken 0 (throw)
+        1:   86-block  4
+branch 14 taken 1
+branch 15 taken 0 (fallthrough)
+        1:   87:        if (obj["kennzeichen"] == "ABC123") {
+        1:   87-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   87-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0
+       1*:   88:            assert(obj["modell"] == "ModelY");
+        1:   88-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   88-block  1
+call    3 returned 1
+branch  4 taken 0 (fallthrough)
+branch  5 taken 1
+    %%%%%:   88-block  2
+call    6 never executed
+        1:   88-block  3
+        1:   89:            found = true;
+        1:   90:            break;
+        1:   90-block  0
+        -:   91:        }
+       1*:   92:    }
+    %%%%%:   92-block  0
+        1:   92-block  1
+call    0 returned 1
+branch  1 taken 0 (fallthrough)
+branch  2 taken 1
+    $$$$$:   92-block  2
+call    3 never executed
+       1*:   93:    assert(found);
+        1:   93-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 1
+    %%%%%:   93-block  1
+call    2 never executed
+        1:   93-block  2
+        5:   94:    repo.modify_car("ABC123", "erstzulassungsjahr", "2022");
+        1:   94-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   94-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:   94-block  2
+call    6 returned 1
+branch  7 taken 1 (fallthrough)
+branch  8 taken 0 (throw)
+        1:   94-block  3
+call    9 returned 1
+branch 10 taken 1 (fallthrough)
+branch 11 taken 0 (throw)
+        1:   94-block  4
+call   12 returned 1
+call   13 returned 1
+call   14 returned 1
+    $$$$$:   94-block  5
+call   15 never executed
+    $$$$$:   94-block  6
+    $$$$$:   94-block  7
+    $$$$$:   94-block  8
+call   16 never executed
+    $$$$$:   94-block  9
+    $$$$$:   94-block 10
+    $$$$$:   94-block 11
+call   17 never executed
+    $$$$$:   94-block 12
+    $$$$$:   94-block 13
+        -:   95:
+        1:   96:    cars = repo.get_cars_json();
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   96-block  0
+call    3 returned 1
+call    4 returned 1
+    $$$$$:   96-block  1
+        1:   97:    found = false;
+       1*:   98:    for (auto obj : cars) {
+call    0 returned 1
+call    1 returned 1
+        1:   98-block  0
+call    2 returned 1
+branch  3 taken 1 (fallthrough)
+branch  4 taken 0 (throw)
+        1:   98-block  1
+call    5 returned 1
+branch  6 taken 1 (fallthrough)
+branch  7 taken 0 (throw)
+    %%%%%:   98-block  2
+call    8 never executed
+branch  9 never executed (fallthrough)
+branch 10 never executed (throw)
+        1:   98-block  3
+call   11 returned 1
+branch 12 taken 1 (fallthrough)
+branch 13 taken 0 (throw)
+        1:   98-block  4
+branch 14 taken 1
+branch 15 taken 0 (fallthrough)
+        1:   99:        if (obj["kennzeichen"] == "ABC123") {
+        1:   99-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:   99-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0
+       1*:  100:            assert(obj["erstzulassungsjahr"] == 2022);
+        1:  100-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:  100-block  1
+call    3 returned 1
+branch  4 taken 0 (fallthrough)
+branch  5 taken 1
+    %%%%%:  100-block  2
+call    6 never executed
+        1:  100-block  3
+        1:  101:            found = true;
+        1:  102:            break;
+        1:  102-block  0
+        -:  103:        }
+       1*:  104:    }
+    %%%%%:  104-block  0
+        1:  104-block  1
+call    0 returned 1
+branch  1 taken 0 (fallthrough)
+branch  2 taken 1
+    $$$$$:  104-block  2
+call    3 never executed
+       1*:  105:    assert(found);
+        1:  105-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 1
+    %%%%%:  105-block  1
+call    2 never executed
+        1:  105-block  2
+        1:  106:    repo.remove_car("ABC123");
+        1:  106-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:  106-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:  106-block  2
+call    6 returned 1
+    $$$$$:  106-block  3
+call    7 never executed
+    $$$$$:  106-block  4
+    $$$$$:  106-block  5
+        1:  107:}
+call    0 returned 1
+call    1 returned 1
+call    2 returned 1
+    $$$$$:  107-block  0
+call    3 never executed
+    $$$$$:  107-block  1
+call    4 never executed
+    $$$$$:  107-block  2
+call    5 never executed
+        -:  108:
+function _Z16test_modify_car2v called 1 returned 100% blocks executed 47%
+        1:  109:void test_modify_car2() {
+        1:  109-block  0
+        2:  110:    AutoRepo repo("TestsAutoRepo/tests.json");
+        1:  110-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:  110-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:  110-block  2
+call    6 returned 1
+    $$$$$:  110-block  3
+call    7 never executed
+    $$$$$:  110-block  4
+    $$$$$:  110-block  5
+       11:  111:    Auto car("ABC123", "ModelX", "Tesla", 2023, 10000, 200, "Electric", "Automatik", "Black");
+        1:  111-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:  111-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:  111-block  2
+call    6 returned 1
+branch  7 taken 1 (fallthrough)
+branch  8 taken 0 (throw)
+        1:  111-block  3
+call    9 returned 1
+branch 10 taken 1 (fallthrough)
+branch 11 taken 0 (throw)
+        1:  111-block  4
+call   12 returned 1
+branch 13 taken 1 (fallthrough)
+branch 14 taken 0 (throw)
+        1:  111-block  5
+call   15 returned 1
+branch 16 taken 1 (fallthrough)
+branch 17 taken 0 (throw)
+        1:  111-block  6
+call   18 returned 1
+branch 19 taken 1 (fallthrough)
+branch 20 taken 0 (throw)
+        1:  111-block  7
+call   21 returned 1
+call   22 returned 1
+call   23 returned 1
+call   24 returned 1
+call   25 returned 1
+call   26 returned 1
+    $$$$$:  111-block  8
+call   27 never executed
+    $$$$$:  111-block  9
+    $$$$$:  111-block 10
+    $$$$$:  111-block 11
+call   28 never executed
+    $$$$$:  111-block 12
+    $$$$$:  111-block 13
+    $$$$$:  111-block 14
+call   29 never executed
+    $$$$$:  111-block 15
+    $$$$$:  111-block 16
+    $$$$$:  111-block 17
+call   30 never executed
+    $$$$$:  111-block 18
+    $$$$$:  111-block 19
+    $$$$$:  111-block 20
+call   31 never executed
+    $$$$$:  111-block 21
+    $$$$$:  111-block 22
+    $$$$$:  111-block 23
+call   32 never executed
+    $$$$$:  111-block 24
+    $$$$$:  111-block 25
+        -:  112:
+        1:  113:    repo.add_car(car);
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:  113-block  0
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:  113-block  1
+call    6 returned 1
+    $$$$$:  113-block  2
+call    7 never executed
+    $$$$$:  113-block  3
+        5:  114:    repo.modify_car("ABC123", "farbe", "White");
+        1:  114-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:  114-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:  114-block  2
+call    6 returned 1
+branch  7 taken 1 (fallthrough)
+branch  8 taken 0 (throw)
+        1:  114-block  3
+call    9 returned 1
+branch 10 taken 1 (fallthrough)
+branch 11 taken 0 (throw)
+        1:  114-block  4
+call   12 returned 1
+call   13 returned 1
+call   14 returned 1
+    $$$$$:  114-block  5
+call   15 never executed
+    $$$$$:  114-block  6
+    $$$$$:  114-block  7
+    $$$$$:  114-block  8
+call   16 never executed
+    $$$$$:  114-block  9
+    $$$$$:  114-block 10
+    $$$$$:  114-block 11
+call   17 never executed
+    $$$$$:  114-block 12
+    $$$$$:  114-block 13
+        -:  115:
+        1:  116:    json cars = repo.get_cars_json();
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:  117:    bool found = false;
+       1*:  118:    for (auto obj : cars) {
+        1:  118-block  0
+call    0 returned 1
+call    1 returned 1
+        1:  118-block  1
+call    2 returned 1
+branch  3 taken 1 (fallthrough)
+branch  4 taken 0 (throw)
+        1:  118-block  2
+call    5 returned 1
+branch  6 taken 1 (fallthrough)
+branch  7 taken 0 (throw)
+    %%%%%:  118-block  3
+call    8 never executed
+branch  9 never executed (fallthrough)
+branch 10 never executed (throw)
+        1:  118-block  4
+call   11 returned 1
+branch 12 taken 1 (fallthrough)
+branch 13 taken 0 (throw)
+        1:  118-block  5
+branch 14 taken 1
+branch 15 taken 0 (fallthrough)
+        1:  119:        if (obj["kennzeichen"] == "ABC123") {
+        1:  119-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:  119-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0
+       1*:  120:            assert(obj["farbe"] == "White");
+        1:  120-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:  120-block  1
+call    3 returned 1
+branch  4 taken 0 (fallthrough)
+branch  5 taken 1
+    %%%%%:  120-block  2
+call    6 never executed
+        1:  120-block  3
+        1:  121:            found = true;
+        1:  122:            break;
+        1:  122-block  0
+        -:  123:        }
+       1*:  124:    }
+    %%%%%:  124-block  0
+        1:  124-block  1
+call    0 returned 1
+branch  1 taken 0 (fallthrough)
+branch  2 taken 1
+    $$$$$:  124-block  2
+call    3 never executed
+       1*:  125:    assert(found);
+        1:  125-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 1
+    %%%%%:  125-block  1
+call    2 never executed
+        1:  125-block  2
+        -:  126:
+        5:  127:    repo.modify_car("ABC123", "aktiv", "nein");
+        1:  127-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:  127-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:  127-block  2
+call    6 returned 1
+branch  7 taken 1 (fallthrough)
+branch  8 taken 0 (throw)
+        1:  127-block  3
+call    9 returned 1
+branch 10 taken 1 (fallthrough)
+branch 11 taken 0 (throw)
+        1:  127-block  4
+call   12 returned 1
+call   13 returned 1
+call   14 returned 1
+    $$$$$:  127-block  5
+call   15 never executed
+    $$$$$:  127-block  6
+    $$$$$:  127-block  7
+    $$$$$:  127-block  8
+call   16 never executed
+    $$$$$:  127-block  9
+    $$$$$:  127-block 10
+    $$$$$:  127-block 11
+call   17 never executed
+    $$$$$:  127-block 12
+    $$$$$:  127-block 13
+        -:  128:
+        1:  129:    cars = repo.get_cars_json();
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:  129-block  0
+call    3 returned 1
+call    4 returned 1
+    $$$$$:  129-block  1
+        1:  130:    found = false;
+       1*:  131:    for (auto obj : cars) {
+call    0 returned 1
+call    1 returned 1
+        1:  131-block  0
+call    2 returned 1
+branch  3 taken 1 (fallthrough)
+branch  4 taken 0 (throw)
+        1:  131-block  1
+call    5 returned 1
+branch  6 taken 1 (fallthrough)
+branch  7 taken 0 (throw)
+    %%%%%:  131-block  2
+call    8 never executed
+branch  9 never executed (fallthrough)
+branch 10 never executed (throw)
+        1:  131-block  3
+call   11 returned 1
+branch 12 taken 1 (fallthrough)
+branch 13 taken 0 (throw)
+        1:  131-block  4
+branch 14 taken 1
+branch 15 taken 0 (fallthrough)
+        1:  132:        if (obj["kennzeichen"] == "ABC123") {
+        1:  132-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:  132-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0
+       1*:  133:            assert(obj["aktiv"] == "nein");
+        1:  133-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:  133-block  1
+call    3 returned 1
+branch  4 taken 0 (fallthrough)
+branch  5 taken 1
+    %%%%%:  133-block  2
+call    6 never executed
+        1:  133-block  3
+        1:  134:            found = true;
+        1:  135:            break;
+        1:  135-block  0
+        -:  136:        }
+       1*:  137:    }
+    %%%%%:  137-block  0
+        1:  137-block  1
+call    0 returned 1
+branch  1 taken 0 (fallthrough)
+branch  2 taken 1
+    $$$$$:  137-block  2
+call    3 never executed
+       1*:  138:    assert(found);
+        1:  138-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 1
+    %%%%%:  138-block  1
+call    2 never executed
+        1:  138-block  2
+        -:  139:
+        -:  140:    try {
+        6:  141:        repo.modify_car("ABC123", "aktiv", "ja");
+        1:  141-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:  141-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:  141-block  2
+call    6 returned 1
+branch  7 taken 1 (fallthrough)
+branch  8 taken 0 (throw)
+        1:  141-block  3
+call    9 returned 1
+branch 10 taken 1 (fallthrough)
+branch 11 taken 0 (throw)
+        1:  141-block  4
+call   12 returned 1
+call   13 returned 1
+call   14 returned 1
+    $$$$$:  141-block  5
+call   15 never executed
+    $$$$$:  141-block  6
+    $$$$$:  141-block  7
+    $$$$$:  141-block  8
+call   16 never executed
+    $$$$$:  141-block  9
+    $$$$$:  141-block 10
+    $$$$$:  141-block 11
+call   17 never executed
+    $$$$$:  141-block 12
+    $$$$$:  141-block 13
+    =====:  142:    } catch (const std::exception& e) {
+    $$$$$:  142-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    $$$$$:  142-block  1
+call    2 never executed
+    =====:  143:        assert(std::string(e.what()) == "Verboten. Man darf nicht das Auto ABC123 deaktivieren, weil es eine aktive Bestellung hat.");
+    $$$$$:  143-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    $$$$$:  143-block  1
+call    4 never executed
+branch  5 never executed (fallthrough)
+branch  6 never executed (throw)
+    $$$$$:  143-block  2
+branch  7 never executed (fallthrough)
+branch  8 never executed
+    $$$$$:  143-block  3
+call    9 never executed
+    $$$$$:  143-block  4
+    $$$$$:  143-block  5
+branch 10 never executed (fallthrough)
+branch 11 never executed
+    $$$$$:  143-block  6
+call   12 never executed
+    $$$$$:  143-block  7
+branch 13 never executed (fallthrough)
+branch 14 never executed
+    $$$$$:  143-block  8
+branch 15 never executed (fallthrough)
+branch 16 never executed
+    $$$$$:  143-block  9
+call   17 never executed
+    $$$$$:  143-block 10
+    $$$$$:  143-block 11
+branch 18 never executed (fallthrough)
+branch 19 never executed
+    $$$$$:  143-block 12
+    =====:  144:    }
+    $$$$$:  144-block  0
+call    0 never executed
+    $$$$$:  144-block  1
+call    1 never executed
+        -:  145:
+        1:  146:    repo.remove_car("ABC123");
+        1:  146-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:  146-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:  146-block  2
+call    6 returned 1
+    $$$$$:  146-block  3
+call    7 never executed
+    $$$$$:  146-block  4
+    $$$$$:  146-block  5
+        1:  147:}
+call    0 returned 1
+call    1 returned 1
+call    2 returned 1
+    $$$$$:  147-block  0
+call    3 never executed
+    $$$$$:  147-block  1
+call    4 never executed
+    $$$$$:  147-block  2
+call    5 never executed
+        -:  148:
+        -:  149:
+function _Z15test_verify_carv called 1 returned 100% blocks executed 50%
+        1:  150:void test_verify_car() {
+        1:  150-block  0
+        2:  151:    AutoRepo repo("TestsAutoRepo/tests.json");
+        1:  151-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:  151-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:  151-block  2
+call    6 returned 1
+    $$$$$:  151-block  3
+call    7 never executed
+    $$$$$:  151-block  4
+    $$$$$:  151-block  5
+        -:  152:
+       11:  153:    Auto invalid_car("", "ModelX", "Tesla", 2023, 10000, 200, "Electric", "Automatik", "Black");
+        1:  153-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:  153-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:  153-block  2
+call    6 returned 1
+branch  7 taken 1 (fallthrough)
+branch  8 taken 0 (throw)
+        1:  153-block  3
+call    9 returned 1
+branch 10 taken 1 (fallthrough)
+branch 11 taken 0 (throw)
+        1:  153-block  4
+call   12 returned 1
+branch 13 taken 1 (fallthrough)
+branch 14 taken 0 (throw)
+        1:  153-block  5
+call   15 returned 1
+branch 16 taken 1 (fallthrough)
+branch 17 taken 0 (throw)
+        1:  153-block  6
+call   18 returned 1
+branch 19 taken 1 (fallthrough)
+branch 20 taken 0 (throw)
+        1:  153-block  7
+call   21 returned 1
+call   22 returned 1
+call   23 returned 1
+call   24 returned 1
+call   25 returned 1
+call   26 returned 1
+    $$$$$:  153-block  8
+call   27 never executed
+    $$$$$:  153-block  9
+    $$$$$:  153-block 10
+    $$$$$:  153-block 11
+call   28 never executed
+    $$$$$:  153-block 12
+    $$$$$:  153-block 13
+    $$$$$:  153-block 14
+call   29 never executed
+    $$$$$:  153-block 15
+    $$$$$:  153-block 16
+    $$$$$:  153-block 17
+call   30 never executed
+    $$$$$:  153-block 18
+    $$$$$:  153-block 19
+    $$$$$:  153-block 20
+call   31 never executed
+    $$$$$:  153-block 21
+    $$$$$:  153-block 22
+    $$$$$:  153-block 23
+call   32 never executed
+    $$$$$:  153-block 24
+    $$$$$:  153-block 25
+        -:  154:    try {
+       2*:  155:        repo.add_car(invalid_car);
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:  155-block  0
+call    3 returned 1
+branch  4 taken 0 (fallthrough)
+branch  5 taken 1 (throw)
+    %%%%%:  155-block  1
+call    6 never executed
+        1:  155-block  2
+call    7 returned 1
+        1:  155-block  3
+        1:  156:    } catch (const std::runtime_error& e) {
+        1:  156-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 1
+        1:  156-block  1
+call    2 returned 1
+        2:  157:        assert(std::string(e.what()) == "Invalid Kennzeichen.");
+        1:  157-block  0
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  157-block  1
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  157-block  2
+branch  7 taken 0 (fallthrough)
+branch  8 taken 1
+    $$$$$:  157-block  3
+call    9 never executed
+        1:  157-block  4
+        1:  157-block  5
+branch 10 taken 1 (fallthrough)
+branch 11 taken 0
+        1:  157-block  6
+call   12 returned 1
+        1:  157-block  7
+branch 13 taken 1 (fallthrough)
+branch 14 taken 0
+    $$$$$:  157-block  8
+branch 15 never executed (fallthrough)
+branch 16 never executed
+    $$$$$:  157-block  9
+call   17 never executed
+    $$$$$:  157-block 10
+    $$$$$:  157-block 11
+branch 18 never executed (fallthrough)
+branch 19 never executed
+    $$$$$:  157-block 12
+        1:  158:    }
+        1:  158-block  0
+call    0 returned 1
+    $$$$$:  158-block  1
+call    1 never executed
+        -:  159:
+       11:  160:    Auto invalid_car2("AF#$%", "ModelX", "Tesla", 2023, 10000, 200, "Electric", "Automatik", "Black");
+        1:  160-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:  160-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:  160-block  2
+call    6 returned 1
+branch  7 taken 1 (fallthrough)
+branch  8 taken 0 (throw)
+        1:  160-block  3
+call    9 returned 1
+branch 10 taken 1 (fallthrough)
+branch 11 taken 0 (throw)
+        1:  160-block  4
+call   12 returned 1
+branch 13 taken 1 (fallthrough)
+branch 14 taken 0 (throw)
+        1:  160-block  5
+call   15 returned 1
+branch 16 taken 1 (fallthrough)
+branch 17 taken 0 (throw)
+        1:  160-block  6
+call   18 returned 1
+branch 19 taken 1 (fallthrough)
+branch 20 taken 0 (throw)
+        1:  160-block  7
+call   21 returned 1
+call   22 returned 1
+call   23 returned 1
+call   24 returned 1
+call   25 returned 1
+call   26 returned 1
+    $$$$$:  160-block  8
+call   27 never executed
+    $$$$$:  160-block  9
+    $$$$$:  160-block 10
+    $$$$$:  160-block 11
+call   28 never executed
+    $$$$$:  160-block 12
+    $$$$$:  160-block 13
+    $$$$$:  160-block 14
+call   29 never executed
+    $$$$$:  160-block 15
+    $$$$$:  160-block 16
+    $$$$$:  160-block 17
+call   30 never executed
+    $$$$$:  160-block 18
+    $$$$$:  160-block 19
+    $$$$$:  160-block 20
+call   31 never executed
+    $$$$$:  160-block 21
+    $$$$$:  160-block 22
+    $$$$$:  160-block 23
+call   32 never executed
+    $$$$$:  160-block 24
+    $$$$$:  160-block 25
+        -:  161:    try {
+       2*:  162:        repo.add_car(invalid_car2);
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:  162-block  0
+call    3 returned 1
+branch  4 taken 0 (fallthrough)
+branch  5 taken 1 (throw)
+    %%%%%:  162-block  1
+call    6 never executed
+        1:  162-block  2
+call    7 returned 1
+        1:  162-block  3
+        1:  163:    } catch (const std::runtime_error& e) {
+        1:  163-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 1
+        1:  163-block  1
+call    2 returned 1
+        2:  164:        assert(std::string(e.what()) == "Invalid Kennzeichen.");
+        1:  164-block  0
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  164-block  1
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  164-block  2
+branch  7 taken 0 (fallthrough)
+branch  8 taken 1
+    $$$$$:  164-block  3
+call    9 never executed
+        1:  164-block  4
+        1:  164-block  5
+branch 10 taken 1 (fallthrough)
+branch 11 taken 0
+        1:  164-block  6
+call   12 returned 1
+        1:  164-block  7
+branch 13 taken 1 (fallthrough)
+branch 14 taken 0
+    $$$$$:  164-block  8
+branch 15 never executed (fallthrough)
+branch 16 never executed
+    $$$$$:  164-block  9
+call   17 never executed
+    $$$$$:  164-block 10
+    $$$$$:  164-block 11
+branch 18 never executed (fallthrough)
+branch 19 never executed
+    $$$$$:  164-block 12
+        1:  165:    }
+        1:  165-block  0
+call    0 returned 1
+    $$$$$:  165-block  1
+call    1 never executed
+        -:  166:
+       11:  167:    Auto invalid_car3("ABC245", "ModelX", "Tesla", 2025, 10000, 200, "Electric", "Automatik", "Black");
+        1:  167-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:  167-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:  167-block  2
+call    6 returned 1
+branch  7 taken 1 (fallthrough)
+branch  8 taken 0 (throw)
+        1:  167-block  3
+call    9 returned 1
+branch 10 taken 1 (fallthrough)
+branch 11 taken 0 (throw)
+        1:  167-block  4
+call   12 returned 1
+branch 13 taken 1 (fallthrough)
+branch 14 taken 0 (throw)
+        1:  167-block  5
+call   15 returned 1
+branch 16 taken 1 (fallthrough)
+branch 17 taken 0 (throw)
+        1:  167-block  6
+call   18 returned 1
+branch 19 taken 1 (fallthrough)
+branch 20 taken 0 (throw)
+        1:  167-block  7
+call   21 returned 1
+call   22 returned 1
+call   23 returned 1
+call   24 returned 1
+call   25 returned 1
+call   26 returned 1
+    $$$$$:  167-block  8
+call   27 never executed
+    $$$$$:  167-block  9
+    $$$$$:  167-block 10
+    $$$$$:  167-block 11
+call   28 never executed
+    $$$$$:  167-block 12
+    $$$$$:  167-block 13
+    $$$$$:  167-block 14
+call   29 never executed
+    $$$$$:  167-block 15
+    $$$$$:  167-block 16
+    $$$$$:  167-block 17
+call   30 never executed
+    $$$$$:  167-block 18
+    $$$$$:  167-block 19
+    $$$$$:  167-block 20
+call   31 never executed
+    $$$$$:  167-block 21
+    $$$$$:  167-block 22
+    $$$$$:  167-block 23
+call   32 never executed
+    $$$$$:  167-block 24
+    $$$$$:  167-block 25
+        -:  168:    try {
+       2*:  169:        repo.add_car(invalid_car3);
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:  169-block  0
+call    3 returned 1
+branch  4 taken 0 (fallthrough)
+branch  5 taken 1 (throw)
+    %%%%%:  169-block  1
+call    6 never executed
+        1:  169-block  2
+call    7 returned 1
+        1:  169-block  3
+        1:  170:    } catch (const std::runtime_error& e) {
+        1:  170-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 1
+        1:  170-block  1
+call    2 returned 1
+        2:  171:        assert(std::string(e.what()) == "Ersatzlassungsjahr soll zwischen 2000 und 2024 sein.");
+        1:  171-block  0
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  171-block  1
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  171-block  2
+branch  7 taken 0 (fallthrough)
+branch  8 taken 1
+    $$$$$:  171-block  3
+call    9 never executed
+        1:  171-block  4
+        1:  171-block  5
+branch 10 taken 1 (fallthrough)
+branch 11 taken 0
+        1:  171-block  6
+call   12 returned 1
+        1:  171-block  7
+branch 13 taken 1 (fallthrough)
+branch 14 taken 0
+    $$$$$:  171-block  8
+branch 15 never executed (fallthrough)
+branch 16 never executed
+    $$$$$:  171-block  9
+call   17 never executed
+    $$$$$:  171-block 10
+    $$$$$:  171-block 11
+branch 18 never executed (fallthrough)
+branch 19 never executed
+    $$$$$:  171-block 12
+        1:  172:    }
+        1:  172-block  0
+call    0 returned 1
+    $$$$$:  172-block  1
+call    1 never executed
+        -:  173:
+       11:  174:    Auto invalid_car4("ABC245", "ModelX", "Tesla", 1990, 10000, 200, "Electric", "Automatik", "Black");
+        1:  174-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:  174-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:  174-block  2
+call    6 returned 1
+branch  7 taken 1 (fallthrough)
+branch  8 taken 0 (throw)
+        1:  174-block  3
+call    9 returned 1
+branch 10 taken 1 (fallthrough)
+branch 11 taken 0 (throw)
+        1:  174-block  4
+call   12 returned 1
+branch 13 taken 1 (fallthrough)
+branch 14 taken 0 (throw)
+        1:  174-block  5
+call   15 returned 1
+branch 16 taken 1 (fallthrough)
+branch 17 taken 0 (throw)
+        1:  174-block  6
+call   18 returned 1
+branch 19 taken 1 (fallthrough)
+branch 20 taken 0 (throw)
+        1:  174-block  7
+call   21 returned 1
+call   22 returned 1
+call   23 returned 1
+call   24 returned 1
+call   25 returned 1
+call   26 returned 1
+    $$$$$:  174-block  8
+call   27 never executed
+    $$$$$:  174-block  9
+    $$$$$:  174-block 10
+    $$$$$:  174-block 11
+call   28 never executed
+    $$$$$:  174-block 12
+    $$$$$:  174-block 13
+    $$$$$:  174-block 14
+call   29 never executed
+    $$$$$:  174-block 15
+    $$$$$:  174-block 16
+    $$$$$:  174-block 17
+call   30 never executed
+    $$$$$:  174-block 18
+    $$$$$:  174-block 19
+    $$$$$:  174-block 20
+call   31 never executed
+    $$$$$:  174-block 21
+    $$$$$:  174-block 22
+    $$$$$:  174-block 23
+call   32 never executed
+    $$$$$:  174-block 24
+    $$$$$:  174-block 25
+        -:  175:    try {
+       2*:  176:        repo.add_car(invalid_car4);
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:  176-block  0
+call    3 returned 1
+branch  4 taken 0 (fallthrough)
+branch  5 taken 1 (throw)
+    %%%%%:  176-block  1
+call    6 never executed
+        1:  176-block  2
+call    7 returned 1
+        1:  176-block  3
+        1:  177:    } catch (const std::runtime_error& e) {
+        1:  177-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 1
+        1:  177-block  1
+call    2 returned 1
+        2:  178:        assert(std::string(e.what()) == "Ersatzlassungsjahr soll zwischen 2000 und 2024 sein.");
+        1:  178-block  0
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  178-block  1
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  178-block  2
+branch  7 taken 0 (fallthrough)
+branch  8 taken 1
+    $$$$$:  178-block  3
+call    9 never executed
+        1:  178-block  4
+        1:  178-block  5
+branch 10 taken 1 (fallthrough)
+branch 11 taken 0
+        1:  178-block  6
+call   12 returned 1
+        1:  178-block  7
+branch 13 taken 1 (fallthrough)
+branch 14 taken 0
+    $$$$$:  178-block  8
+branch 15 never executed (fallthrough)
+branch 16 never executed
+    $$$$$:  178-block  9
+call   17 never executed
+    $$$$$:  178-block 10
+    $$$$$:  178-block 11
+branch 18 never executed (fallthrough)
+branch 19 never executed
+    $$$$$:  178-block 12
+        1:  179:    }
+        1:  179-block  0
+call    0 returned 1
+    $$$$$:  179-block  1
+call    1 never executed
+        -:  180:
+       11:  181:    Auto invalid_car5("ABC245", "ModelX", "Tesla", 2021, -100, 200, "Electric", "Automatik", "Black");
+        1:  181-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:  181-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:  181-block  2
+call    6 returned 1
+branch  7 taken 1 (fallthrough)
+branch  8 taken 0 (throw)
+        1:  181-block  3
+call    9 returned 1
+branch 10 taken 1 (fallthrough)
+branch 11 taken 0 (throw)
+        1:  181-block  4
+call   12 returned 1
+branch 13 taken 1 (fallthrough)
+branch 14 taken 0 (throw)
+        1:  181-block  5
+call   15 returned 1
+branch 16 taken 1 (fallthrough)
+branch 17 taken 0 (throw)
+        1:  181-block  6
+call   18 returned 1
+branch 19 taken 1 (fallthrough)
+branch 20 taken 0 (throw)
+        1:  181-block  7
+call   21 returned 1
+call   22 returned 1
+call   23 returned 1
+call   24 returned 1
+call   25 returned 1
+call   26 returned 1
+    $$$$$:  181-block  8
+call   27 never executed
+    $$$$$:  181-block  9
+    $$$$$:  181-block 10
+    $$$$$:  181-block 11
+call   28 never executed
+    $$$$$:  181-block 12
+    $$$$$:  181-block 13
+    $$$$$:  181-block 14
+call   29 never executed
+    $$$$$:  181-block 15
+    $$$$$:  181-block 16
+    $$$$$:  181-block 17
+call   30 never executed
+    $$$$$:  181-block 18
+    $$$$$:  181-block 19
+    $$$$$:  181-block 20
+call   31 never executed
+    $$$$$:  181-block 21
+    $$$$$:  181-block 22
+    $$$$$:  181-block 23
+call   32 never executed
+    $$$$$:  181-block 24
+    $$$$$:  181-block 25
+        -:  182:    try {
+       2*:  183:        repo.add_car(invalid_car5);
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:  183-block  0
+call    3 returned 1
+branch  4 taken 0 (fallthrough)
+branch  5 taken 1 (throw)
+    %%%%%:  183-block  1
+call    6 never executed
+        1:  183-block  2
+call    7 returned 1
+        1:  183-block  3
+        1:  184:    } catch (const std::runtime_error& e) {
+        1:  184-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 1
+        1:  184-block  1
+call    2 returned 1
+        2:  185:        assert(std::string(e.what()) == "Kilometerstand darf nicht negativ sein");
+        1:  185-block  0
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  185-block  1
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  185-block  2
+branch  7 taken 0 (fallthrough)
+branch  8 taken 1
+    $$$$$:  185-block  3
+call    9 never executed
+        1:  185-block  4
+        1:  185-block  5
+branch 10 taken 1 (fallthrough)
+branch 11 taken 0
+        1:  185-block  6
+call   12 returned 1
+        1:  185-block  7
+branch 13 taken 1 (fallthrough)
+branch 14 taken 0
+    $$$$$:  185-block  8
+branch 15 never executed (fallthrough)
+branch 16 never executed
+    $$$$$:  185-block  9
+call   17 never executed
+    $$$$$:  185-block 10
+    $$$$$:  185-block 11
+branch 18 never executed (fallthrough)
+branch 19 never executed
+    $$$$$:  185-block 12
+        1:  186:    }
+        1:  186-block  0
+call    0 returned 1
+    $$$$$:  186-block  1
+call    1 never executed
+        -:  187:
+       11:  188:    Auto invalid_car6("ABC245", "ModelX", "Tesla", 2021, 100, -200, "Electric", "Automatik", "Black");
+        1:  188-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:  188-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:  188-block  2
+call    6 returned 1
+branch  7 taken 1 (fallthrough)
+branch  8 taken 0 (throw)
+        1:  188-block  3
+call    9 returned 1
+branch 10 taken 1 (fallthrough)
+branch 11 taken 0 (throw)
+        1:  188-block  4
+call   12 returned 1
+branch 13 taken 1 (fallthrough)
+branch 14 taken 0 (throw)
+        1:  188-block  5
+call   15 returned 1
+branch 16 taken 1 (fallthrough)
+branch 17 taken 0 (throw)
+        1:  188-block  6
+call   18 returned 1
+branch 19 taken 1 (fallthrough)
+branch 20 taken 0 (throw)
+        1:  188-block  7
+call   21 returned 1
+call   22 returned 1
+call   23 returned 1
+call   24 returned 1
+call   25 returned 1
+call   26 returned 1
+    $$$$$:  188-block  8
+call   27 never executed
+    $$$$$:  188-block  9
+    $$$$$:  188-block 10
+    $$$$$:  188-block 11
+call   28 never executed
+    $$$$$:  188-block 12
+    $$$$$:  188-block 13
+    $$$$$:  188-block 14
+call   29 never executed
+    $$$$$:  188-block 15
+    $$$$$:  188-block 16
+    $$$$$:  188-block 17
+call   30 never executed
+    $$$$$:  188-block 18
+    $$$$$:  188-block 19
+    $$$$$:  188-block 20
+call   31 never executed
+    $$$$$:  188-block 21
+    $$$$$:  188-block 22
+    $$$$$:  188-block 23
+call   32 never executed
+    $$$$$:  188-block 24
+    $$$$$:  188-block 25
+        -:  189:    try {
+       2*:  190:        repo.add_car(invalid_car6);
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:  190-block  0
+call    3 returned 1
+branch  4 taken 0 (fallthrough)
+branch  5 taken 1 (throw)
+    %%%%%:  190-block  1
+call    6 never executed
+        1:  190-block  2
+call    7 returned 1
+        1:  190-block  3
+        1:  191:    } catch (const std::runtime_error& e) {
+        1:  191-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 1
+        1:  191-block  1
+call    2 returned 1
+        2:  192:        assert(std::string(e.what()) == "Tagespreis kann nicht kleiner als Null sein.");
+        1:  192-block  0
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  192-block  1
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  192-block  2
+branch  7 taken 0 (fallthrough)
+branch  8 taken 1
+    $$$$$:  192-block  3
+call    9 never executed
+        1:  192-block  4
+        1:  192-block  5
+branch 10 taken 1 (fallthrough)
+branch 11 taken 0
+        1:  192-block  6
+call   12 returned 1
+        1:  192-block  7
+branch 13 taken 1 (fallthrough)
+branch 14 taken 0
+    $$$$$:  192-block  8
+branch 15 never executed (fallthrough)
+branch 16 never executed
+    $$$$$:  192-block  9
+call   17 never executed
+    $$$$$:  192-block 10
+    $$$$$:  192-block 11
+branch 18 never executed (fallthrough)
+branch 19 never executed
+    $$$$$:  192-block 12
+        1:  193:    }
+        1:  193-block  0
+call    0 returned 1
+    $$$$$:  193-block  1
+call    1 never executed
+        -:  194:
+       11:  195:    Auto invalid_car7("ABC245", "ModelX", "Tesla", 2021, 100, 200, "Honig", "Automatik", "Black");
+        1:  195-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:  195-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:  195-block  2
+call    6 returned 1
+branch  7 taken 1 (fallthrough)
+branch  8 taken 0 (throw)
+        1:  195-block  3
+call    9 returned 1
+branch 10 taken 1 (fallthrough)
+branch 11 taken 0 (throw)
+        1:  195-block  4
+call   12 returned 1
+branch 13 taken 1 (fallthrough)
+branch 14 taken 0 (throw)
+        1:  195-block  5
+call   15 returned 1
+branch 16 taken 1 (fallthrough)
+branch 17 taken 0 (throw)
+        1:  195-block  6
+call   18 returned 1
+branch 19 taken 1 (fallthrough)
+branch 20 taken 0 (throw)
+        1:  195-block  7
+call   21 returned 1
+call   22 returned 1
+call   23 returned 1
+call   24 returned 1
+call   25 returned 1
+call   26 returned 1
+    $$$$$:  195-block  8
+call   27 never executed
+    $$$$$:  195-block  9
+    $$$$$:  195-block 10
+    $$$$$:  195-block 11
+call   28 never executed
+    $$$$$:  195-block 12
+    $$$$$:  195-block 13
+    $$$$$:  195-block 14
+call   29 never executed
+    $$$$$:  195-block 15
+    $$$$$:  195-block 16
+    $$$$$:  195-block 17
+call   30 never executed
+    $$$$$:  195-block 18
+    $$$$$:  195-block 19
+    $$$$$:  195-block 20
+call   31 never executed
+    $$$$$:  195-block 21
+    $$$$$:  195-block 22
+    $$$$$:  195-block 23
+call   32 never executed
+    $$$$$:  195-block 24
+    $$$$$:  195-block 25
+        -:  196:    try {
+       2*:  197:        repo.add_car(invalid_car7);
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:  197-block  0
+call    3 returned 1
+branch  4 taken 0 (fallthrough)
+branch  5 taken 1 (throw)
+    %%%%%:  197-block  1
+call    6 never executed
+        1:  197-block  2
+call    7 returned 1
+        1:  197-block  3
+        1:  198:    } catch (const std::runtime_error& e) {
+        1:  198-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 1
+        1:  198-block  1
+call    2 returned 1
+        2:  199:        assert(std::string(e.what()) == "Invalid Kraftstoffart: Diesel/Benzin/Electric/Gas");
+        1:  199-block  0
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  199-block  1
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  199-block  2
+branch  7 taken 0 (fallthrough)
+branch  8 taken 1
+    $$$$$:  199-block  3
+call    9 never executed
+        1:  199-block  4
+        1:  199-block  5
+branch 10 taken 1 (fallthrough)
+branch 11 taken 0
+        1:  199-block  6
+call   12 returned 1
+        1:  199-block  7
+branch 13 taken 1 (fallthrough)
+branch 14 taken 0
+    $$$$$:  199-block  8
+branch 15 never executed (fallthrough)
+branch 16 never executed
+    $$$$$:  199-block  9
+call   17 never executed
+    $$$$$:  199-block 10
+    $$$$$:  199-block 11
+branch 18 never executed (fallthrough)
+branch 19 never executed
+    $$$$$:  199-block 12
+        1:  200:    }
+        1:  200-block  0
+call    0 returned 1
+    $$$$$:  200-block  1
+call    1 never executed
+        -:  201:
+       11:  202:    Auto invalid_car8("ABC245", "ModelX", "Tesla", 2021, 100, 200, "Benzin", "SemiAuto", "Black");
+        1:  202-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:  202-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:  202-block  2
+call    6 returned 1
+branch  7 taken 1 (fallthrough)
+branch  8 taken 0 (throw)
+        1:  202-block  3
+call    9 returned 1
+branch 10 taken 1 (fallthrough)
+branch 11 taken 0 (throw)
+        1:  202-block  4
+call   12 returned 1
+branch 13 taken 1 (fallthrough)
+branch 14 taken 0 (throw)
+        1:  202-block  5
+call   15 returned 1
+branch 16 taken 1 (fallthrough)
+branch 17 taken 0 (throw)
+        1:  202-block  6
+call   18 returned 1
+branch 19 taken 1 (fallthrough)
+branch 20 taken 0 (throw)
+        1:  202-block  7
+call   21 returned 1
+call   22 returned 1
+call   23 returned 1
+call   24 returned 1
+call   25 returned 1
+call   26 returned 1
+    $$$$$:  202-block  8
+call   27 never executed
+    $$$$$:  202-block  9
+    $$$$$:  202-block 10
+    $$$$$:  202-block 11
+call   28 never executed
+    $$$$$:  202-block 12
+    $$$$$:  202-block 13
+    $$$$$:  202-block 14
+call   29 never executed
+    $$$$$:  202-block 15
+    $$$$$:  202-block 16
+    $$$$$:  202-block 17
+call   30 never executed
+    $$$$$:  202-block 18
+    $$$$$:  202-block 19
+    $$$$$:  202-block 20
+call   31 never executed
+    $$$$$:  202-block 21
+    $$$$$:  202-block 22
+    $$$$$:  202-block 23
+call   32 never executed
+    $$$$$:  202-block 24
+    $$$$$:  202-block 25
+        -:  203:    try {
+       2*:  204:        repo.add_car(invalid_car8);
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:  204-block  0
+call    3 returned 1
+branch  4 taken 0 (fallthrough)
+branch  5 taken 1 (throw)
+    %%%%%:  204-block  1
+call    6 never executed
+        1:  204-block  2
+call    7 returned 1
+        1:  204-block  3
+        1:  205:    } catch (const std::runtime_error& e) {
+        1:  205-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 1
+        1:  205-block  1
+call    2 returned 1
+        2:  206:        assert(std::string(e.what()) == "Invalid Getriebe: Automatik/Schaltgetriebe");
+        1:  206-block  0
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  206-block  1
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  206-block  2
+branch  7 taken 0 (fallthrough)
+branch  8 taken 1
+    $$$$$:  206-block  3
+call    9 never executed
+        1:  206-block  4
+        1:  206-block  5
+branch 10 taken 1 (fallthrough)
+branch 11 taken 0
+        1:  206-block  6
+call   12 returned 1
+        1:  206-block  7
+branch 13 taken 1 (fallthrough)
+branch 14 taken 0
+    $$$$$:  206-block  8
+branch 15 never executed (fallthrough)
+branch 16 never executed
+    $$$$$:  206-block  9
+call   17 never executed
+    $$$$$:  206-block 10
+    $$$$$:  206-block 11
+branch 18 never executed (fallthrough)
+branch 19 never executed
+    $$$$$:  206-block 12
+        1:  207:    }
+        1:  207-block  0
+call    0 returned 1
+    $$$$$:  207-block  1
+call    1 never executed
+        -:  208:
+        -:  209:    try {
+       2*:  210:        repo.remove_car("ABC123");
+        1:  210-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:  210-block  1
+call    3 returned 1
+branch  4 taken 0 (fallthrough)
+branch  5 taken 1 (throw)
+    %%%%%:  210-block  2
+call    6 never executed
+        1:  210-block  3
+call    7 returned 1
+        1:  210-block  4
+        1:  210-block  5
+        1:  211:    } catch (const std::exception& e) {
+        1:  211-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 1
+        1:  211-block  1
+call    2 returned 1
+        -:  212:        assert(true);
+        2:  213:        assert(std::string(e.what()) == "Auto mit Kennzeichen: ABC123 existiert nicht oder hat eine aktive Bestellung.");
+        1:  213-block  0
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  213-block  1
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  213-block  2
+branch  7 taken 0 (fallthrough)
+branch  8 taken 1
+    $$$$$:  213-block  3
+call    9 never executed
+        1:  213-block  4
+        1:  213-block  5
+branch 10 taken 1 (fallthrough)
+branch 11 taken 0
+        1:  213-block  6
+call   12 returned 1
+        1:  213-block  7
+branch 13 taken 1 (fallthrough)
+branch 14 taken 0
+    $$$$$:  213-block  8
+branch 15 never executed (fallthrough)
+branch 16 never executed
+    $$$$$:  213-block  9
+call   17 never executed
+    $$$$$:  213-block 10
+    $$$$$:  213-block 11
+branch 18 never executed (fallthrough)
+branch 19 never executed
+    $$$$$:  213-block 12
+        1:  214:    }
+        1:  214-block  0
+call    0 returned 1
+    $$$$$:  214-block  1
+call    1 never executed
+        1:  215:}
+        1:  215-block  0
+call    0 returned 1
+call    1 returned 1
+call    2 returned 1
+call    3 returned 1
+call    4 returned 1
+call    5 returned 1
+call    6 returned 1
+call    7 returned 1
+call    8 returned 1
+    $$$$$:  215-block  1
+call    9 never executed
+    $$$$$:  215-block  2
+call   10 never executed
+    $$$$$:  215-block  3
+call   11 never executed
+    $$$$$:  215-block  4
+call   12 never executed
+    $$$$$:  215-block  5
+call   13 never executed
+    $$$$$:  215-block  6
+call   14 never executed
+    $$$$$:  215-block  7
+call   15 never executed
+    $$$$$:  215-block  8
+call   16 never executed
+    $$$$$:  215-block  9
+call   17 never executed
+        -:  216:
+function _Z19run_tests_auto_repov called 1 returned 100% blocks executed 100%
+        1:  217:void run_tests_auto_repo(){
+        1:  218:    test_add_car();
+        1:  218-block  0
+call    0 returned 1
+        1:  219:    test_remove_car();
+call    0 returned 1
+        1:  220:    test_modify_car1();
+call    0 returned 1
+        1:  221:    test_modify_car2();
+call    0 returned 1
+        1:  222:    test_verify_car();
+call    0 returned 1
+        1:  223:}

@@ -1,0 +1,43 @@
+        -:    0:Source:C:/Users/rares/CLionProjects/OOP/Json-test/include/nlohmann/detail/input/position_t.hpp
+        -:    0:Graph:C:\Users\rares\CLionProjects\OOP\Json-test\cmake-build-debug-coverage\CMakeFiles\Json_test.dir\Repositories\AutoRepo\AutoRepo.cpp.gcno
+        -:    0:Data:C:\Users\rares\CLionProjects\OOP\Json-test\cmake-build-debug-coverage\CMakeFiles\Json_test.dir\Repositories\AutoRepo\AutoRepo.cpp.gcda
+        -:    0:Runs:1
+        -:    1://     __ _____ _____ _____
+        -:    2://  __|  |   __|     |   | |  JSON for Modern C++
+        -:    3:// |  |  |__   |  |  | | | |  version 3.11.3
+        -:    4:// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+        -:    5://
+        -:    6:// SPDX-FileCopyrightText: 2013-2023 Niels Lohmann <https://nlohmann.me>
+        -:    7:// SPDX-License-Identifier: MIT
+        -:    8:
+        -:    9:#pragma once
+        -:   10:
+        -:   11:#include <cstddef> // size_t
+        -:   12:
+        -:   13:#include <nlohmann/detail/abi_macros.hpp>
+        -:   14:
+        -:   15:NLOHMANN_JSON_NAMESPACE_BEGIN
+        -:   16:namespace detail
+        -:   17:{
+        -:   18:
+        -:   19:/// struct to capture the start position of the current token
+        -:   20:struct position_t
+        -:   21:{
+        -:   22:    /// the total number of characters read
+        -:   23:    std::size_t chars_read_total = 0;
+        -:   24:    /// the number of characters read in the current line
+        -:   25:    std::size_t chars_read_current_line = 0;
+        -:   26:    /// the number of lines read
+        -:   27:    std::size_t lines_read = 0;
+        -:   28:
+        -:   29:    /// conversion to size_t to preserve SAX interface
+function _ZNK8nlohmann16json_abi_v3_11_36detail10position_tcvyEv called 0 returned 0% blocks executed 0%
+    #####:   30:    constexpr operator size_t() const
+        -:   31:    {
+    #####:   32:        return chars_read_total;
+    %%%%%:   32-block  0
+        -:   33:    }
+        -:   34:};
+        -:   35:
+        -:   36:}  // namespace detail
+        -:   37:NLOHMANN_JSON_NAMESPACE_END

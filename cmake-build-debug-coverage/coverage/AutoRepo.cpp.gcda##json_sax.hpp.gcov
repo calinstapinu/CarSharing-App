@@ -1,0 +1,3263 @@
+        -:    0:Source:C:/Users/rares/CLionProjects/OOP/Json-test/include/nlohmann/detail/input/json_sax.hpp
+        -:    0:Graph:C:\Users\rares\CLionProjects\OOP\Json-test\cmake-build-debug-coverage\CMakeFiles\Json_test.dir\Repositories\AutoRepo\AutoRepo.cpp.gcno
+        -:    0:Data:C:\Users\rares\CLionProjects\OOP\Json-test\cmake-build-debug-coverage\CMakeFiles\Json_test.dir\Repositories\AutoRepo\AutoRepo.cpp.gcda
+        -:    0:Runs:1
+        -:    1://     __ _____ _____ _____
+        -:    2://  __|  |   __|     |   | |  JSON for Modern C++
+        -:    3:// |  |  |__   |  |  | | | |  version 3.11.3
+        -:    4:// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+        -:    5://
+        -:    6:// SPDX-FileCopyrightText: 2013-2023 Niels Lohmann <https://nlohmann.me>
+        -:    7:// SPDX-License-Identifier: MIT
+        -:    8:
+        -:    9:#pragma once
+        -:   10:
+        -:   11:#include <cstddef>
+        -:   12:#include <string> // string
+        -:   13:#include <utility> // move
+        -:   14:#include <vector> // vector
+        -:   15:
+        -:   16:#include <nlohmann/detail/exceptions.hpp>
+        -:   17:#include <nlohmann/detail/macro_scope.hpp>
+        -:   18:#include <nlohmann/detail/string_concat.hpp>
+        -:   19:
+        -:   20:NLOHMANN_JSON_NAMESPACE_BEGIN
+        -:   21:
+        -:   22:/*!
+        -:   23:@brief SAX interface
+        -:   24:
+        -:   25:This class describes the SAX interface used by @ref nlohmann::json::sax_parse.
+        -:   26:Each function is called in different situations while the input is parsed. The
+        -:   27:boolean return value informs the parser whether to continue processing the
+        -:   28:input.
+        -:   29:*/
+        -:   30:template<typename BasicJsonType>
+        -:   31:struct json_sax
+        -:   32:{
+        -:   33:    using number_integer_t = typename BasicJsonType::number_integer_t;
+        -:   34:    using number_unsigned_t = typename BasicJsonType::number_unsigned_t;
+        -:   35:    using number_float_t = typename BasicJsonType::number_float_t;
+        -:   36:    using string_t = typename BasicJsonType::string_t;
+        -:   37:    using binary_t = typename BasicJsonType::binary_t;
+        -:   38:
+        -:   39:    /*!
+        -:   40:    @brief a null value was read
+        -:   41:    @return whether parsing should proceed
+        -:   42:    */
+        -:   43:    virtual bool null() = 0;
+        -:   44:
+        -:   45:    /*!
+        -:   46:    @brief a boolean value was read
+        -:   47:    @param[in] val  boolean value
+        -:   48:    @return whether parsing should proceed
+        -:   49:    */
+        -:   50:    virtual bool boolean(bool val) = 0;
+        -:   51:
+        -:   52:    /*!
+        -:   53:    @brief an integer number was read
+        -:   54:    @param[in] val  integer value
+        -:   55:    @return whether parsing should proceed
+        -:   56:    */
+        -:   57:    virtual bool number_integer(number_integer_t val) = 0;
+        -:   58:
+        -:   59:    /*!
+        -:   60:    @brief an unsigned integer number was read
+        -:   61:    @param[in] val  unsigned integer value
+        -:   62:    @return whether parsing should proceed
+        -:   63:    */
+        -:   64:    virtual bool number_unsigned(number_unsigned_t val) = 0;
+        -:   65:
+        -:   66:    /*!
+        -:   67:    @brief a floating-point number was read
+        -:   68:    @param[in] val  floating-point value
+        -:   69:    @param[in] s    raw token value
+        -:   70:    @return whether parsing should proceed
+        -:   71:    */
+        -:   72:    virtual bool number_float(number_float_t val, const string_t& s) = 0;
+        -:   73:
+        -:   74:    /*!
+        -:   75:    @brief a string value was read
+        -:   76:    @param[in] val  string value
+        -:   77:    @return whether parsing should proceed
+        -:   78:    @note It is safe to move the passed string value.
+        -:   79:    */
+        -:   80:    virtual bool string(string_t& val) = 0;
+        -:   81:
+        -:   82:    /*!
+        -:   83:    @brief a binary value was read
+        -:   84:    @param[in] val  binary value
+        -:   85:    @return whether parsing should proceed
+        -:   86:    @note It is safe to move the passed binary value.
+        -:   87:    */
+        -:   88:    virtual bool binary(binary_t& val) = 0;
+        -:   89:
+        -:   90:    /*!
+        -:   91:    @brief the beginning of an object was read
+        -:   92:    @param[in] elements  number of object elements or -1 if unknown
+        -:   93:    @return whether parsing should proceed
+        -:   94:    @note binary formats may report the number of elements
+        -:   95:    */
+        -:   96:    virtual bool start_object(std::size_t elements) = 0;
+        -:   97:
+        -:   98:    /*!
+        -:   99:    @brief an object key was read
+        -:  100:    @param[in] val  object key
+        -:  101:    @return whether parsing should proceed
+        -:  102:    @note It is safe to move the passed string.
+        -:  103:    */
+        -:  104:    virtual bool key(string_t& val) = 0;
+        -:  105:
+        -:  106:    /*!
+        -:  107:    @brief the end of an object was read
+        -:  108:    @return whether parsing should proceed
+        -:  109:    */
+        -:  110:    virtual bool end_object() = 0;
+        -:  111:
+        -:  112:    /*!
+        -:  113:    @brief the beginning of an array was read
+        -:  114:    @param[in] elements  number of array elements or -1 if unknown
+        -:  115:    @return whether parsing should proceed
+        -:  116:    @note binary formats may report the number of elements
+        -:  117:    */
+        -:  118:    virtual bool start_array(std::size_t elements) = 0;
+        -:  119:
+        -:  120:    /*!
+        -:  121:    @brief the end of an array was read
+        -:  122:    @return whether parsing should proceed
+        -:  123:    */
+        -:  124:    virtual bool end_array() = 0;
+        -:  125:
+        -:  126:    /*!
+        -:  127:    @brief a parse error occurred
+        -:  128:    @param[in] position    the position in the input where the error occurs
+        -:  129:    @param[in] last_token  the last read token
+        -:  130:    @param[in] ex          an exception object describing the error
+        -:  131:    @return whether parsing should proceed (must return false)
+        -:  132:    */
+        -:  133:    virtual bool parse_error(std::size_t position,
+        -:  134:                             const std::string& last_token,
+        -:  135:                             const detail::exception& ex) = 0;
+        -:  136:
+        -:  137:    json_sax() = default;
+        -:  138:    json_sax(const json_sax&) = default;
+        -:  139:    json_sax(json_sax&&) noexcept = default;
+        -:  140:    json_sax& operator=(const json_sax&) = default;
+        -:  141:    json_sax& operator=(json_sax&&) noexcept = default;
+        -:  142:    virtual ~json_sax() = default;
+        -:  143:};
+        -:  144:
+        -:  145:namespace detail
+        -:  146:{
+        -:  147:/*!
+        -:  148:@brief SAX implementation to create a JSON value from SAX events
+        -:  149:
+        -:  150:This class implements the @ref json_sax interface and processes the SAX events
+        -:  151:to create a JSON value which makes it basically a DOM parser. The structure or
+        -:  152:hierarchy of the JSON value is managed by the stack `ref_stack` which contains
+        -:  153:a pointer to the respective array or object for each recursion depth.
+        -:  154:
+        -:  155:After successful parsing, the value that is passed by reference to the
+        -:  156:constructor contains the parsed value.
+        -:  157:
+        -:  158:@tparam BasicJsonType  the JSON type
+        -:  159:*/
+        -:  160:template<typename BasicJsonType>
+        -:  161:class json_sax_dom_parser
+        -:  162:{
+        -:  163:  public:
+        -:  164:    using number_integer_t = typename BasicJsonType::number_integer_t;
+        -:  165:    using number_unsigned_t = typename BasicJsonType::number_unsigned_t;
+        -:  166:    using number_float_t = typename BasicJsonType::number_float_t;
+        -:  167:    using string_t = typename BasicJsonType::string_t;
+        -:  168:    using binary_t = typename BasicJsonType::binary_t;
+        -:  169:
+        -:  170:    /*!
+        -:  171:    @param[in,out] r  reference to a JSON value that is manipulated while
+        -:  172:                       parsing
+        -:  173:    @param[in] allow_exceptions_  whether parse errors yield exceptions
+        -:  174:    */
+function _ZN8nlohmann16json_abi_v3_11_36detail19json_sax_dom_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEEC1ERSF_b called 6 returned 100% blocks executed 100%
+        6:  175:    explicit json_sax_dom_parser(BasicJsonType& r, const bool allow_exceptions_ = true)
+        6:  176:        : root(r), allow_exceptions(allow_exceptions_)
+        6:  176-block  0
+call    0 returned 6
+        6:  177:    {}
+        -:  178:
+        -:  179:    // make class move-only
+        -:  180:    json_sax_dom_parser(const json_sax_dom_parser&) = delete;
+        -:  181:    json_sax_dom_parser(json_sax_dom_parser&&) = default; // NOLINT(hicpp-noexcept-move,performance-noexcept-move-constructor)
+        -:  182:    json_sax_dom_parser& operator=(const json_sax_dom_parser&) = delete;
+        -:  183:    json_sax_dom_parser& operator=(json_sax_dom_parser&&) = default; // NOLINT(hicpp-noexcept-move,performance-noexcept-move-constructor)
+function _ZN8nlohmann16json_abi_v3_11_36detail19json_sax_dom_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEED1Ev called 6 returned 100% blocks executed 100%
+        6:  184:    ~json_sax_dom_parser() = default;
+        6:  184-block  0
+call    0 returned 6
+        -:  185:
+function _ZN8nlohmann16json_abi_v3_11_36detail19json_sax_dom_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE4nullEv called 0 returned 0% blocks executed 0%
+    #####:  186:    bool null()
+        -:  187:    {
+    #####:  188:        handle_value(nullptr);
+    %%%%%:  188-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    #####:  189:        return true;
+    %%%%%:  189-block  0
+    %%%%%:  189-block  1
+        -:  190:    }
+        -:  191:
+function _ZN8nlohmann16json_abi_v3_11_36detail19json_sax_dom_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE7booleanEb called 0 returned 0% blocks executed 0%
+    #####:  192:    bool boolean(bool val)
+        -:  193:    {
+    #####:  194:        handle_value(val);
+    %%%%%:  194-block  0
+call    0 never executed
+    #####:  195:        return true;
+        -:  196:    }
+        -:  197:
+function _ZN8nlohmann16json_abi_v3_11_36detail19json_sax_dom_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE14number_integerEx called 0 returned 0% blocks executed 0%
+    #####:  198:    bool number_integer(number_integer_t val)
+        -:  199:    {
+    #####:  200:        handle_value(val);
+    %%%%%:  200-block  0
+call    0 never executed
+    #####:  201:        return true;
+        -:  202:    }
+        -:  203:
+function _ZN8nlohmann16json_abi_v3_11_36detail19json_sax_dom_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE15number_unsignedEy called 12 returned 100% blocks executed 100%
+       12:  204:    bool number_unsigned(number_unsigned_t val)
+        -:  205:    {
+       12:  206:        handle_value(val);
+       12:  206-block  0
+call    0 returned 12
+       12:  207:        return true;
+        -:  208:    }
+        -:  209:
+function _ZN8nlohmann16json_abi_v3_11_36detail19json_sax_dom_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE12number_floatEdRKSB_ called 6 returned 100% blocks executed 100%
+        6:  210:    bool number_float(number_float_t val, const string_t& /*unused*/)
+        -:  211:    {
+        6:  212:        handle_value(val);
+        6:  212-block  0
+call    0 returned 6
+        6:  213:        return true;
+        -:  214:    }
+        -:  215:
+function _ZN8nlohmann16json_abi_v3_11_36detail19json_sax_dom_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE6stringERSB_ called 54 returned 100% blocks executed 100%
+       54:  216:    bool string(string_t& val)
+        -:  217:    {
+       54:  218:        handle_value(val);
+       54:  218-block  0
+call    0 returned 54
+       54:  219:        return true;
+        -:  220:    }
+        -:  221:
+        -:  222:    bool binary(binary_t& val)
+        -:  223:    {
+        -:  224:        handle_value(std::move(val));
+        -:  225:        return true;
+        -:  226:    }
+        -:  227:
+function _ZN8nlohmann16json_abi_v3_11_36detail19json_sax_dom_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE12start_objectEy called 6 returned 100% blocks executed 28%
+        6:  228:    bool start_object(std::size_t len)
+        -:  229:    {
+        6:  230:        ref_stack.push_back(handle_value(BasicJsonType::value_t::object));
+        6:  230-block  0
+call    0 returned 6
+branch  1 taken 6 (fallthrough)
+branch  2 taken 0 (throw)
+        6:  230-block  1
+call    3 returned 6
+branch  4 taken 6 (fallthrough)
+branch  5 taken 0 (throw)
+    $$$$$:  230-block  2
+    $$$$$:  230-block  3
+call    6 never executed
+        -:  231:
+       6*:  232:        if (JSON_HEDLEY_UNLIKELY(len != static_cast<std::size_t>(-1) && len > ref_stack.back()->max_size()))
+        6:  232-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 6
+    %%%%%:  232-block  1
+call    2 never executed
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed
+    %%%%%:  232-block  2
+        6:  232-block  3
+        6:  232-block  4
+branch  6 taken 0 (fallthrough)
+branch  7 taken 6
+        -:  233:        {
+    #####:  234:            JSON_THROW(out_of_range::create(408, concat("excessive object size: ", std::to_string(len)), ref_stack.back()));
+    %%%%%:  234-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+branch  3 never executed (fallthrough)
+branch  4 never executed (throw)
+    %%%%%:  234-block  1
+call    5 never executed
+branch  6 never executed (fallthrough)
+branch  7 never executed (throw)
+    %%%%%:  234-block  2
+call    8 never executed
+branch  9 never executed (fallthrough)
+branch 10 never executed (throw)
+    %%%%%:  234-block  3
+call   11 never executed
+call   12 never executed
+call   13 never executed
+    $$$$$:  234-block  4
+call   14 never executed
+    $$$$$:  234-block  5
+call   15 never executed
+    $$$$$:  234-block  6
+    $$$$$:  234-block  7
+    $$$$$:  234-block  8
+call   16 never executed
+        -:  235:        }
+        -:  236:
+        6:  237:        return true;
+        6:  237-block  0
+        6:  237-block  1
+        -:  238:    }
+        -:  239:
+function _ZN8nlohmann16json_abi_v3_11_36detail19json_sax_dom_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE3keyERSB_ called 72 returned 100% blocks executed 85%
+       72:  240:    bool key(string_t& val)
+        -:  241:    {
+      72*:  242:        JSON_ASSERT(!ref_stack.empty());
+       72:  242-block  0
+call    0 returned 72
+branch  1 taken 0 (fallthrough)
+branch  2 taken 72
+    %%%%%:  242-block  1
+call    3 never executed
+       72:  242-block  2
+      72*:  243:        JSON_ASSERT(ref_stack.back()->is_object());
+       72:  243-block  0
+call    0 returned 72
+call    1 returned 72
+branch  2 taken 0 (fallthrough)
+branch  3 taken 72
+    %%%%%:  243-block  1
+call    4 never executed
+       72:  243-block  2
+        -:  244:
+        -:  245:        // add null at given key and store the reference for later
+       72:  246:        object_element = &(ref_stack.back()->m_data.m_value.object->operator[](val));
+       72:  246-block  0
+call    0 returned 72
+call    1 returned 72
+       72:  247:        return true;
+        -:  248:    }
+        -:  249:
+function _ZN8nlohmann16json_abi_v3_11_36detail19json_sax_dom_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE10end_objectEv called 6 returned 100% blocks executed 86%
+        6:  250:    bool end_object()
+        -:  251:    {
+       6*:  252:        JSON_ASSERT(!ref_stack.empty());
+        6:  252-block  0
+call    0 returned 6
+branch  1 taken 0 (fallthrough)
+branch  2 taken 6
+    %%%%%:  252-block  1
+call    3 never executed
+        6:  252-block  2
+       6*:  253:        JSON_ASSERT(ref_stack.back()->is_object());
+        6:  253-block  0
+call    0 returned 6
+call    1 returned 6
+branch  2 taken 0 (fallthrough)
+branch  3 taken 6
+    %%%%%:  253-block  1
+call    4 never executed
+        6:  253-block  2
+        -:  254:
+        6:  255:        ref_stack.back()->set_parents();
+        6:  255-block  0
+call    0 returned 6
+call    1 returned 6
+        6:  256:        ref_stack.pop_back();
+call    0 returned 6
+        6:  257:        return true;
+        -:  258:    }
+        -:  259:
+function _ZN8nlohmann16json_abi_v3_11_36detail19json_sax_dom_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE11start_arrayEy called 6 returned 100% blocks executed 28%
+        6:  260:    bool start_array(std::size_t len)
+        -:  261:    {
+        6:  262:        ref_stack.push_back(handle_value(BasicJsonType::value_t::array));
+        6:  262-block  0
+call    0 returned 6
+branch  1 taken 6 (fallthrough)
+branch  2 taken 0 (throw)
+        6:  262-block  1
+call    3 returned 6
+branch  4 taken 6 (fallthrough)
+branch  5 taken 0 (throw)
+    $$$$$:  262-block  2
+    $$$$$:  262-block  3
+call    6 never executed
+        -:  263:
+       6*:  264:        if (JSON_HEDLEY_UNLIKELY(len != static_cast<std::size_t>(-1) && len > ref_stack.back()->max_size()))
+        6:  264-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 6
+    %%%%%:  264-block  1
+call    2 never executed
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed
+    %%%%%:  264-block  2
+        6:  264-block  3
+        6:  264-block  4
+branch  6 taken 0 (fallthrough)
+branch  7 taken 6
+        -:  265:        {
+    #####:  266:            JSON_THROW(out_of_range::create(408, concat("excessive array size: ", std::to_string(len)), ref_stack.back()));
+    %%%%%:  266-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+branch  3 never executed (fallthrough)
+branch  4 never executed (throw)
+    %%%%%:  266-block  1
+call    5 never executed
+branch  6 never executed (fallthrough)
+branch  7 never executed (throw)
+    %%%%%:  266-block  2
+call    8 never executed
+branch  9 never executed (fallthrough)
+branch 10 never executed (throw)
+    %%%%%:  266-block  3
+call   11 never executed
+call   12 never executed
+call   13 never executed
+    $$$$$:  266-block  4
+call   14 never executed
+    $$$$$:  266-block  5
+call   15 never executed
+    $$$$$:  266-block  6
+    $$$$$:  266-block  7
+    $$$$$:  266-block  8
+call   16 never executed
+        -:  267:        }
+        -:  268:
+        6:  269:        return true;
+        6:  269-block  0
+        6:  269-block  1
+        -:  270:    }
+        -:  271:
+function _ZN8nlohmann16json_abi_v3_11_36detail19json_sax_dom_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE9end_arrayEv called 6 returned 100% blocks executed 86%
+        6:  272:    bool end_array()
+        -:  273:    {
+       6*:  274:        JSON_ASSERT(!ref_stack.empty());
+        6:  274-block  0
+call    0 returned 6
+branch  1 taken 0 (fallthrough)
+branch  2 taken 6
+    %%%%%:  274-block  1
+call    3 never executed
+        6:  274-block  2
+       6*:  275:        JSON_ASSERT(ref_stack.back()->is_array());
+        6:  275-block  0
+call    0 returned 6
+call    1 returned 6
+branch  2 taken 0 (fallthrough)
+branch  3 taken 6
+    %%%%%:  275-block  1
+call    4 never executed
+        6:  275-block  2
+        -:  276:
+        6:  277:        ref_stack.back()->set_parents();
+        6:  277-block  0
+call    0 returned 6
+call    1 returned 6
+        6:  278:        ref_stack.pop_back();
+call    0 returned 6
+        6:  279:        return true;
+        -:  280:    }
+        -:  281:
+        -:  282:    template<class Exception>
+    #####:  283:    bool parse_error(std::size_t /*unused*/, const std::string& /*unused*/,
+        -:  284:                     const Exception& ex)
+        -:  285:    {
+    #####:  286:        errored = true;
+        -:  287:        static_cast<void>(ex);
+    #####:  288:        if (allow_exceptions)
+        -:  289:        {
+    #####:  290:            JSON_THROW(ex);
+        -:  291:        }
+    #####:  292:        return false;
+        -:  293:    }
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail19json_sax_dom_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE11parse_errorINS1_12out_of_rangeEEEbyRKSB_RKT_:
+function _ZN8nlohmann16json_abi_v3_11_36detail19json_sax_dom_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE11parse_errorINS1_12out_of_rangeEEEbyRKSB_RKT_ called 0 returned 0% blocks executed 0%
+    #####:  283:    bool parse_error(std::size_t /*unused*/, const std::string& /*unused*/,
+        -:  284:                     const Exception& ex)
+        -:  285:    {
+    #####:  286:        errored = true;
+        -:  287:        static_cast<void>(ex);
+    #####:  288:        if (allow_exceptions)
+    %%%%%:  288-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  289:        {
+    #####:  290:            JSON_THROW(ex);
+    %%%%%:  290-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+        -:  291:        }
+    #####:  292:        return false;
+    %%%%%:  292-block  0
+        -:  293:    }
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail19json_sax_dom_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE11parse_errorINS1_11parse_errorEEEbyRKSB_RKT_:
+function _ZN8nlohmann16json_abi_v3_11_36detail19json_sax_dom_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE11parse_errorINS1_11parse_errorEEEbyRKSB_RKT_ called 0 returned 0% blocks executed 0%
+    #####:  283:    bool parse_error(std::size_t /*unused*/, const std::string& /*unused*/,
+        -:  284:                     const Exception& ex)
+        -:  285:    {
+    #####:  286:        errored = true;
+        -:  287:        static_cast<void>(ex);
+    #####:  288:        if (allow_exceptions)
+    %%%%%:  288-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  289:        {
+    #####:  290:            JSON_THROW(ex);
+    %%%%%:  290-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+        -:  291:        }
+    #####:  292:        return false;
+    %%%%%:  292-block  0
+        -:  293:    }
+------------------
+        -:  294:
+function _ZNK8nlohmann16json_abi_v3_11_36detail19json_sax_dom_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE10is_erroredEv called 6 returned 100% blocks executed 100%
+        6:  295:    constexpr bool is_errored() const
+        -:  296:    {
+        6:  297:        return errored;
+        6:  297-block  0
+        -:  298:    }
+        -:  299:
+        -:  300:  private:
+        -:  301:    /*!
+        -:  302:    @invariant If the ref stack is empty, then the passed value will be the new
+        -:  303:               root.
+        -:  304:    @invariant If the ref stack contains a value, then it is an array or an
+        -:  305:               object to which we can add elements
+        -:  306:    */
+        -:  307:    template<typename Value>
+        -:  308:    JSON_HEDLEY_RETURNS_NON_NULL
+      84*:  309:    BasicJsonType* handle_value(Value&& v)
+        -:  310:    {
+      84*:  311:        if (ref_stack.empty())
+        -:  312:        {
+       6*:  313:            root = BasicJsonType(std::forward<Value>(v));
+       6*:  314:            return &root;
+        -:  315:        }
+        -:  316:
+      78*:  317:        JSON_ASSERT(ref_stack.back()->is_array() || ref_stack.back()->is_object());
+        -:  318:
+      78*:  319:        if (ref_stack.back()->is_array())
+        -:  320:        {
+       6*:  321:            ref_stack.back()->m_data.m_value.array->emplace_back(std::forward<Value>(v));
+       6*:  322:            return &(ref_stack.back()->m_data.m_value.array->back());
+        -:  323:        }
+        -:  324:
+      72*:  325:        JSON_ASSERT(ref_stack.back()->is_object());
+      72*:  326:        JSON_ASSERT(object_element);
+      72*:  327:        *object_element = BasicJsonType(std::forward<Value>(v));
+      72*:  328:        return object_element;
+        -:  329:    }
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail19json_sax_dom_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE12handle_valueIRyEEPSF_OT_:
+function _ZN8nlohmann16json_abi_v3_11_36detail19json_sax_dom_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE12handle_valueIRyEEPSF_OT_ called 12 returned 100% blocks executed 65%
+       12:  309:    BasicJsonType* handle_value(Value&& v)
+        -:  310:    {
+       12:  311:        if (ref_stack.empty())
+       12:  311-block  0
+call    0 returned 12
+branch  1 taken 0 (fallthrough)
+branch  2 taken 12
+        -:  312:        {
+    #####:  313:            root = BasicJsonType(std::forward<Value>(v));
+    %%%%%:  313-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+call    3 never executed
+    #####:  314:            return &root;
+        -:  315:        }
+        -:  316:
+      12*:  317:        JSON_ASSERT(ref_stack.back()->is_array() || ref_stack.back()->is_object());
+       12:  317-block  0
+call    0 returned 12
+call    1 returned 12
+branch  2 taken 12 (fallthrough)
+branch  3 taken 0
+       12:  317-block  1
+call    4 returned 12
+call    5 returned 12
+branch  6 taken 0 (fallthrough)
+branch  7 taken 12
+    %%%%%:  317-block  2
+call    8 never executed
+       12:  317-block  3
+        -:  318:
+       12:  319:        if (ref_stack.back()->is_array())
+       12:  319-block  0
+call    0 returned 12
+call    1 returned 12
+branch  2 taken 0 (fallthrough)
+branch  3 taken 12
+        -:  320:        {
+    #####:  321:            ref_stack.back()->m_data.m_value.array->emplace_back(std::forward<Value>(v));
+    %%%%%:  321-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+    #####:  322:            return &(ref_stack.back()->m_data.m_value.array->back());
+call    0 never executed
+call    1 never executed
+        -:  323:        }
+        -:  324:
+      12*:  325:        JSON_ASSERT(ref_stack.back()->is_object());
+       12:  325-block  0
+call    0 returned 12
+call    1 returned 12
+branch  2 taken 0 (fallthrough)
+branch  3 taken 12
+    %%%%%:  325-block  1
+call    4 never executed
+       12:  325-block  2
+      12*:  326:        JSON_ASSERT(object_element);
+       12:  326-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 12
+    %%%%%:  326-block  1
+call    2 never executed
+       12:  326-block  2
+       12:  327:        *object_element = BasicJsonType(std::forward<Value>(v));
+       12:  327-block  0
+call    0 returned 12
+call    1 returned 12
+call    2 returned 12
+call    3 returned 12
+       12:  328:        return object_element;
+        -:  329:    }
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail19json_sax_dom_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE12handle_valueIRSB_EEPSF_OT_:
+function _ZN8nlohmann16json_abi_v3_11_36detail19json_sax_dom_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE12handle_valueIRSB_EEPSF_OT_ called 54 returned 100% blocks executed 64%
+       54:  309:    BasicJsonType* handle_value(Value&& v)
+        -:  310:    {
+       54:  311:        if (ref_stack.empty())
+       54:  311-block  0
+call    0 returned 54
+branch  1 taken 0 (fallthrough)
+branch  2 taken 54
+        -:  312:        {
+    #####:  313:            root = BasicJsonType(std::forward<Value>(v));
+    %%%%%:  313-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    %%%%%:  313-block  1
+call    4 never executed
+call    5 never executed
+    $$$$$:  313-block  2
+call    6 never executed
+    #####:  314:            return &root;
+        -:  315:        }
+        -:  316:
+      54*:  317:        JSON_ASSERT(ref_stack.back()->is_array() || ref_stack.back()->is_object());
+       54:  317-block  0
+call    0 returned 54
+call    1 returned 54
+branch  2 taken 54 (fallthrough)
+branch  3 taken 0
+       54:  317-block  1
+call    4 returned 54
+call    5 returned 54
+branch  6 taken 0 (fallthrough)
+branch  7 taken 54
+    %%%%%:  317-block  2
+call    8 never executed
+       54:  317-block  3
+        -:  318:
+       54:  319:        if (ref_stack.back()->is_array())
+       54:  319-block  0
+call    0 returned 54
+call    1 returned 54
+branch  2 taken 0 (fallthrough)
+branch  3 taken 54
+        -:  320:        {
+    #####:  321:            ref_stack.back()->m_data.m_value.array->emplace_back(std::forward<Value>(v));
+    %%%%%:  321-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+    #####:  322:            return &(ref_stack.back()->m_data.m_value.array->back());
+call    0 never executed
+call    1 never executed
+        -:  323:        }
+        -:  324:
+      54*:  325:        JSON_ASSERT(ref_stack.back()->is_object());
+       54:  325-block  0
+call    0 returned 54
+call    1 returned 54
+branch  2 taken 0 (fallthrough)
+branch  3 taken 54
+    %%%%%:  325-block  1
+call    4 never executed
+       54:  325-block  2
+      54*:  326:        JSON_ASSERT(object_element);
+       54:  326-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 54
+    %%%%%:  326-block  1
+call    2 never executed
+       54:  326-block  2
+       54:  327:        *object_element = BasicJsonType(std::forward<Value>(v));
+       54:  327-block  0
+call    0 returned 54
+call    1 returned 54
+branch  2 taken 54 (fallthrough)
+branch  3 taken 0 (throw)
+       54:  327-block  1
+call    4 returned 54
+call    5 returned 54
+       54:  328:        return object_element;
+        -:  329:    }
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail19json_sax_dom_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE12handle_valueIRxEEPSF_OT_:
+function _ZN8nlohmann16json_abi_v3_11_36detail19json_sax_dom_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE12handle_valueIRxEEPSF_OT_ called 0 returned 0% blocks executed 0%
+    #####:  309:    BasicJsonType* handle_value(Value&& v)
+        -:  310:    {
+    #####:  311:        if (ref_stack.empty())
+    %%%%%:  311-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+        -:  312:        {
+    #####:  313:            root = BasicJsonType(std::forward<Value>(v));
+    %%%%%:  313-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+call    3 never executed
+    #####:  314:            return &root;
+        -:  315:        }
+        -:  316:
+    #####:  317:        JSON_ASSERT(ref_stack.back()->is_array() || ref_stack.back()->is_object());
+    %%%%%:  317-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed
+    %%%%%:  317-block  1
+call    4 never executed
+call    5 never executed
+branch  6 never executed (fallthrough)
+branch  7 never executed
+    %%%%%:  317-block  2
+call    8 never executed
+    %%%%%:  317-block  3
+        -:  318:
+    #####:  319:        if (ref_stack.back()->is_array())
+    %%%%%:  319-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed
+        -:  320:        {
+    #####:  321:            ref_stack.back()->m_data.m_value.array->emplace_back(std::forward<Value>(v));
+    %%%%%:  321-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+    #####:  322:            return &(ref_stack.back()->m_data.m_value.array->back());
+call    0 never executed
+call    1 never executed
+        -:  323:        }
+        -:  324:
+    #####:  325:        JSON_ASSERT(ref_stack.back()->is_object());
+    %%%%%:  325-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed
+    %%%%%:  325-block  1
+call    4 never executed
+    %%%%%:  325-block  2
+    #####:  326:        JSON_ASSERT(object_element);
+    %%%%%:  326-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    %%%%%:  326-block  1
+call    2 never executed
+    %%%%%:  326-block  2
+    #####:  327:        *object_element = BasicJsonType(std::forward<Value>(v));
+    %%%%%:  327-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+call    3 never executed
+    #####:  328:        return object_element;
+        -:  329:    }
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail19json_sax_dom_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE12handle_valueIDnEEPSF_OT_:
+function _ZN8nlohmann16json_abi_v3_11_36detail19json_sax_dom_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE12handle_valueIDnEEPSF_OT_ called 0 returned 0% blocks executed 0%
+    #####:  309:    BasicJsonType* handle_value(Value&& v)
+        -:  310:    {
+    #####:  311:        if (ref_stack.empty())
+    %%%%%:  311-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+        -:  312:        {
+    #####:  313:            root = BasicJsonType(std::forward<Value>(v));
+    %%%%%:  313-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+call    3 never executed
+    #####:  314:            return &root;
+        -:  315:        }
+        -:  316:
+    #####:  317:        JSON_ASSERT(ref_stack.back()->is_array() || ref_stack.back()->is_object());
+    %%%%%:  317-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed
+    %%%%%:  317-block  1
+call    4 never executed
+call    5 never executed
+branch  6 never executed (fallthrough)
+branch  7 never executed
+    %%%%%:  317-block  2
+call    8 never executed
+    %%%%%:  317-block  3
+        -:  318:
+    #####:  319:        if (ref_stack.back()->is_array())
+    %%%%%:  319-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed
+        -:  320:        {
+    #####:  321:            ref_stack.back()->m_data.m_value.array->emplace_back(std::forward<Value>(v));
+    %%%%%:  321-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+    #####:  322:            return &(ref_stack.back()->m_data.m_value.array->back());
+call    0 never executed
+call    1 never executed
+        -:  323:        }
+        -:  324:
+    #####:  325:        JSON_ASSERT(ref_stack.back()->is_object());
+    %%%%%:  325-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed
+    %%%%%:  325-block  1
+call    4 never executed
+    %%%%%:  325-block  2
+    #####:  326:        JSON_ASSERT(object_element);
+    %%%%%:  326-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    %%%%%:  326-block  1
+call    2 never executed
+    %%%%%:  326-block  2
+    #####:  327:        *object_element = BasicJsonType(std::forward<Value>(v));
+    %%%%%:  327-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+call    3 never executed
+    #####:  328:        return object_element;
+        -:  329:    }
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail19json_sax_dom_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE12handle_valueIRbEEPSF_OT_:
+function _ZN8nlohmann16json_abi_v3_11_36detail19json_sax_dom_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE12handle_valueIRbEEPSF_OT_ called 0 returned 0% blocks executed 0%
+    #####:  309:    BasicJsonType* handle_value(Value&& v)
+        -:  310:    {
+    #####:  311:        if (ref_stack.empty())
+    %%%%%:  311-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+        -:  312:        {
+    #####:  313:            root = BasicJsonType(std::forward<Value>(v));
+    %%%%%:  313-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+call    3 never executed
+    #####:  314:            return &root;
+        -:  315:        }
+        -:  316:
+    #####:  317:        JSON_ASSERT(ref_stack.back()->is_array() || ref_stack.back()->is_object());
+    %%%%%:  317-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed
+    %%%%%:  317-block  1
+call    4 never executed
+call    5 never executed
+branch  6 never executed (fallthrough)
+branch  7 never executed
+    %%%%%:  317-block  2
+call    8 never executed
+    %%%%%:  317-block  3
+        -:  318:
+    #####:  319:        if (ref_stack.back()->is_array())
+    %%%%%:  319-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed
+        -:  320:        {
+    #####:  321:            ref_stack.back()->m_data.m_value.array->emplace_back(std::forward<Value>(v));
+    %%%%%:  321-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+    #####:  322:            return &(ref_stack.back()->m_data.m_value.array->back());
+call    0 never executed
+call    1 never executed
+        -:  323:        }
+        -:  324:
+    #####:  325:        JSON_ASSERT(ref_stack.back()->is_object());
+    %%%%%:  325-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed
+    %%%%%:  325-block  1
+call    4 never executed
+    %%%%%:  325-block  2
+    #####:  326:        JSON_ASSERT(object_element);
+    %%%%%:  326-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    %%%%%:  326-block  1
+call    2 never executed
+    %%%%%:  326-block  2
+    #####:  327:        *object_element = BasicJsonType(std::forward<Value>(v));
+    %%%%%:  327-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+call    3 never executed
+    #####:  328:        return object_element;
+        -:  329:    }
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail19json_sax_dom_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE12handle_valueIRdEEPSF_OT_:
+function _ZN8nlohmann16json_abi_v3_11_36detail19json_sax_dom_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE12handle_valueIRdEEPSF_OT_ called 6 returned 100% blocks executed 65%
+        6:  309:    BasicJsonType* handle_value(Value&& v)
+        -:  310:    {
+        6:  311:        if (ref_stack.empty())
+        6:  311-block  0
+call    0 returned 6
+branch  1 taken 0 (fallthrough)
+branch  2 taken 6
+        -:  312:        {
+    #####:  313:            root = BasicJsonType(std::forward<Value>(v));
+    %%%%%:  313-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+call    3 never executed
+    #####:  314:            return &root;
+        -:  315:        }
+        -:  316:
+       6*:  317:        JSON_ASSERT(ref_stack.back()->is_array() || ref_stack.back()->is_object());
+        6:  317-block  0
+call    0 returned 6
+call    1 returned 6
+branch  2 taken 6 (fallthrough)
+branch  3 taken 0
+        6:  317-block  1
+call    4 returned 6
+call    5 returned 6
+branch  6 taken 0 (fallthrough)
+branch  7 taken 6
+    %%%%%:  317-block  2
+call    8 never executed
+        6:  317-block  3
+        -:  318:
+        6:  319:        if (ref_stack.back()->is_array())
+        6:  319-block  0
+call    0 returned 6
+call    1 returned 6
+branch  2 taken 0 (fallthrough)
+branch  3 taken 6
+        -:  320:        {
+    #####:  321:            ref_stack.back()->m_data.m_value.array->emplace_back(std::forward<Value>(v));
+    %%%%%:  321-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+    #####:  322:            return &(ref_stack.back()->m_data.m_value.array->back());
+call    0 never executed
+call    1 never executed
+        -:  323:        }
+        -:  324:
+       6*:  325:        JSON_ASSERT(ref_stack.back()->is_object());
+        6:  325-block  0
+call    0 returned 6
+call    1 returned 6
+branch  2 taken 0 (fallthrough)
+branch  3 taken 6
+    %%%%%:  325-block  1
+call    4 never executed
+        6:  325-block  2
+       6*:  326:        JSON_ASSERT(object_element);
+        6:  326-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 6
+    %%%%%:  326-block  1
+call    2 never executed
+        6:  326-block  2
+        6:  327:        *object_element = BasicJsonType(std::forward<Value>(v));
+        6:  327-block  0
+call    0 returned 6
+call    1 returned 6
+call    2 returned 6
+call    3 returned 6
+        6:  328:        return object_element;
+        -:  329:    }
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail19json_sax_dom_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE12handle_valueINS1_7value_tEEEPSF_OT_:
+function _ZN8nlohmann16json_abi_v3_11_36detail19json_sax_dom_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE12handle_valueINS1_7value_tEEEPSF_OT_ called 12 returned 100% blocks executed 54%
+       12:  309:    BasicJsonType* handle_value(Value&& v)
+        -:  310:    {
+       12:  311:        if (ref_stack.empty())
+       12:  311-block  0
+call    0 returned 12
+branch  1 taken 6 (fallthrough)
+branch  2 taken 6
+        -:  312:        {
+        6:  313:            root = BasicJsonType(std::forward<Value>(v));
+        6:  313-block  0
+call    0 returned 6
+call    1 returned 6
+branch  2 taken 6 (fallthrough)
+branch  3 taken 0 (throw)
+        6:  313-block  1
+call    4 returned 6
+call    5 returned 6
+    $$$$$:  313-block  2
+call    6 never executed
+        6:  314:            return &root;
+        -:  315:        }
+        -:  316:
+       6*:  317:        JSON_ASSERT(ref_stack.back()->is_array() || ref_stack.back()->is_object());
+        6:  317-block  0
+call    0 returned 6
+call    1 returned 6
+branch  2 taken 0 (fallthrough)
+branch  3 taken 6
+    %%%%%:  317-block  1
+call    4 never executed
+call    5 never executed
+branch  6 never executed (fallthrough)
+branch  7 never executed
+    %%%%%:  317-block  2
+call    8 never executed
+        6:  317-block  3
+        -:  318:
+        6:  319:        if (ref_stack.back()->is_array())
+        6:  319-block  0
+call    0 returned 6
+call    1 returned 6
+branch  2 taken 6 (fallthrough)
+branch  3 taken 0
+        -:  320:        {
+        6:  321:            ref_stack.back()->m_data.m_value.array->emplace_back(std::forward<Value>(v));
+        6:  321-block  0
+call    0 returned 6
+call    1 returned 6
+call    2 returned 6
+        6:  322:            return &(ref_stack.back()->m_data.m_value.array->back());
+call    0 returned 6
+call    1 returned 6
+        -:  323:        }
+        -:  324:
+    #####:  325:        JSON_ASSERT(ref_stack.back()->is_object());
+    %%%%%:  325-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed
+    %%%%%:  325-block  1
+call    4 never executed
+    %%%%%:  325-block  2
+    #####:  326:        JSON_ASSERT(object_element);
+    %%%%%:  326-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    %%%%%:  326-block  1
+call    2 never executed
+    %%%%%:  326-block  2
+    #####:  327:        *object_element = BasicJsonType(std::forward<Value>(v));
+    %%%%%:  327-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    %%%%%:  327-block  1
+call    4 never executed
+call    5 never executed
+    #####:  328:        return object_element;
+        -:  329:    }
+------------------
+        -:  330:
+        -:  331:    /// the parsed JSON value
+        -:  332:    BasicJsonType& root;
+        -:  333:    /// stack to model hierarchy of values
+        -:  334:    std::vector<BasicJsonType*> ref_stack {};
+        -:  335:    /// helper to hold the reference for the next object element
+        -:  336:    BasicJsonType* object_element = nullptr;
+        -:  337:    /// whether a syntax error occurred
+        -:  338:    bool errored = false;
+        -:  339:    /// whether to throw exceptions in case of errors
+        -:  340:    const bool allow_exceptions = true;
+        -:  341:};
+        -:  342:
+        -:  343:template<typename BasicJsonType>
+        -:  344:class json_sax_dom_callback_parser
+        -:  345:{
+        -:  346:  public:
+        -:  347:    using number_integer_t = typename BasicJsonType::number_integer_t;
+        -:  348:    using number_unsigned_t = typename BasicJsonType::number_unsigned_t;
+        -:  349:    using number_float_t = typename BasicJsonType::number_float_t;
+        -:  350:    using string_t = typename BasicJsonType::string_t;
+        -:  351:    using binary_t = typename BasicJsonType::binary_t;
+        -:  352:    using parser_callback_t = typename BasicJsonType::parser_callback_t;
+        -:  353:    using parse_event_t = typename BasicJsonType::parse_event_t;
+        -:  354:
+function _ZN8nlohmann16json_abi_v3_11_36detail28json_sax_dom_callback_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEEC1ERSF_St8functionIFbiNS1_13parse_event_tESH_EEb called 0 returned 0% blocks executed 0%
+    #####:  355:    json_sax_dom_callback_parser(BasicJsonType& r,
+        -:  356:                                 const parser_callback_t cb,
+        -:  357:                                 const bool allow_exceptions_ = true)
+    #####:  358:        : root(r), callback(cb), allow_exceptions(allow_exceptions_)
+    %%%%%:  358-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+    %%%%%:  358-block  1
+call    6 never executed
+branch  7 never executed (fallthrough)
+branch  8 never executed (throw)
+        -:  359:    {
+    #####:  360:        keep_stack.push_back(true);
+    %%%%%:  360-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    #####:  361:    }
+    %%%%%:  361-block  0
+    $$$$$:  361-block  1
+call    0 never executed
+    $$$$$:  361-block  2
+call    1 never executed
+    $$$$$:  361-block  3
+call    2 never executed
+    $$$$$:  361-block  4
+call    3 never executed
+    $$$$$:  361-block  5
+call    4 never executed
+        -:  362:
+        -:  363:    // make class move-only
+        -:  364:    json_sax_dom_callback_parser(const json_sax_dom_callback_parser&) = delete;
+        -:  365:    json_sax_dom_callback_parser(json_sax_dom_callback_parser&&) = default; // NOLINT(hicpp-noexcept-move,performance-noexcept-move-constructor)
+        -:  366:    json_sax_dom_callback_parser& operator=(const json_sax_dom_callback_parser&) = delete;
+        -:  367:    json_sax_dom_callback_parser& operator=(json_sax_dom_callback_parser&&) = default; // NOLINT(hicpp-noexcept-move,performance-noexcept-move-constructor)
+function _ZN8nlohmann16json_abi_v3_11_36detail28json_sax_dom_callback_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEED1Ev called 0 returned 0% blocks executed 0%
+    #####:  368:    ~json_sax_dom_callback_parser() = default;
+    %%%%%:  368-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+call    3 never executed
+call    4 never executed
+        -:  369:
+function _ZN8nlohmann16json_abi_v3_11_36detail28json_sax_dom_callback_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE4nullEv called 0 returned 0% blocks executed 0%
+    #####:  370:    bool null()
+        -:  371:    {
+    #####:  372:        handle_value(nullptr);
+    %%%%%:  372-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    $$$$$:  372-block  1
+    #####:  373:        return true;
+    %%%%%:  373-block  0
+    %%%%%:  373-block  1
+        -:  374:    }
+        -:  375:
+function _ZN8nlohmann16json_abi_v3_11_36detail28json_sax_dom_callback_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE7booleanEb called 0 returned 0% blocks executed 0%
+    #####:  376:    bool boolean(bool val)
+        -:  377:    {
+    #####:  378:        handle_value(val);
+    %%%%%:  378-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    #####:  379:        return true;
+    %%%%%:  379-block  0
+    %%%%%:  379-block  1
+        -:  380:    }
+        -:  381:
+function _ZN8nlohmann16json_abi_v3_11_36detail28json_sax_dom_callback_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE14number_integerEx called 0 returned 0% blocks executed 0%
+    #####:  382:    bool number_integer(number_integer_t val)
+        -:  383:    {
+    #####:  384:        handle_value(val);
+    %%%%%:  384-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    #####:  385:        return true;
+    %%%%%:  385-block  0
+    %%%%%:  385-block  1
+        -:  386:    }
+        -:  387:
+function _ZN8nlohmann16json_abi_v3_11_36detail28json_sax_dom_callback_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE15number_unsignedEy called 0 returned 0% blocks executed 0%
+    #####:  388:    bool number_unsigned(number_unsigned_t val)
+        -:  389:    {
+    #####:  390:        handle_value(val);
+    %%%%%:  390-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    #####:  391:        return true;
+    %%%%%:  391-block  0
+    %%%%%:  391-block  1
+        -:  392:    }
+        -:  393:
+function _ZN8nlohmann16json_abi_v3_11_36detail28json_sax_dom_callback_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE12number_floatEdRKSB_ called 0 returned 0% blocks executed 0%
+    #####:  394:    bool number_float(number_float_t val, const string_t& /*unused*/)
+        -:  395:    {
+    #####:  396:        handle_value(val);
+    %%%%%:  396-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    #####:  397:        return true;
+    %%%%%:  397-block  0
+    %%%%%:  397-block  1
+        -:  398:    }
+        -:  399:
+function _ZN8nlohmann16json_abi_v3_11_36detail28json_sax_dom_callback_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE6stringERSB_ called 0 returned 0% blocks executed 0%
+    #####:  400:    bool string(string_t& val)
+        -:  401:    {
+    #####:  402:        handle_value(val);
+    %%%%%:  402-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    #####:  403:        return true;
+    %%%%%:  403-block  0
+    %%%%%:  403-block  1
+        -:  404:    }
+        -:  405:
+        -:  406:    bool binary(binary_t& val)
+        -:  407:    {
+        -:  408:        handle_value(std::move(val));
+        -:  409:        return true;
+        -:  410:    }
+        -:  411:
+function _ZN8nlohmann16json_abi_v3_11_36detail28json_sax_dom_callback_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE12start_objectEy called 0 returned 0% blocks executed 0%
+    #####:  412:    bool start_object(std::size_t len)
+        -:  413:    {
+        -:  414:        // check callback for object start
+    #####:  415:        const bool keep = callback(static_cast<int>(ref_stack.size()), parse_event_t::object_start, discarded);
+    %%%%%:  415-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    #####:  416:        keep_stack.push_back(keep);
+    %%%%%:  416-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+        -:  417:
+    #####:  418:        auto val = handle_value(BasicJsonType::value_t::object, true);
+    %%%%%:  418-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    $$$$$:  418-block  1
+    #####:  419:        ref_stack.push_back(val.second);
+    %%%%%:  419-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+        -:  420:
+        -:  421:        // check object limit
+    #####:  422:        if (ref_stack.back() && JSON_HEDLEY_UNLIKELY(len != static_cast<std::size_t>(-1) && len > ref_stack.back()->max_size()))
+    %%%%%:  422-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+    %%%%%:  422-block  1
+branch  3 never executed (fallthrough)
+branch  4 never executed
+    %%%%%:  422-block  2
+call    5 never executed
+call    6 never executed
+branch  7 never executed (fallthrough)
+branch  8 never executed
+    %%%%%:  422-block  3
+    %%%%%:  422-block  4
+    %%%%%:  422-block  5
+branch  9 never executed (fallthrough)
+branch 10 never executed
+    %%%%%:  422-block  6
+    %%%%%:  422-block  7
+    %%%%%:  422-block  8
+branch 11 never executed (fallthrough)
+branch 12 never executed
+        -:  423:        {
+    #####:  424:            JSON_THROW(out_of_range::create(408, concat("excessive object size: ", std::to_string(len)), ref_stack.back()));
+    %%%%%:  424-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+branch  3 never executed (fallthrough)
+branch  4 never executed (throw)
+    %%%%%:  424-block  1
+call    5 never executed
+branch  6 never executed (fallthrough)
+branch  7 never executed (throw)
+    %%%%%:  424-block  2
+call    8 never executed
+branch  9 never executed (fallthrough)
+branch 10 never executed (throw)
+    %%%%%:  424-block  3
+call   11 never executed
+call   12 never executed
+call   13 never executed
+    $$$$$:  424-block  4
+call   14 never executed
+    $$$$$:  424-block  5
+call   15 never executed
+    $$$$$:  424-block  6
+    $$$$$:  424-block  7
+    $$$$$:  424-block  8
+call   16 never executed
+        -:  425:        }
+        -:  426:
+    #####:  427:        return true;
+    %%%%%:  427-block  0
+    %%%%%:  427-block  1
+        -:  428:    }
+        -:  429:
+function _ZN8nlohmann16json_abi_v3_11_36detail28json_sax_dom_callback_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE3keyERSB_ called 0 returned 0% blocks executed 0%
+    #####:  430:    bool key(string_t& val)
+        -:  431:    {
+    #####:  432:        BasicJsonType k = BasicJsonType(val);
+    %%%%%:  432-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+        -:  433:
+        -:  434:        // check callback for key
+    #####:  435:        const bool keep = callback(static_cast<int>(ref_stack.size()), parse_event_t::key, k);
+    %%%%%:  435-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    #####:  436:        key_keep_stack.push_back(keep);
+    %%%%%:  436-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+        -:  437:
+        -:  438:        // add discarded value at given key and store the reference for later
+    #####:  439:        if (keep && ref_stack.back())
+    %%%%%:  439-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    %%%%%:  439-block  1
+call    2 never executed
+branch  3 never executed (fallthrough)
+branch  4 never executed
+    %%%%%:  439-block  2
+    %%%%%:  439-block  3
+    %%%%%:  439-block  4
+branch  5 never executed (fallthrough)
+branch  6 never executed
+        -:  440:        {
+    #####:  441:            object_element = &(ref_stack.back()->m_data.m_value.object->operator[](val) = discarded);
+    %%%%%:  441-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  441-block  1
+call    3 never executed
+call    4 never executed
+branch  5 never executed (fallthrough)
+branch  6 never executed (throw)
+    %%%%%:  441-block  2
+call    7 never executed
+call    8 never executed
+    $$$$$:  441-block  3
+call    9 never executed
+    $$$$$:  441-block  4
+        -:  442:        }
+        -:  443:
+    #####:  444:        return true;
+    %%%%%:  444-block  0
+    #####:  445:    }
+    %%%%%:  445-block  0
+call    0 never executed
+    $$$$$:  445-block  1
+call    1 never executed
+        -:  446:
+function _ZN8nlohmann16json_abi_v3_11_36detail28json_sax_dom_callback_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE10end_objectEv called 0 returned 0% blocks executed 0%
+    #####:  447:    bool end_object()
+        -:  448:    {
+    #####:  449:        if (ref_stack.back())
+    %%%%%:  449-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+        -:  450:        {
+    #####:  451:            if (!callback(static_cast<int>(ref_stack.size()) - 1, parse_event_t::object_end, *ref_stack.back()))
+    %%%%%:  451-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+branch  3 never executed (fallthrough)
+branch  4 never executed
+        -:  452:            {
+        -:  453:                // discard object
+    #####:  454:                *ref_stack.back() = discarded;
+    %%%%%:  454-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  454-block  1
+call    3 never executed
+call    4 never executed
+call    5 never executed
+    $$$$$:  454-block  2
+call    6 never executed
+        -:  455:            }
+        -:  456:            else
+        -:  457:            {
+    #####:  458:                ref_stack.back()->set_parents();
+    %%%%%:  458-block  0
+call    0 never executed
+call    1 never executed
+        -:  459:            }
+        -:  460:        }
+        -:  461:
+    #####:  462:        JSON_ASSERT(!ref_stack.empty());
+    %%%%%:  462-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+    %%%%%:  462-block  1
+call    3 never executed
+    %%%%%:  462-block  2
+    #####:  463:        JSON_ASSERT(!keep_stack.empty());
+    %%%%%:  463-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+    %%%%%:  463-block  1
+call    3 never executed
+    %%%%%:  463-block  2
+    #####:  464:        ref_stack.pop_back();
+    %%%%%:  464-block  0
+call    0 never executed
+    #####:  465:        keep_stack.pop_back();
+call    0 never executed
+        -:  466:
+    #####:  467:        if (!ref_stack.empty() && ref_stack.back() && ref_stack.back()->is_structured())
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+    %%%%%:  467-block  0
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed
+    %%%%%:  467-block  1
+call    6 never executed
+call    7 never executed
+branch  8 never executed (fallthrough)
+branch  9 never executed
+    %%%%%:  467-block  2
+    %%%%%:  467-block  3
+    %%%%%:  467-block  4
+branch 10 never executed (fallthrough)
+branch 11 never executed
+        -:  468:        {
+        -:  469:            // remove discarded value
+    #####:  470:            for (auto it = ref_stack.back()->begin(); it != ref_stack.back()->end(); ++it)
+    %%%%%:  470-block  0
+call    0 never executed
+call    1 never executed
+    %%%%%:  470-block  1
+call    2 never executed
+branch  3 never executed (fallthrough)
+branch  4 never executed (throw)
+    %%%%%:  470-block  2
+call    5 never executed
+call    6 never executed
+call    7 never executed
+branch  8 never executed (fallthrough)
+branch  9 never executed (throw)
+    %%%%%:  470-block  3
+branch 10 never executed
+branch 11 never executed (fallthrough)
+    $$$$$:  470-block  4
+        -:  471:            {
+    #####:  472:                if (it->is_discarded())
+    %%%%%:  472-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  472-block  1
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed
+        -:  473:                {
+    #####:  474:                    ref_stack.back()->erase(it);
+    %%%%%:  474-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+branch  3 never executed (fallthrough)
+branch  4 never executed (throw)
+    $$$$$:  474-block  1
+    $$$$$:  474-block  2
+    #####:  475:                    break;
+    %%%%%:  475-block  0
+        -:  476:                }
+        -:  477:            }
+        -:  478:        }
+        -:  479:
+    #####:  480:        return true;
+    %%%%%:  480-block  0
+    %%%%%:  480-block  1
+        -:  481:    }
+        -:  482:
+function _ZN8nlohmann16json_abi_v3_11_36detail28json_sax_dom_callback_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE11start_arrayEy called 0 returned 0% blocks executed 0%
+    #####:  483:    bool start_array(std::size_t len)
+        -:  484:    {
+    #####:  485:        const bool keep = callback(static_cast<int>(ref_stack.size()), parse_event_t::array_start, discarded);
+    %%%%%:  485-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+    #####:  486:        keep_stack.push_back(keep);
+    %%%%%:  486-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+        -:  487:
+    #####:  488:        auto val = handle_value(BasicJsonType::value_t::array, true);
+    %%%%%:  488-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    $$$$$:  488-block  1
+    #####:  489:        ref_stack.push_back(val.second);
+    %%%%%:  489-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+        -:  490:
+        -:  491:        // check array limit
+    #####:  492:        if (ref_stack.back() && JSON_HEDLEY_UNLIKELY(len != static_cast<std::size_t>(-1) && len > ref_stack.back()->max_size()))
+    %%%%%:  492-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+    %%%%%:  492-block  1
+branch  3 never executed (fallthrough)
+branch  4 never executed
+    %%%%%:  492-block  2
+call    5 never executed
+call    6 never executed
+branch  7 never executed (fallthrough)
+branch  8 never executed
+    %%%%%:  492-block  3
+    %%%%%:  492-block  4
+    %%%%%:  492-block  5
+branch  9 never executed (fallthrough)
+branch 10 never executed
+    %%%%%:  492-block  6
+    %%%%%:  492-block  7
+    %%%%%:  492-block  8
+branch 11 never executed (fallthrough)
+branch 12 never executed
+        -:  493:        {
+    #####:  494:            JSON_THROW(out_of_range::create(408, concat("excessive array size: ", std::to_string(len)), ref_stack.back()));
+    %%%%%:  494-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+branch  3 never executed (fallthrough)
+branch  4 never executed (throw)
+    %%%%%:  494-block  1
+call    5 never executed
+branch  6 never executed (fallthrough)
+branch  7 never executed (throw)
+    %%%%%:  494-block  2
+call    8 never executed
+branch  9 never executed (fallthrough)
+branch 10 never executed (throw)
+    %%%%%:  494-block  3
+call   11 never executed
+call   12 never executed
+call   13 never executed
+    $$$$$:  494-block  4
+call   14 never executed
+    $$$$$:  494-block  5
+call   15 never executed
+    $$$$$:  494-block  6
+    $$$$$:  494-block  7
+    $$$$$:  494-block  8
+call   16 never executed
+        -:  495:        }
+        -:  496:
+    #####:  497:        return true;
+    %%%%%:  497-block  0
+    %%%%%:  497-block  1
+        -:  498:    }
+        -:  499:
+function _ZN8nlohmann16json_abi_v3_11_36detail28json_sax_dom_callback_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE9end_arrayEv called 0 returned 0% blocks executed 0%
+    #####:  500:    bool end_array()
+        -:  501:    {
+    #####:  502:        bool keep = true;
+        -:  503:
+    #####:  504:        if (ref_stack.back())
+    %%%%%:  504-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+        -:  505:        {
+    #####:  506:            keep = callback(static_cast<int>(ref_stack.size()) - 1, parse_event_t::array_end, *ref_stack.back());
+    %%%%%:  506-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+    #####:  507:            if (keep)
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  508:            {
+    #####:  509:                ref_stack.back()->set_parents();
+    %%%%%:  509-block  0
+call    0 never executed
+call    1 never executed
+        -:  510:            }
+        -:  511:            else
+        -:  512:            {
+        -:  513:                // discard array
+    #####:  514:                *ref_stack.back() = discarded;
+    %%%%%:  514-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed (throw)
+    %%%%%:  514-block  1
+call    3 never executed
+call    4 never executed
+call    5 never executed
+        -:  515:            }
+        -:  516:        }
+        -:  517:
+    #####:  518:        JSON_ASSERT(!ref_stack.empty());
+    %%%%%:  518-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+    %%%%%:  518-block  1
+call    3 never executed
+    %%%%%:  518-block  2
+    #####:  519:        JSON_ASSERT(!keep_stack.empty());
+    %%%%%:  519-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+    %%%%%:  519-block  1
+call    3 never executed
+    %%%%%:  519-block  2
+    #####:  520:        ref_stack.pop_back();
+    %%%%%:  520-block  0
+call    0 never executed
+    #####:  521:        keep_stack.pop_back();
+call    0 never executed
+        -:  522:
+        -:  523:        // remove discarded value
+    #####:  524:        if (!keep && !ref_stack.empty() && ref_stack.back()->is_array())
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    %%%%%:  524-block  0
+call    2 never executed
+branch  3 never executed (fallthrough)
+branch  4 never executed
+    %%%%%:  524-block  1
+call    5 never executed
+call    6 never executed
+branch  7 never executed (fallthrough)
+branch  8 never executed
+    %%%%%:  524-block  2
+    %%%%%:  524-block  3
+    %%%%%:  524-block  4
+branch  9 never executed (fallthrough)
+branch 10 never executed
+        -:  525:        {
+    #####:  526:            ref_stack.back()->m_data.m_value.array->pop_back();
+    %%%%%:  526-block  0
+call    0 never executed
+call    1 never executed
+        -:  527:        }
+        -:  528:
+    #####:  529:        return true;
+    %%%%%:  529-block  0
+    %%%%%:  529-block  1
+        -:  530:    }
+        -:  531:
+        -:  532:    template<class Exception>
+    #####:  533:    bool parse_error(std::size_t /*unused*/, const std::string& /*unused*/,
+        -:  534:                     const Exception& ex)
+        -:  535:    {
+    #####:  536:        errored = true;
+        -:  537:        static_cast<void>(ex);
+    #####:  538:        if (allow_exceptions)
+        -:  539:        {
+    #####:  540:            JSON_THROW(ex);
+        -:  541:        }
+    #####:  542:        return false;
+        -:  543:    }
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail28json_sax_dom_callback_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE11parse_errorINS1_12out_of_rangeEEEbyRKSB_RKT_:
+function _ZN8nlohmann16json_abi_v3_11_36detail28json_sax_dom_callback_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE11parse_errorINS1_12out_of_rangeEEEbyRKSB_RKT_ called 0 returned 0% blocks executed 0%
+    #####:  533:    bool parse_error(std::size_t /*unused*/, const std::string& /*unused*/,
+        -:  534:                     const Exception& ex)
+        -:  535:    {
+    #####:  536:        errored = true;
+        -:  537:        static_cast<void>(ex);
+    #####:  538:        if (allow_exceptions)
+    %%%%%:  538-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  539:        {
+    #####:  540:            JSON_THROW(ex);
+    %%%%%:  540-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+        -:  541:        }
+    #####:  542:        return false;
+    %%%%%:  542-block  0
+        -:  543:    }
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail28json_sax_dom_callback_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE11parse_errorINS1_11parse_errorEEEbyRKSB_RKT_:
+function _ZN8nlohmann16json_abi_v3_11_36detail28json_sax_dom_callback_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE11parse_errorINS1_11parse_errorEEEbyRKSB_RKT_ called 0 returned 0% blocks executed 0%
+    #####:  533:    bool parse_error(std::size_t /*unused*/, const std::string& /*unused*/,
+        -:  534:                     const Exception& ex)
+        -:  535:    {
+    #####:  536:        errored = true;
+        -:  537:        static_cast<void>(ex);
+    #####:  538:        if (allow_exceptions)
+    %%%%%:  538-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  539:        {
+    #####:  540:            JSON_THROW(ex);
+    %%%%%:  540-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+        -:  541:        }
+    #####:  542:        return false;
+    %%%%%:  542-block  0
+        -:  543:    }
+------------------
+        -:  544:
+function _ZNK8nlohmann16json_abi_v3_11_36detail28json_sax_dom_callback_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE10is_erroredEv called 0 returned 0% blocks executed 0%
+    #####:  545:    constexpr bool is_errored() const
+        -:  546:    {
+    #####:  547:        return errored;
+    %%%%%:  547-block  0
+        -:  548:    }
+        -:  549:
+        -:  550:  private:
+        -:  551:    /*!
+        -:  552:    @param[in] v  value to add to the JSON value we build during parsing
+        -:  553:    @param[in] skip_callback  whether we should skip calling the callback
+        -:  554:               function; this is required after start_array() and
+        -:  555:               start_object() SAX events, because otherwise we would call the
+        -:  556:               callback function with an empty array or object, respectively.
+        -:  557:
+        -:  558:    @invariant If the ref stack is empty, then the passed value will be the new
+        -:  559:               root.
+        -:  560:    @invariant If the ref stack contains a value, then it is an array or an
+        -:  561:               object to which we can add elements
+        -:  562:
+        -:  563:    @return pair of boolean (whether value should be kept) and pointer (to the
+        -:  564:            passed value in the ref_stack hierarchy; nullptr if not kept)
+        -:  565:    */
+        -:  566:    template<typename Value>
+    #####:  567:    std::pair<bool, BasicJsonType*> handle_value(Value&& v, const bool skip_callback = false)
+        -:  568:    {
+    #####:  569:        JSON_ASSERT(!keep_stack.empty());
+        -:  570:
+        -:  571:        // do not handle this value if we know it would be added to a discarded
+        -:  572:        // container
+    #####:  573:        if (!keep_stack.back())
+        -:  574:        {
+    #####:  575:            return {false, nullptr};
+        -:  576:        }
+        -:  577:
+        -:  578:        // create value
+    #####:  579:        auto value = BasicJsonType(std::forward<Value>(v));
+        -:  580:
+        -:  581:        // check callback
+    #####:  582:        const bool keep = skip_callback || callback(static_cast<int>(ref_stack.size()), parse_event_t::value, value);
+        -:  583:
+        -:  584:        // do not handle this value if we just learnt it shall be discarded
+    #####:  585:        if (!keep)
+        -:  586:        {
+    #####:  587:            return {false, nullptr};
+        -:  588:        }
+        -:  589:
+    #####:  590:        if (ref_stack.empty())
+        -:  591:        {
+    #####:  592:            root = std::move(value);
+    #####:  593:            return {true, & root};
+        -:  594:        }
+        -:  595:
+        -:  596:        // skip this value if we already decided to skip the parent
+        -:  597:        // (https://github.com/nlohmann/json/issues/971#issuecomment-413678360)
+    #####:  598:        if (!ref_stack.back())
+        -:  599:        {
+    #####:  600:            return {false, nullptr};
+        -:  601:        }
+        -:  602:
+        -:  603:        // we now only expect arrays and objects
+    #####:  604:        JSON_ASSERT(ref_stack.back()->is_array() || ref_stack.back()->is_object());
+        -:  605:
+        -:  606:        // array
+    #####:  607:        if (ref_stack.back()->is_array())
+        -:  608:        {
+    #####:  609:            ref_stack.back()->m_data.m_value.array->emplace_back(std::move(value));
+    #####:  610:            return {true, & (ref_stack.back()->m_data.m_value.array->back())};
+        -:  611:        }
+        -:  612:
+        -:  613:        // object
+    #####:  614:        JSON_ASSERT(ref_stack.back()->is_object());
+        -:  615:        // check if we should store an element for the current key
+    #####:  616:        JSON_ASSERT(!key_keep_stack.empty());
+    #####:  617:        const bool store_element = key_keep_stack.back();
+    #####:  618:        key_keep_stack.pop_back();
+        -:  619:
+    #####:  620:        if (!store_element)
+        -:  621:        {
+    #####:  622:            return {false, nullptr};
+        -:  623:        }
+        -:  624:
+    #####:  625:        JSON_ASSERT(object_element);
+    #####:  626:        *object_element = std::move(value);
+    #####:  627:        return {true, object_element};
+    #####:  628:    }
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail28json_sax_dom_callback_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE12handle_valueIRyEESt4pairIbPSF_EOT_b:
+function _ZN8nlohmann16json_abi_v3_11_36detail28json_sax_dom_callback_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE12handle_valueIRyEESt4pairIbPSF_EOT_b called 0 returned 0% blocks executed 0%
+    #####:  567:    std::pair<bool, BasicJsonType*> handle_value(Value&& v, const bool skip_callback = false)
+        -:  568:    {
+    #####:  569:        JSON_ASSERT(!keep_stack.empty());
+    %%%%%:  569-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+    %%%%%:  569-block  1
+call    3 never executed
+    %%%%%:  569-block  2
+        -:  570:
+        -:  571:        // do not handle this value if we know it would be added to a discarded
+        -:  572:        // container
+    #####:  573:        if (!keep_stack.back())
+    %%%%%:  573-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed
+        -:  574:        {
+    #####:  575:            return {false, nullptr};
+    %%%%%:  575-block  0
+call    0 never executed
+        -:  576:        }
+        -:  577:
+        -:  578:        // create value
+    #####:  579:        auto value = BasicJsonType(std::forward<Value>(v));
+    %%%%%:  579-block  0
+call    0 never executed
+call    1 never executed
+        -:  580:
+        -:  581:        // check callback
+    #####:  582:        const bool keep = skip_callback || callback(static_cast<int>(ref_stack.size()), parse_event_t::value, value);
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    %%%%%:  582-block  0
+call    2 never executed
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+    %%%%%:  582-block  1
+branch  6 never executed (fallthrough)
+branch  7 never executed
+    %%%%%:  582-block  2
+    %%%%%:  582-block  3
+        -:  583:
+        -:  584:        // do not handle this value if we just learnt it shall be discarded
+    #####:  585:        if (!keep)
+    %%%%%:  585-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  586:        {
+    #####:  587:            return {false, nullptr};
+    %%%%%:  587-block  0
+call    0 never executed
+        -:  588:        }
+        -:  589:
+    #####:  590:        if (ref_stack.empty())
+    %%%%%:  590-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+        -:  591:        {
+    #####:  592:            root = std::move(value);
+    %%%%%:  592-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+call    3 never executed
+    #####:  593:            return {true, & root};
+call    0 never executed
+        -:  594:        }
+        -:  595:
+        -:  596:        // skip this value if we already decided to skip the parent
+        -:  597:        // (https://github.com/nlohmann/json/issues/971#issuecomment-413678360)
+    #####:  598:        if (!ref_stack.back())
+    %%%%%:  598-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+        -:  599:        {
+    #####:  600:            return {false, nullptr};
+    %%%%%:  600-block  0
+call    0 never executed
+        -:  601:        }
+        -:  602:
+        -:  603:        // we now only expect arrays and objects
+    #####:  604:        JSON_ASSERT(ref_stack.back()->is_array() || ref_stack.back()->is_object());
+    %%%%%:  604-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed
+    %%%%%:  604-block  1
+call    4 never executed
+call    5 never executed
+branch  6 never executed (fallthrough)
+branch  7 never executed
+    %%%%%:  604-block  2
+call    8 never executed
+    %%%%%:  604-block  3
+        -:  605:
+        -:  606:        // array
+    #####:  607:        if (ref_stack.back()->is_array())
+    %%%%%:  607-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed
+        -:  608:        {
+    #####:  609:            ref_stack.back()->m_data.m_value.array->emplace_back(std::move(value));
+    %%%%%:  609-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+branch  3 never executed (fallthrough)
+branch  4 never executed (throw)
+    #####:  610:            return {true, & (ref_stack.back()->m_data.m_value.array->back())};
+    %%%%%:  610-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+        -:  611:        }
+        -:  612:
+        -:  613:        // object
+    #####:  614:        JSON_ASSERT(ref_stack.back()->is_object());
+    %%%%%:  614-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed
+    %%%%%:  614-block  1
+call    4 never executed
+    %%%%%:  614-block  2
+        -:  615:        // check if we should store an element for the current key
+    #####:  616:        JSON_ASSERT(!key_keep_stack.empty());
+    %%%%%:  616-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+    %%%%%:  616-block  1
+call    3 never executed
+    %%%%%:  616-block  2
+    #####:  617:        const bool store_element = key_keep_stack.back();
+    %%%%%:  617-block  0
+call    0 never executed
+call    1 never executed
+    #####:  618:        key_keep_stack.pop_back();
+call    0 never executed
+        -:  619:
+    #####:  620:        if (!store_element)
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  621:        {
+    #####:  622:            return {false, nullptr};
+    %%%%%:  622-block  0
+call    0 never executed
+        -:  623:        }
+        -:  624:
+    #####:  625:        JSON_ASSERT(object_element);
+    %%%%%:  625-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    %%%%%:  625-block  1
+call    2 never executed
+    %%%%%:  625-block  2
+    #####:  626:        *object_element = std::move(value);
+    %%%%%:  626-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+call    3 never executed
+    #####:  627:        return {true, object_element};
+call    0 never executed
+    #####:  628:    }
+    %%%%%:  628-block  0
+call    0 never executed
+    $$$$$:  628-block  1
+call    1 never executed
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail28json_sax_dom_callback_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE12handle_valueIRSB_EESt4pairIbPSF_EOT_b:
+function _ZN8nlohmann16json_abi_v3_11_36detail28json_sax_dom_callback_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE12handle_valueIRSB_EESt4pairIbPSF_EOT_b called 0 returned 0% blocks executed 0%
+    #####:  567:    std::pair<bool, BasicJsonType*> handle_value(Value&& v, const bool skip_callback = false)
+        -:  568:    {
+    #####:  569:        JSON_ASSERT(!keep_stack.empty());
+    %%%%%:  569-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+    %%%%%:  569-block  1
+call    3 never executed
+    %%%%%:  569-block  2
+        -:  570:
+        -:  571:        // do not handle this value if we know it would be added to a discarded
+        -:  572:        // container
+    #####:  573:        if (!keep_stack.back())
+    %%%%%:  573-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed
+        -:  574:        {
+    #####:  575:            return {false, nullptr};
+    %%%%%:  575-block  0
+call    0 never executed
+        -:  576:        }
+        -:  577:
+        -:  578:        // create value
+    #####:  579:        auto value = BasicJsonType(std::forward<Value>(v));
+    %%%%%:  579-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+        -:  580:
+        -:  581:        // check callback
+    #####:  582:        const bool keep = skip_callback || callback(static_cast<int>(ref_stack.size()), parse_event_t::value, value);
+    %%%%%:  582-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    %%%%%:  582-block  1
+call    2 never executed
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+    %%%%%:  582-block  2
+branch  6 never executed (fallthrough)
+branch  7 never executed
+    %%%%%:  582-block  3
+    %%%%%:  582-block  4
+        -:  583:
+        -:  584:        // do not handle this value if we just learnt it shall be discarded
+    #####:  585:        if (!keep)
+    %%%%%:  585-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  586:        {
+    #####:  587:            return {false, nullptr};
+    %%%%%:  587-block  0
+call    0 never executed
+        -:  588:        }
+        -:  589:
+    #####:  590:        if (ref_stack.empty())
+    %%%%%:  590-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+        -:  591:        {
+    #####:  592:            root = std::move(value);
+    %%%%%:  592-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+call    3 never executed
+    #####:  593:            return {true, & root};
+call    0 never executed
+        -:  594:        }
+        -:  595:
+        -:  596:        // skip this value if we already decided to skip the parent
+        -:  597:        // (https://github.com/nlohmann/json/issues/971#issuecomment-413678360)
+    #####:  598:        if (!ref_stack.back())
+    %%%%%:  598-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+        -:  599:        {
+    #####:  600:            return {false, nullptr};
+    %%%%%:  600-block  0
+call    0 never executed
+        -:  601:        }
+        -:  602:
+        -:  603:        // we now only expect arrays and objects
+    #####:  604:        JSON_ASSERT(ref_stack.back()->is_array() || ref_stack.back()->is_object());
+    %%%%%:  604-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed
+    %%%%%:  604-block  1
+call    4 never executed
+call    5 never executed
+branch  6 never executed (fallthrough)
+branch  7 never executed
+    %%%%%:  604-block  2
+call    8 never executed
+    %%%%%:  604-block  3
+        -:  605:
+        -:  606:        // array
+    #####:  607:        if (ref_stack.back()->is_array())
+    %%%%%:  607-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed
+        -:  608:        {
+    #####:  609:            ref_stack.back()->m_data.m_value.array->emplace_back(std::move(value));
+    %%%%%:  609-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+branch  3 never executed (fallthrough)
+branch  4 never executed (throw)
+    #####:  610:            return {true, & (ref_stack.back()->m_data.m_value.array->back())};
+    %%%%%:  610-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+        -:  611:        }
+        -:  612:
+        -:  613:        // object
+    #####:  614:        JSON_ASSERT(ref_stack.back()->is_object());
+    %%%%%:  614-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed
+    %%%%%:  614-block  1
+call    4 never executed
+    %%%%%:  614-block  2
+        -:  615:        // check if we should store an element for the current key
+    #####:  616:        JSON_ASSERT(!key_keep_stack.empty());
+    %%%%%:  616-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+    %%%%%:  616-block  1
+call    3 never executed
+    %%%%%:  616-block  2
+    #####:  617:        const bool store_element = key_keep_stack.back();
+    %%%%%:  617-block  0
+call    0 never executed
+call    1 never executed
+    #####:  618:        key_keep_stack.pop_back();
+call    0 never executed
+        -:  619:
+    #####:  620:        if (!store_element)
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  621:        {
+    #####:  622:            return {false, nullptr};
+    %%%%%:  622-block  0
+call    0 never executed
+        -:  623:        }
+        -:  624:
+    #####:  625:        JSON_ASSERT(object_element);
+    %%%%%:  625-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    %%%%%:  625-block  1
+call    2 never executed
+    %%%%%:  625-block  2
+    #####:  626:        *object_element = std::move(value);
+    %%%%%:  626-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+call    3 never executed
+    #####:  627:        return {true, object_element};
+call    0 never executed
+    #####:  628:    }
+    %%%%%:  628-block  0
+call    0 never executed
+    $$$$$:  628-block  1
+call    1 never executed
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail28json_sax_dom_callback_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE12handle_valueIRxEESt4pairIbPSF_EOT_b:
+function _ZN8nlohmann16json_abi_v3_11_36detail28json_sax_dom_callback_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE12handle_valueIRxEESt4pairIbPSF_EOT_b called 0 returned 0% blocks executed 0%
+    #####:  567:    std::pair<bool, BasicJsonType*> handle_value(Value&& v, const bool skip_callback = false)
+        -:  568:    {
+    #####:  569:        JSON_ASSERT(!keep_stack.empty());
+    %%%%%:  569-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+    %%%%%:  569-block  1
+call    3 never executed
+    %%%%%:  569-block  2
+        -:  570:
+        -:  571:        // do not handle this value if we know it would be added to a discarded
+        -:  572:        // container
+    #####:  573:        if (!keep_stack.back())
+    %%%%%:  573-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed
+        -:  574:        {
+    #####:  575:            return {false, nullptr};
+    %%%%%:  575-block  0
+call    0 never executed
+        -:  576:        }
+        -:  577:
+        -:  578:        // create value
+    #####:  579:        auto value = BasicJsonType(std::forward<Value>(v));
+    %%%%%:  579-block  0
+call    0 never executed
+call    1 never executed
+        -:  580:
+        -:  581:        // check callback
+    #####:  582:        const bool keep = skip_callback || callback(static_cast<int>(ref_stack.size()), parse_event_t::value, value);
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    %%%%%:  582-block  0
+call    2 never executed
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+    %%%%%:  582-block  1
+branch  6 never executed (fallthrough)
+branch  7 never executed
+    %%%%%:  582-block  2
+    %%%%%:  582-block  3
+        -:  583:
+        -:  584:        // do not handle this value if we just learnt it shall be discarded
+    #####:  585:        if (!keep)
+    %%%%%:  585-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  586:        {
+    #####:  587:            return {false, nullptr};
+    %%%%%:  587-block  0
+call    0 never executed
+        -:  588:        }
+        -:  589:
+    #####:  590:        if (ref_stack.empty())
+    %%%%%:  590-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+        -:  591:        {
+    #####:  592:            root = std::move(value);
+    %%%%%:  592-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+call    3 never executed
+    #####:  593:            return {true, & root};
+call    0 never executed
+        -:  594:        }
+        -:  595:
+        -:  596:        // skip this value if we already decided to skip the parent
+        -:  597:        // (https://github.com/nlohmann/json/issues/971#issuecomment-413678360)
+    #####:  598:        if (!ref_stack.back())
+    %%%%%:  598-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+        -:  599:        {
+    #####:  600:            return {false, nullptr};
+    %%%%%:  600-block  0
+call    0 never executed
+        -:  601:        }
+        -:  602:
+        -:  603:        // we now only expect arrays and objects
+    #####:  604:        JSON_ASSERT(ref_stack.back()->is_array() || ref_stack.back()->is_object());
+    %%%%%:  604-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed
+    %%%%%:  604-block  1
+call    4 never executed
+call    5 never executed
+branch  6 never executed (fallthrough)
+branch  7 never executed
+    %%%%%:  604-block  2
+call    8 never executed
+    %%%%%:  604-block  3
+        -:  605:
+        -:  606:        // array
+    #####:  607:        if (ref_stack.back()->is_array())
+    %%%%%:  607-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed
+        -:  608:        {
+    #####:  609:            ref_stack.back()->m_data.m_value.array->emplace_back(std::move(value));
+    %%%%%:  609-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+branch  3 never executed (fallthrough)
+branch  4 never executed (throw)
+    #####:  610:            return {true, & (ref_stack.back()->m_data.m_value.array->back())};
+    %%%%%:  610-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+        -:  611:        }
+        -:  612:
+        -:  613:        // object
+    #####:  614:        JSON_ASSERT(ref_stack.back()->is_object());
+    %%%%%:  614-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed
+    %%%%%:  614-block  1
+call    4 never executed
+    %%%%%:  614-block  2
+        -:  615:        // check if we should store an element for the current key
+    #####:  616:        JSON_ASSERT(!key_keep_stack.empty());
+    %%%%%:  616-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+    %%%%%:  616-block  1
+call    3 never executed
+    %%%%%:  616-block  2
+    #####:  617:        const bool store_element = key_keep_stack.back();
+    %%%%%:  617-block  0
+call    0 never executed
+call    1 never executed
+    #####:  618:        key_keep_stack.pop_back();
+call    0 never executed
+        -:  619:
+    #####:  620:        if (!store_element)
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  621:        {
+    #####:  622:            return {false, nullptr};
+    %%%%%:  622-block  0
+call    0 never executed
+        -:  623:        }
+        -:  624:
+    #####:  625:        JSON_ASSERT(object_element);
+    %%%%%:  625-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    %%%%%:  625-block  1
+call    2 never executed
+    %%%%%:  625-block  2
+    #####:  626:        *object_element = std::move(value);
+    %%%%%:  626-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+call    3 never executed
+    #####:  627:        return {true, object_element};
+call    0 never executed
+    #####:  628:    }
+    %%%%%:  628-block  0
+call    0 never executed
+    $$$$$:  628-block  1
+call    1 never executed
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail28json_sax_dom_callback_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE12handle_valueIDnEESt4pairIbPSF_EOT_b:
+function _ZN8nlohmann16json_abi_v3_11_36detail28json_sax_dom_callback_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE12handle_valueIDnEESt4pairIbPSF_EOT_b called 0 returned 0% blocks executed 0%
+    #####:  567:    std::pair<bool, BasicJsonType*> handle_value(Value&& v, const bool skip_callback = false)
+        -:  568:    {
+    #####:  569:        JSON_ASSERT(!keep_stack.empty());
+    %%%%%:  569-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+    %%%%%:  569-block  1
+call    3 never executed
+    %%%%%:  569-block  2
+        -:  570:
+        -:  571:        // do not handle this value if we know it would be added to a discarded
+        -:  572:        // container
+    #####:  573:        if (!keep_stack.back())
+    %%%%%:  573-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed
+        -:  574:        {
+    #####:  575:            return {false, nullptr};
+    %%%%%:  575-block  0
+call    0 never executed
+        -:  576:        }
+        -:  577:
+        -:  578:        // create value
+    #####:  579:        auto value = BasicJsonType(std::forward<Value>(v));
+    %%%%%:  579-block  0
+call    0 never executed
+call    1 never executed
+        -:  580:
+        -:  581:        // check callback
+    #####:  582:        const bool keep = skip_callback || callback(static_cast<int>(ref_stack.size()), parse_event_t::value, value);
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    %%%%%:  582-block  0
+call    2 never executed
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+    %%%%%:  582-block  1
+branch  6 never executed (fallthrough)
+branch  7 never executed
+    %%%%%:  582-block  2
+    %%%%%:  582-block  3
+        -:  583:
+        -:  584:        // do not handle this value if we just learnt it shall be discarded
+    #####:  585:        if (!keep)
+    %%%%%:  585-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  586:        {
+    #####:  587:            return {false, nullptr};
+    %%%%%:  587-block  0
+call    0 never executed
+        -:  588:        }
+        -:  589:
+    #####:  590:        if (ref_stack.empty())
+    %%%%%:  590-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+        -:  591:        {
+    #####:  592:            root = std::move(value);
+    %%%%%:  592-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+call    3 never executed
+    #####:  593:            return {true, & root};
+call    0 never executed
+        -:  594:        }
+        -:  595:
+        -:  596:        // skip this value if we already decided to skip the parent
+        -:  597:        // (https://github.com/nlohmann/json/issues/971#issuecomment-413678360)
+    #####:  598:        if (!ref_stack.back())
+    %%%%%:  598-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+        -:  599:        {
+    #####:  600:            return {false, nullptr};
+    %%%%%:  600-block  0
+call    0 never executed
+        -:  601:        }
+        -:  602:
+        -:  603:        // we now only expect arrays and objects
+    #####:  604:        JSON_ASSERT(ref_stack.back()->is_array() || ref_stack.back()->is_object());
+    %%%%%:  604-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed
+    %%%%%:  604-block  1
+call    4 never executed
+call    5 never executed
+branch  6 never executed (fallthrough)
+branch  7 never executed
+    %%%%%:  604-block  2
+call    8 never executed
+    %%%%%:  604-block  3
+        -:  605:
+        -:  606:        // array
+    #####:  607:        if (ref_stack.back()->is_array())
+    %%%%%:  607-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed
+        -:  608:        {
+    #####:  609:            ref_stack.back()->m_data.m_value.array->emplace_back(std::move(value));
+    %%%%%:  609-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+branch  3 never executed (fallthrough)
+branch  4 never executed (throw)
+    #####:  610:            return {true, & (ref_stack.back()->m_data.m_value.array->back())};
+    %%%%%:  610-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+        -:  611:        }
+        -:  612:
+        -:  613:        // object
+    #####:  614:        JSON_ASSERT(ref_stack.back()->is_object());
+    %%%%%:  614-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed
+    %%%%%:  614-block  1
+call    4 never executed
+    %%%%%:  614-block  2
+        -:  615:        // check if we should store an element for the current key
+    #####:  616:        JSON_ASSERT(!key_keep_stack.empty());
+    %%%%%:  616-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+    %%%%%:  616-block  1
+call    3 never executed
+    %%%%%:  616-block  2
+    #####:  617:        const bool store_element = key_keep_stack.back();
+    %%%%%:  617-block  0
+call    0 never executed
+call    1 never executed
+    #####:  618:        key_keep_stack.pop_back();
+call    0 never executed
+        -:  619:
+    #####:  620:        if (!store_element)
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  621:        {
+    #####:  622:            return {false, nullptr};
+    %%%%%:  622-block  0
+call    0 never executed
+        -:  623:        }
+        -:  624:
+    #####:  625:        JSON_ASSERT(object_element);
+    %%%%%:  625-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    %%%%%:  625-block  1
+call    2 never executed
+    %%%%%:  625-block  2
+    #####:  626:        *object_element = std::move(value);
+    %%%%%:  626-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+call    3 never executed
+    #####:  627:        return {true, object_element};
+call    0 never executed
+    #####:  628:    }
+    %%%%%:  628-block  0
+call    0 never executed
+    $$$$$:  628-block  1
+call    1 never executed
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail28json_sax_dom_callback_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE12handle_valueIRbEESt4pairIbPSF_EOT_b:
+function _ZN8nlohmann16json_abi_v3_11_36detail28json_sax_dom_callback_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE12handle_valueIRbEESt4pairIbPSF_EOT_b called 0 returned 0% blocks executed 0%
+    #####:  567:    std::pair<bool, BasicJsonType*> handle_value(Value&& v, const bool skip_callback = false)
+        -:  568:    {
+    #####:  569:        JSON_ASSERT(!keep_stack.empty());
+    %%%%%:  569-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+    %%%%%:  569-block  1
+call    3 never executed
+    %%%%%:  569-block  2
+        -:  570:
+        -:  571:        // do not handle this value if we know it would be added to a discarded
+        -:  572:        // container
+    #####:  573:        if (!keep_stack.back())
+    %%%%%:  573-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed
+        -:  574:        {
+    #####:  575:            return {false, nullptr};
+    %%%%%:  575-block  0
+call    0 never executed
+        -:  576:        }
+        -:  577:
+        -:  578:        // create value
+    #####:  579:        auto value = BasicJsonType(std::forward<Value>(v));
+    %%%%%:  579-block  0
+call    0 never executed
+call    1 never executed
+        -:  580:
+        -:  581:        // check callback
+    #####:  582:        const bool keep = skip_callback || callback(static_cast<int>(ref_stack.size()), parse_event_t::value, value);
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    %%%%%:  582-block  0
+call    2 never executed
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+    %%%%%:  582-block  1
+branch  6 never executed (fallthrough)
+branch  7 never executed
+    %%%%%:  582-block  2
+    %%%%%:  582-block  3
+        -:  583:
+        -:  584:        // do not handle this value if we just learnt it shall be discarded
+    #####:  585:        if (!keep)
+    %%%%%:  585-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  586:        {
+    #####:  587:            return {false, nullptr};
+    %%%%%:  587-block  0
+call    0 never executed
+        -:  588:        }
+        -:  589:
+    #####:  590:        if (ref_stack.empty())
+    %%%%%:  590-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+        -:  591:        {
+    #####:  592:            root = std::move(value);
+    %%%%%:  592-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+call    3 never executed
+    #####:  593:            return {true, & root};
+call    0 never executed
+        -:  594:        }
+        -:  595:
+        -:  596:        // skip this value if we already decided to skip the parent
+        -:  597:        // (https://github.com/nlohmann/json/issues/971#issuecomment-413678360)
+    #####:  598:        if (!ref_stack.back())
+    %%%%%:  598-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+        -:  599:        {
+    #####:  600:            return {false, nullptr};
+    %%%%%:  600-block  0
+call    0 never executed
+        -:  601:        }
+        -:  602:
+        -:  603:        // we now only expect arrays and objects
+    #####:  604:        JSON_ASSERT(ref_stack.back()->is_array() || ref_stack.back()->is_object());
+    %%%%%:  604-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed
+    %%%%%:  604-block  1
+call    4 never executed
+call    5 never executed
+branch  6 never executed (fallthrough)
+branch  7 never executed
+    %%%%%:  604-block  2
+call    8 never executed
+    %%%%%:  604-block  3
+        -:  605:
+        -:  606:        // array
+    #####:  607:        if (ref_stack.back()->is_array())
+    %%%%%:  607-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed
+        -:  608:        {
+    #####:  609:            ref_stack.back()->m_data.m_value.array->emplace_back(std::move(value));
+    %%%%%:  609-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+branch  3 never executed (fallthrough)
+branch  4 never executed (throw)
+    #####:  610:            return {true, & (ref_stack.back()->m_data.m_value.array->back())};
+    %%%%%:  610-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+        -:  611:        }
+        -:  612:
+        -:  613:        // object
+    #####:  614:        JSON_ASSERT(ref_stack.back()->is_object());
+    %%%%%:  614-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed
+    %%%%%:  614-block  1
+call    4 never executed
+    %%%%%:  614-block  2
+        -:  615:        // check if we should store an element for the current key
+    #####:  616:        JSON_ASSERT(!key_keep_stack.empty());
+    %%%%%:  616-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+    %%%%%:  616-block  1
+call    3 never executed
+    %%%%%:  616-block  2
+    #####:  617:        const bool store_element = key_keep_stack.back();
+    %%%%%:  617-block  0
+call    0 never executed
+call    1 never executed
+    #####:  618:        key_keep_stack.pop_back();
+call    0 never executed
+        -:  619:
+    #####:  620:        if (!store_element)
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  621:        {
+    #####:  622:            return {false, nullptr};
+    %%%%%:  622-block  0
+call    0 never executed
+        -:  623:        }
+        -:  624:
+    #####:  625:        JSON_ASSERT(object_element);
+    %%%%%:  625-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    %%%%%:  625-block  1
+call    2 never executed
+    %%%%%:  625-block  2
+    #####:  626:        *object_element = std::move(value);
+    %%%%%:  626-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+call    3 never executed
+    #####:  627:        return {true, object_element};
+call    0 never executed
+    #####:  628:    }
+    %%%%%:  628-block  0
+call    0 never executed
+    $$$$$:  628-block  1
+call    1 never executed
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail28json_sax_dom_callback_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE12handle_valueIRdEESt4pairIbPSF_EOT_b:
+function _ZN8nlohmann16json_abi_v3_11_36detail28json_sax_dom_callback_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE12handle_valueIRdEESt4pairIbPSF_EOT_b called 0 returned 0% blocks executed 0%
+    #####:  567:    std::pair<bool, BasicJsonType*> handle_value(Value&& v, const bool skip_callback = false)
+        -:  568:    {
+    #####:  569:        JSON_ASSERT(!keep_stack.empty());
+    %%%%%:  569-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+    %%%%%:  569-block  1
+call    3 never executed
+    %%%%%:  569-block  2
+        -:  570:
+        -:  571:        // do not handle this value if we know it would be added to a discarded
+        -:  572:        // container
+    #####:  573:        if (!keep_stack.back())
+    %%%%%:  573-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed
+        -:  574:        {
+    #####:  575:            return {false, nullptr};
+    %%%%%:  575-block  0
+call    0 never executed
+        -:  576:        }
+        -:  577:
+        -:  578:        // create value
+    #####:  579:        auto value = BasicJsonType(std::forward<Value>(v));
+    %%%%%:  579-block  0
+call    0 never executed
+call    1 never executed
+        -:  580:
+        -:  581:        // check callback
+    #####:  582:        const bool keep = skip_callback || callback(static_cast<int>(ref_stack.size()), parse_event_t::value, value);
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    %%%%%:  582-block  0
+call    2 never executed
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+    %%%%%:  582-block  1
+branch  6 never executed (fallthrough)
+branch  7 never executed
+    %%%%%:  582-block  2
+    %%%%%:  582-block  3
+        -:  583:
+        -:  584:        // do not handle this value if we just learnt it shall be discarded
+    #####:  585:        if (!keep)
+    %%%%%:  585-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  586:        {
+    #####:  587:            return {false, nullptr};
+    %%%%%:  587-block  0
+call    0 never executed
+        -:  588:        }
+        -:  589:
+    #####:  590:        if (ref_stack.empty())
+    %%%%%:  590-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+        -:  591:        {
+    #####:  592:            root = std::move(value);
+    %%%%%:  592-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+call    3 never executed
+    #####:  593:            return {true, & root};
+call    0 never executed
+        -:  594:        }
+        -:  595:
+        -:  596:        // skip this value if we already decided to skip the parent
+        -:  597:        // (https://github.com/nlohmann/json/issues/971#issuecomment-413678360)
+    #####:  598:        if (!ref_stack.back())
+    %%%%%:  598-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+        -:  599:        {
+    #####:  600:            return {false, nullptr};
+    %%%%%:  600-block  0
+call    0 never executed
+        -:  601:        }
+        -:  602:
+        -:  603:        // we now only expect arrays and objects
+    #####:  604:        JSON_ASSERT(ref_stack.back()->is_array() || ref_stack.back()->is_object());
+    %%%%%:  604-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed
+    %%%%%:  604-block  1
+call    4 never executed
+call    5 never executed
+branch  6 never executed (fallthrough)
+branch  7 never executed
+    %%%%%:  604-block  2
+call    8 never executed
+    %%%%%:  604-block  3
+        -:  605:
+        -:  606:        // array
+    #####:  607:        if (ref_stack.back()->is_array())
+    %%%%%:  607-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed
+        -:  608:        {
+    #####:  609:            ref_stack.back()->m_data.m_value.array->emplace_back(std::move(value));
+    %%%%%:  609-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+branch  3 never executed (fallthrough)
+branch  4 never executed (throw)
+    #####:  610:            return {true, & (ref_stack.back()->m_data.m_value.array->back())};
+    %%%%%:  610-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+        -:  611:        }
+        -:  612:
+        -:  613:        // object
+    #####:  614:        JSON_ASSERT(ref_stack.back()->is_object());
+    %%%%%:  614-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed
+    %%%%%:  614-block  1
+call    4 never executed
+    %%%%%:  614-block  2
+        -:  615:        // check if we should store an element for the current key
+    #####:  616:        JSON_ASSERT(!key_keep_stack.empty());
+    %%%%%:  616-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+    %%%%%:  616-block  1
+call    3 never executed
+    %%%%%:  616-block  2
+    #####:  617:        const bool store_element = key_keep_stack.back();
+    %%%%%:  617-block  0
+call    0 never executed
+call    1 never executed
+    #####:  618:        key_keep_stack.pop_back();
+call    0 never executed
+        -:  619:
+    #####:  620:        if (!store_element)
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  621:        {
+    #####:  622:            return {false, nullptr};
+    %%%%%:  622-block  0
+call    0 never executed
+        -:  623:        }
+        -:  624:
+    #####:  625:        JSON_ASSERT(object_element);
+    %%%%%:  625-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    %%%%%:  625-block  1
+call    2 never executed
+    %%%%%:  625-block  2
+    #####:  626:        *object_element = std::move(value);
+    %%%%%:  626-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+call    3 never executed
+    #####:  627:        return {true, object_element};
+call    0 never executed
+    #####:  628:    }
+    %%%%%:  628-block  0
+call    0 never executed
+    $$$$$:  628-block  1
+call    1 never executed
+------------------
+_ZN8nlohmann16json_abi_v3_11_36detail28json_sax_dom_callback_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE12handle_valueINS1_7value_tEEESt4pairIbPSF_EOT_b:
+function _ZN8nlohmann16json_abi_v3_11_36detail28json_sax_dom_callback_parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEE12handle_valueINS1_7value_tEEESt4pairIbPSF_EOT_b called 0 returned 0% blocks executed 0%
+    #####:  567:    std::pair<bool, BasicJsonType*> handle_value(Value&& v, const bool skip_callback = false)
+        -:  568:    {
+    #####:  569:        JSON_ASSERT(!keep_stack.empty());
+    %%%%%:  569-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+    %%%%%:  569-block  1
+call    3 never executed
+    %%%%%:  569-block  2
+        -:  570:
+        -:  571:        // do not handle this value if we know it would be added to a discarded
+        -:  572:        // container
+    #####:  573:        if (!keep_stack.back())
+    %%%%%:  573-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed
+        -:  574:        {
+    #####:  575:            return {false, nullptr};
+    %%%%%:  575-block  0
+call    0 never executed
+        -:  576:        }
+        -:  577:
+        -:  578:        // create value
+    #####:  579:        auto value = BasicJsonType(std::forward<Value>(v));
+    %%%%%:  579-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed (throw)
+        -:  580:
+        -:  581:        // check callback
+    #####:  582:        const bool keep = skip_callback || callback(static_cast<int>(ref_stack.size()), parse_event_t::value, value);
+    %%%%%:  582-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    %%%%%:  582-block  1
+call    2 never executed
+call    3 never executed
+branch  4 never executed (fallthrough)
+branch  5 never executed (throw)
+    %%%%%:  582-block  2
+branch  6 never executed (fallthrough)
+branch  7 never executed
+    %%%%%:  582-block  3
+    %%%%%:  582-block  4
+        -:  583:
+        -:  584:        // do not handle this value if we just learnt it shall be discarded
+    #####:  585:        if (!keep)
+    %%%%%:  585-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  586:        {
+    #####:  587:            return {false, nullptr};
+    %%%%%:  587-block  0
+call    0 never executed
+        -:  588:        }
+        -:  589:
+    #####:  590:        if (ref_stack.empty())
+    %%%%%:  590-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+        -:  591:        {
+    #####:  592:            root = std::move(value);
+    %%%%%:  592-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+call    3 never executed
+    #####:  593:            return {true, & root};
+call    0 never executed
+        -:  594:        }
+        -:  595:
+        -:  596:        // skip this value if we already decided to skip the parent
+        -:  597:        // (https://github.com/nlohmann/json/issues/971#issuecomment-413678360)
+    #####:  598:        if (!ref_stack.back())
+    %%%%%:  598-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+        -:  599:        {
+    #####:  600:            return {false, nullptr};
+    %%%%%:  600-block  0
+call    0 never executed
+        -:  601:        }
+        -:  602:
+        -:  603:        // we now only expect arrays and objects
+    #####:  604:        JSON_ASSERT(ref_stack.back()->is_array() || ref_stack.back()->is_object());
+    %%%%%:  604-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed
+    %%%%%:  604-block  1
+call    4 never executed
+call    5 never executed
+branch  6 never executed (fallthrough)
+branch  7 never executed
+    %%%%%:  604-block  2
+call    8 never executed
+    %%%%%:  604-block  3
+        -:  605:
+        -:  606:        // array
+    #####:  607:        if (ref_stack.back()->is_array())
+    %%%%%:  607-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed
+        -:  608:        {
+    #####:  609:            ref_stack.back()->m_data.m_value.array->emplace_back(std::move(value));
+    %%%%%:  609-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+branch  3 never executed (fallthrough)
+branch  4 never executed (throw)
+    #####:  610:            return {true, & (ref_stack.back()->m_data.m_value.array->back())};
+    %%%%%:  610-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+        -:  611:        }
+        -:  612:
+        -:  613:        // object
+    #####:  614:        JSON_ASSERT(ref_stack.back()->is_object());
+    %%%%%:  614-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed (fallthrough)
+branch  3 never executed
+    %%%%%:  614-block  1
+call    4 never executed
+    %%%%%:  614-block  2
+        -:  615:        // check if we should store an element for the current key
+    #####:  616:        JSON_ASSERT(!key_keep_stack.empty());
+    %%%%%:  616-block  0
+call    0 never executed
+branch  1 never executed (fallthrough)
+branch  2 never executed
+    %%%%%:  616-block  1
+call    3 never executed
+    %%%%%:  616-block  2
+    #####:  617:        const bool store_element = key_keep_stack.back();
+    %%%%%:  617-block  0
+call    0 never executed
+call    1 never executed
+    #####:  618:        key_keep_stack.pop_back();
+call    0 never executed
+        -:  619:
+    #####:  620:        if (!store_element)
+branch  0 never executed (fallthrough)
+branch  1 never executed
+        -:  621:        {
+    #####:  622:            return {false, nullptr};
+    %%%%%:  622-block  0
+call    0 never executed
+        -:  623:        }
+        -:  624:
+    #####:  625:        JSON_ASSERT(object_element);
+    %%%%%:  625-block  0
+branch  0 never executed (fallthrough)
+branch  1 never executed
+    %%%%%:  625-block  1
+call    2 never executed
+    %%%%%:  625-block  2
+    #####:  626:        *object_element = std::move(value);
+    %%%%%:  626-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+call    3 never executed
+    #####:  627:        return {true, object_element};
+call    0 never executed
+    #####:  628:    }
+    %%%%%:  628-block  0
+call    0 never executed
+    $$$$$:  628-block  1
+call    1 never executed
+------------------
+        -:  629:
+        -:  630:    /// the parsed JSON value
+        -:  631:    BasicJsonType& root;
+        -:  632:    /// stack to model hierarchy of values
+        -:  633:    std::vector<BasicJsonType*> ref_stack {};
+        -:  634:    /// stack to manage which values to keep
+        -:  635:    std::vector<bool> keep_stack {}; // NOLINT(readability-redundant-member-init)
+        -:  636:    /// stack to manage which object keys to keep
+        -:  637:    std::vector<bool> key_keep_stack {}; // NOLINT(readability-redundant-member-init)
+        -:  638:    /// helper to hold the reference for the next object element
+        -:  639:    BasicJsonType* object_element = nullptr;
+        -:  640:    /// whether a syntax error occurred
+        -:  641:    bool errored = false;
+        -:  642:    /// callback function
+        -:  643:    const parser_callback_t callback = nullptr;
+        -:  644:    /// whether to throw exceptions in case of errors
+        -:  645:    const bool allow_exceptions = true;
+        -:  646:    /// a discarded value for the callback
+        -:  647:    BasicJsonType discarded = BasicJsonType::value_t::discarded;
+        -:  648:};
+        -:  649:
+        -:  650:template<typename BasicJsonType>
+        -:  651:class json_sax_acceptor
+        -:  652:{
+        -:  653:  public:
+        -:  654:    using number_integer_t = typename BasicJsonType::number_integer_t;
+        -:  655:    using number_unsigned_t = typename BasicJsonType::number_unsigned_t;
+        -:  656:    using number_float_t = typename BasicJsonType::number_float_t;
+        -:  657:    using string_t = typename BasicJsonType::string_t;
+        -:  658:    using binary_t = typename BasicJsonType::binary_t;
+        -:  659:
+        -:  660:    bool null()
+        -:  661:    {
+        -:  662:        return true;
+        -:  663:    }
+        -:  664:
+        -:  665:    bool boolean(bool /*unused*/)
+        -:  666:    {
+        -:  667:        return true;
+        -:  668:    }
+        -:  669:
+        -:  670:    bool number_integer(number_integer_t /*unused*/)
+        -:  671:    {
+        -:  672:        return true;
+        -:  673:    }
+        -:  674:
+        -:  675:    bool number_unsigned(number_unsigned_t /*unused*/)
+        -:  676:    {
+        -:  677:        return true;
+        -:  678:    }
+        -:  679:
+        -:  680:    bool number_float(number_float_t /*unused*/, const string_t& /*unused*/)
+        -:  681:    {
+        -:  682:        return true;
+        -:  683:    }
+        -:  684:
+        -:  685:    bool string(string_t& /*unused*/)
+        -:  686:    {
+        -:  687:        return true;
+        -:  688:    }
+        -:  689:
+        -:  690:    bool binary(binary_t& /*unused*/)
+        -:  691:    {
+        -:  692:        return true;
+        -:  693:    }
+        -:  694:
+        -:  695:    bool start_object(std::size_t /*unused*/ = static_cast<std::size_t>(-1))
+        -:  696:    {
+        -:  697:        return true;
+        -:  698:    }
+        -:  699:
+        -:  700:    bool key(string_t& /*unused*/)
+        -:  701:    {
+        -:  702:        return true;
+        -:  703:    }
+        -:  704:
+        -:  705:    bool end_object()
+        -:  706:    {
+        -:  707:        return true;
+        -:  708:    }
+        -:  709:
+        -:  710:    bool start_array(std::size_t /*unused*/ = static_cast<std::size_t>(-1))
+        -:  711:    {
+        -:  712:        return true;
+        -:  713:    }
+        -:  714:
+        -:  715:    bool end_array()
+        -:  716:    {
+        -:  717:        return true;
+        -:  718:    }
+        -:  719:
+        -:  720:    bool parse_error(std::size_t /*unused*/, const std::string& /*unused*/, const detail::exception& /*unused*/)
+        -:  721:    {
+        -:  722:        return false;
+        -:  723:    }
+        -:  724:};
+        -:  725:
+        -:  726:}  // namespace detail
+        -:  727:NLOHMANN_JSON_NAMESPACE_END

@@ -1,0 +1,1844 @@
+        -:    0:Source:C:/Users/rares/CLionProjects/OOP/Json-test/include/nlohmann/detail/output/binary_writer.hpp
+        -:    0:Graph:C:\Users\rares\CLionProjects\OOP\Json-test\cmake-build-debug-coverage\CMakeFiles\Json_test.dir\Repositories\AutoRepo\AutoRepo.cpp.gcno
+        -:    0:Data:C:\Users\rares\CLionProjects\OOP\Json-test\cmake-build-debug-coverage\CMakeFiles\Json_test.dir\Repositories\AutoRepo\AutoRepo.cpp.gcda
+        -:    0:Runs:1
+        -:    1://     __ _____ _____ _____
+        -:    2://  __|  |   __|     |   | |  JSON for Modern C++
+        -:    3:// |  |  |__   |  |  | | | |  version 3.11.3
+        -:    4:// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+        -:    5://
+        -:    6:// SPDX-FileCopyrightText: 2013-2023 Niels Lohmann <https://nlohmann.me>
+        -:    7:// SPDX-License-Identifier: MIT
+        -:    8:
+        -:    9:#pragma once
+        -:   10:
+        -:   11:#include <algorithm> // reverse
+        -:   12:#include <array> // array
+        -:   13:#include <map> // map
+        -:   14:#include <cmath> // isnan, isinf
+        -:   15:#include <cstdint> // uint8_t, uint16_t, uint32_t, uint64_t
+        -:   16:#include <cstring> // memcpy
+        -:   17:#include <limits> // numeric_limits
+        -:   18:#include <string> // string
+        -:   19:#include <utility> // move
+        -:   20:#include <vector> // vector
+        -:   21:
+        -:   22:#include <nlohmann/detail/input/binary_reader.hpp>
+        -:   23:#include <nlohmann/detail/macro_scope.hpp>
+        -:   24:#include <nlohmann/detail/output/output_adapters.hpp>
+        -:   25:#include <nlohmann/detail/string_concat.hpp>
+        -:   26:
+        -:   27:NLOHMANN_JSON_NAMESPACE_BEGIN
+        -:   28:namespace detail
+        -:   29:{
+        -:   30:
+        -:   31:///////////////////
+        -:   32:// binary writer //
+        -:   33:///////////////////
+        -:   34:
+        -:   35:/*!
+        -:   36:@brief serialization to CBOR and MessagePack values
+        -:   37:*/
+        -:   38:template<typename BasicJsonType, typename CharType>
+        -:   39:class binary_writer
+        -:   40:{
+        -:   41:    using string_t = typename BasicJsonType::string_t;
+        -:   42:    using binary_t = typename BasicJsonType::binary_t;
+        -:   43:    using number_float_t = typename BasicJsonType::number_float_t;
+        -:   44:
+        -:   45:  public:
+        -:   46:    /*!
+        -:   47:    @brief create a binary writer
+        -:   48:
+        -:   49:    @param[in] adapter  output adapter to write to
+        -:   50:    */
+        -:   51:    explicit binary_writer(output_adapter_t<CharType> adapter) : oa(std::move(adapter))
+        -:   52:    {
+        -:   53:        JSON_ASSERT(oa);
+        -:   54:    }
+        -:   55:
+        -:   56:    /*!
+        -:   57:    @param[in] j  JSON value to serialize
+        -:   58:    @pre       j.type() == value_t::object
+        -:   59:    */
+        -:   60:    void write_bson(const BasicJsonType& j)
+        -:   61:    {
+        -:   62:        switch (j.type())
+        -:   63:        {
+        -:   64:            case value_t::object:
+        -:   65:            {
+        -:   66:                write_bson_object(*j.m_data.m_value.object);
+        -:   67:                break;
+        -:   68:            }
+        -:   69:
+        -:   70:            case value_t::null:
+        -:   71:            case value_t::array:
+        -:   72:            case value_t::string:
+        -:   73:            case value_t::boolean:
+        -:   74:            case value_t::number_integer:
+        -:   75:            case value_t::number_unsigned:
+        -:   76:            case value_t::number_float:
+        -:   77:            case value_t::binary:
+        -:   78:            case value_t::discarded:
+        -:   79:            default:
+        -:   80:            {
+        -:   81:                JSON_THROW(type_error::create(317, concat("to serialize to BSON, top-level type must be object, but is ", j.type_name()), &j));
+        -:   82:            }
+        -:   83:        }
+        -:   84:    }
+        -:   85:
+        -:   86:    /*!
+        -:   87:    @param[in] j  JSON value to serialize
+        -:   88:    */
+        -:   89:    void write_cbor(const BasicJsonType& j)
+        -:   90:    {
+        -:   91:        switch (j.type())
+        -:   92:        {
+        -:   93:            case value_t::null:
+        -:   94:            {
+        -:   95:                oa->write_character(to_char_type(0xF6));
+        -:   96:                break;
+        -:   97:            }
+        -:   98:
+        -:   99:            case value_t::boolean:
+        -:  100:            {
+        -:  101:                oa->write_character(j.m_data.m_value.boolean
+        -:  102:                                    ? to_char_type(0xF5)
+        -:  103:                                    : to_char_type(0xF4));
+        -:  104:                break;
+        -:  105:            }
+        -:  106:
+        -:  107:            case value_t::number_integer:
+        -:  108:            {
+        -:  109:                if (j.m_data.m_value.number_integer >= 0)
+        -:  110:                {
+        -:  111:                    // CBOR does not differentiate between positive signed
+        -:  112:                    // integers and unsigned integers. Therefore, we used the
+        -:  113:                    // code from the value_t::number_unsigned case here.
+        -:  114:                    if (j.m_data.m_value.number_integer <= 0x17)
+        -:  115:                    {
+        -:  116:                        write_number(static_cast<std::uint8_t>(j.m_data.m_value.number_integer));
+        -:  117:                    }
+        -:  118:                    else if (j.m_data.m_value.number_integer <= (std::numeric_limits<std::uint8_t>::max)())
+        -:  119:                    {
+        -:  120:                        oa->write_character(to_char_type(0x18));
+        -:  121:                        write_number(static_cast<std::uint8_t>(j.m_data.m_value.number_integer));
+        -:  122:                    }
+        -:  123:                    else if (j.m_data.m_value.number_integer <= (std::numeric_limits<std::uint16_t>::max)())
+        -:  124:                    {
+        -:  125:                        oa->write_character(to_char_type(0x19));
+        -:  126:                        write_number(static_cast<std::uint16_t>(j.m_data.m_value.number_integer));
+        -:  127:                    }
+        -:  128:                    else if (j.m_data.m_value.number_integer <= (std::numeric_limits<std::uint32_t>::max)())
+        -:  129:                    {
+        -:  130:                        oa->write_character(to_char_type(0x1A));
+        -:  131:                        write_number(static_cast<std::uint32_t>(j.m_data.m_value.number_integer));
+        -:  132:                    }
+        -:  133:                    else
+        -:  134:                    {
+        -:  135:                        oa->write_character(to_char_type(0x1B));
+        -:  136:                        write_number(static_cast<std::uint64_t>(j.m_data.m_value.number_integer));
+        -:  137:                    }
+        -:  138:                }
+        -:  139:                else
+        -:  140:                {
+        -:  141:                    // The conversions below encode the sign in the first
+        -:  142:                    // byte, and the value is converted to a positive number.
+        -:  143:                    const auto positive_number = -1 - j.m_data.m_value.number_integer;
+        -:  144:                    if (j.m_data.m_value.number_integer >= -24)
+        -:  145:                    {
+        -:  146:                        write_number(static_cast<std::uint8_t>(0x20 + positive_number));
+        -:  147:                    }
+        -:  148:                    else if (positive_number <= (std::numeric_limits<std::uint8_t>::max)())
+        -:  149:                    {
+        -:  150:                        oa->write_character(to_char_type(0x38));
+        -:  151:                        write_number(static_cast<std::uint8_t>(positive_number));
+        -:  152:                    }
+        -:  153:                    else if (positive_number <= (std::numeric_limits<std::uint16_t>::max)())
+        -:  154:                    {
+        -:  155:                        oa->write_character(to_char_type(0x39));
+        -:  156:                        write_number(static_cast<std::uint16_t>(positive_number));
+        -:  157:                    }
+        -:  158:                    else if (positive_number <= (std::numeric_limits<std::uint32_t>::max)())
+        -:  159:                    {
+        -:  160:                        oa->write_character(to_char_type(0x3A));
+        -:  161:                        write_number(static_cast<std::uint32_t>(positive_number));
+        -:  162:                    }
+        -:  163:                    else
+        -:  164:                    {
+        -:  165:                        oa->write_character(to_char_type(0x3B));
+        -:  166:                        write_number(static_cast<std::uint64_t>(positive_number));
+        -:  167:                    }
+        -:  168:                }
+        -:  169:                break;
+        -:  170:            }
+        -:  171:
+        -:  172:            case value_t::number_unsigned:
+        -:  173:            {
+        -:  174:                if (j.m_data.m_value.number_unsigned <= 0x17)
+        -:  175:                {
+        -:  176:                    write_number(static_cast<std::uint8_t>(j.m_data.m_value.number_unsigned));
+        -:  177:                }
+        -:  178:                else if (j.m_data.m_value.number_unsigned <= (std::numeric_limits<std::uint8_t>::max)())
+        -:  179:                {
+        -:  180:                    oa->write_character(to_char_type(0x18));
+        -:  181:                    write_number(static_cast<std::uint8_t>(j.m_data.m_value.number_unsigned));
+        -:  182:                }
+        -:  183:                else if (j.m_data.m_value.number_unsigned <= (std::numeric_limits<std::uint16_t>::max)())
+        -:  184:                {
+        -:  185:                    oa->write_character(to_char_type(0x19));
+        -:  186:                    write_number(static_cast<std::uint16_t>(j.m_data.m_value.number_unsigned));
+        -:  187:                }
+        -:  188:                else if (j.m_data.m_value.number_unsigned <= (std::numeric_limits<std::uint32_t>::max)())
+        -:  189:                {
+        -:  190:                    oa->write_character(to_char_type(0x1A));
+        -:  191:                    write_number(static_cast<std::uint32_t>(j.m_data.m_value.number_unsigned));
+        -:  192:                }
+        -:  193:                else
+        -:  194:                {
+        -:  195:                    oa->write_character(to_char_type(0x1B));
+        -:  196:                    write_number(static_cast<std::uint64_t>(j.m_data.m_value.number_unsigned));
+        -:  197:                }
+        -:  198:                break;
+        -:  199:            }
+        -:  200:
+        -:  201:            case value_t::number_float:
+        -:  202:            {
+        -:  203:                if (std::isnan(j.m_data.m_value.number_float))
+        -:  204:                {
+        -:  205:                    // NaN is 0xf97e00 in CBOR
+        -:  206:                    oa->write_character(to_char_type(0xF9));
+        -:  207:                    oa->write_character(to_char_type(0x7E));
+        -:  208:                    oa->write_character(to_char_type(0x00));
+        -:  209:                }
+        -:  210:                else if (std::isinf(j.m_data.m_value.number_float))
+        -:  211:                {
+        -:  212:                    // Infinity is 0xf97c00, -Infinity is 0xf9fc00
+        -:  213:                    oa->write_character(to_char_type(0xf9));
+        -:  214:                    oa->write_character(j.m_data.m_value.number_float > 0 ? to_char_type(0x7C) : to_char_type(0xFC));
+        -:  215:                    oa->write_character(to_char_type(0x00));
+        -:  216:                }
+        -:  217:                else
+        -:  218:                {
+        -:  219:                    write_compact_float(j.m_data.m_value.number_float, detail::input_format_t::cbor);
+        -:  220:                }
+        -:  221:                break;
+        -:  222:            }
+        -:  223:
+        -:  224:            case value_t::string:
+        -:  225:            {
+        -:  226:                // step 1: write control byte and the string length
+        -:  227:                const auto N = j.m_data.m_value.string->size();
+        -:  228:                if (N <= 0x17)
+        -:  229:                {
+        -:  230:                    write_number(static_cast<std::uint8_t>(0x60 + N));
+        -:  231:                }
+        -:  232:                else if (N <= (std::numeric_limits<std::uint8_t>::max)())
+        -:  233:                {
+        -:  234:                    oa->write_character(to_char_type(0x78));
+        -:  235:                    write_number(static_cast<std::uint8_t>(N));
+        -:  236:                }
+        -:  237:                else if (N <= (std::numeric_limits<std::uint16_t>::max)())
+        -:  238:                {
+        -:  239:                    oa->write_character(to_char_type(0x79));
+        -:  240:                    write_number(static_cast<std::uint16_t>(N));
+        -:  241:                }
+        -:  242:                else if (N <= (std::numeric_limits<std::uint32_t>::max)())
+        -:  243:                {
+        -:  244:                    oa->write_character(to_char_type(0x7A));
+        -:  245:                    write_number(static_cast<std::uint32_t>(N));
+        -:  246:                }
+        -:  247:                // LCOV_EXCL_START
+        -:  248:                else if (N <= (std::numeric_limits<std::uint64_t>::max)())
+        -:  249:                {
+        -:  250:                    oa->write_character(to_char_type(0x7B));
+        -:  251:                    write_number(static_cast<std::uint64_t>(N));
+        -:  252:                }
+        -:  253:                // LCOV_EXCL_STOP
+        -:  254:
+        -:  255:                // step 2: write the string
+        -:  256:                oa->write_characters(
+        -:  257:                    reinterpret_cast<const CharType*>(j.m_data.m_value.string->c_str()),
+        -:  258:                    j.m_data.m_value.string->size());
+        -:  259:                break;
+        -:  260:            }
+        -:  261:
+        -:  262:            case value_t::array:
+        -:  263:            {
+        -:  264:                // step 1: write control byte and the array size
+        -:  265:                const auto N = j.m_data.m_value.array->size();
+        -:  266:                if (N <= 0x17)
+        -:  267:                {
+        -:  268:                    write_number(static_cast<std::uint8_t>(0x80 + N));
+        -:  269:                }
+        -:  270:                else if (N <= (std::numeric_limits<std::uint8_t>::max)())
+        -:  271:                {
+        -:  272:                    oa->write_character(to_char_type(0x98));
+        -:  273:                    write_number(static_cast<std::uint8_t>(N));
+        -:  274:                }
+        -:  275:                else if (N <= (std::numeric_limits<std::uint16_t>::max)())
+        -:  276:                {
+        -:  277:                    oa->write_character(to_char_type(0x99));
+        -:  278:                    write_number(static_cast<std::uint16_t>(N));
+        -:  279:                }
+        -:  280:                else if (N <= (std::numeric_limits<std::uint32_t>::max)())
+        -:  281:                {
+        -:  282:                    oa->write_character(to_char_type(0x9A));
+        -:  283:                    write_number(static_cast<std::uint32_t>(N));
+        -:  284:                }
+        -:  285:                // LCOV_EXCL_START
+        -:  286:                else if (N <= (std::numeric_limits<std::uint64_t>::max)())
+        -:  287:                {
+        -:  288:                    oa->write_character(to_char_type(0x9B));
+        -:  289:                    write_number(static_cast<std::uint64_t>(N));
+        -:  290:                }
+        -:  291:                // LCOV_EXCL_STOP
+        -:  292:
+        -:  293:                // step 2: write each element
+        -:  294:                for (const auto& el : *j.m_data.m_value.array)
+        -:  295:                {
+        -:  296:                    write_cbor(el);
+        -:  297:                }
+        -:  298:                break;
+        -:  299:            }
+        -:  300:
+        -:  301:            case value_t::binary:
+        -:  302:            {
+        -:  303:                if (j.m_data.m_value.binary->has_subtype())
+        -:  304:                {
+        -:  305:                    if (j.m_data.m_value.binary->subtype() <= (std::numeric_limits<std::uint8_t>::max)())
+        -:  306:                    {
+        -:  307:                        write_number(static_cast<std::uint8_t>(0xd8));
+        -:  308:                        write_number(static_cast<std::uint8_t>(j.m_data.m_value.binary->subtype()));
+        -:  309:                    }
+        -:  310:                    else if (j.m_data.m_value.binary->subtype() <= (std::numeric_limits<std::uint16_t>::max)())
+        -:  311:                    {
+        -:  312:                        write_number(static_cast<std::uint8_t>(0xd9));
+        -:  313:                        write_number(static_cast<std::uint16_t>(j.m_data.m_value.binary->subtype()));
+        -:  314:                    }
+        -:  315:                    else if (j.m_data.m_value.binary->subtype() <= (std::numeric_limits<std::uint32_t>::max)())
+        -:  316:                    {
+        -:  317:                        write_number(static_cast<std::uint8_t>(0xda));
+        -:  318:                        write_number(static_cast<std::uint32_t>(j.m_data.m_value.binary->subtype()));
+        -:  319:                    }
+        -:  320:                    else if (j.m_data.m_value.binary->subtype() <= (std::numeric_limits<std::uint64_t>::max)())
+        -:  321:                    {
+        -:  322:                        write_number(static_cast<std::uint8_t>(0xdb));
+        -:  323:                        write_number(static_cast<std::uint64_t>(j.m_data.m_value.binary->subtype()));
+        -:  324:                    }
+        -:  325:                }
+        -:  326:
+        -:  327:                // step 1: write control byte and the binary array size
+        -:  328:                const auto N = j.m_data.m_value.binary->size();
+        -:  329:                if (N <= 0x17)
+        -:  330:                {
+        -:  331:                    write_number(static_cast<std::uint8_t>(0x40 + N));
+        -:  332:                }
+        -:  333:                else if (N <= (std::numeric_limits<std::uint8_t>::max)())
+        -:  334:                {
+        -:  335:                    oa->write_character(to_char_type(0x58));
+        -:  336:                    write_number(static_cast<std::uint8_t>(N));
+        -:  337:                }
+        -:  338:                else if (N <= (std::numeric_limits<std::uint16_t>::max)())
+        -:  339:                {
+        -:  340:                    oa->write_character(to_char_type(0x59));
+        -:  341:                    write_number(static_cast<std::uint16_t>(N));
+        -:  342:                }
+        -:  343:                else if (N <= (std::numeric_limits<std::uint32_t>::max)())
+        -:  344:                {
+        -:  345:                    oa->write_character(to_char_type(0x5A));
+        -:  346:                    write_number(static_cast<std::uint32_t>(N));
+        -:  347:                }
+        -:  348:                // LCOV_EXCL_START
+        -:  349:                else if (N <= (std::numeric_limits<std::uint64_t>::max)())
+        -:  350:                {
+        -:  351:                    oa->write_character(to_char_type(0x5B));
+        -:  352:                    write_number(static_cast<std::uint64_t>(N));
+        -:  353:                }
+        -:  354:                // LCOV_EXCL_STOP
+        -:  355:
+        -:  356:                // step 2: write each element
+        -:  357:                oa->write_characters(
+        -:  358:                    reinterpret_cast<const CharType*>(j.m_data.m_value.binary->data()),
+        -:  359:                    N);
+        -:  360:
+        -:  361:                break;
+        -:  362:            }
+        -:  363:
+        -:  364:            case value_t::object:
+        -:  365:            {
+        -:  366:                // step 1: write control byte and the object size
+        -:  367:                const auto N = j.m_data.m_value.object->size();
+        -:  368:                if (N <= 0x17)
+        -:  369:                {
+        -:  370:                    write_number(static_cast<std::uint8_t>(0xA0 + N));
+        -:  371:                }
+        -:  372:                else if (N <= (std::numeric_limits<std::uint8_t>::max)())
+        -:  373:                {
+        -:  374:                    oa->write_character(to_char_type(0xB8));
+        -:  375:                    write_number(static_cast<std::uint8_t>(N));
+        -:  376:                }
+        -:  377:                else if (N <= (std::numeric_limits<std::uint16_t>::max)())
+        -:  378:                {
+        -:  379:                    oa->write_character(to_char_type(0xB9));
+        -:  380:                    write_number(static_cast<std::uint16_t>(N));
+        -:  381:                }
+        -:  382:                else if (N <= (std::numeric_limits<std::uint32_t>::max)())
+        -:  383:                {
+        -:  384:                    oa->write_character(to_char_type(0xBA));
+        -:  385:                    write_number(static_cast<std::uint32_t>(N));
+        -:  386:                }
+        -:  387:                // LCOV_EXCL_START
+        -:  388:                else if (N <= (std::numeric_limits<std::uint64_t>::max)())
+        -:  389:                {
+        -:  390:                    oa->write_character(to_char_type(0xBB));
+        -:  391:                    write_number(static_cast<std::uint64_t>(N));
+        -:  392:                }
+        -:  393:                // LCOV_EXCL_STOP
+        -:  394:
+        -:  395:                // step 2: write each element
+        -:  396:                for (const auto& el : *j.m_data.m_value.object)
+        -:  397:                {
+        -:  398:                    write_cbor(el.first);
+        -:  399:                    write_cbor(el.second);
+        -:  400:                }
+        -:  401:                break;
+        -:  402:            }
+        -:  403:
+        -:  404:            case value_t::discarded:
+        -:  405:            default:
+        -:  406:                break;
+        -:  407:        }
+        -:  408:    }
+        -:  409:
+        -:  410:    /*!
+        -:  411:    @param[in] j  JSON value to serialize
+        -:  412:    */
+        -:  413:    void write_msgpack(const BasicJsonType& j)
+        -:  414:    {
+        -:  415:        switch (j.type())
+        -:  416:        {
+        -:  417:            case value_t::null: // nil
+        -:  418:            {
+        -:  419:                oa->write_character(to_char_type(0xC0));
+        -:  420:                break;
+        -:  421:            }
+        -:  422:
+        -:  423:            case value_t::boolean: // true and false
+        -:  424:            {
+        -:  425:                oa->write_character(j.m_data.m_value.boolean
+        -:  426:                                    ? to_char_type(0xC3)
+        -:  427:                                    : to_char_type(0xC2));
+        -:  428:                break;
+        -:  429:            }
+        -:  430:
+        -:  431:            case value_t::number_integer:
+        -:  432:            {
+        -:  433:                if (j.m_data.m_value.number_integer >= 0)
+        -:  434:                {
+        -:  435:                    // MessagePack does not differentiate between positive
+        -:  436:                    // signed integers and unsigned integers. Therefore, we used
+        -:  437:                    // the code from the value_t::number_unsigned case here.
+        -:  438:                    if (j.m_data.m_value.number_unsigned < 128)
+        -:  439:                    {
+        -:  440:                        // positive fixnum
+        -:  441:                        write_number(static_cast<std::uint8_t>(j.m_data.m_value.number_integer));
+        -:  442:                    }
+        -:  443:                    else if (j.m_data.m_value.number_unsigned <= (std::numeric_limits<std::uint8_t>::max)())
+        -:  444:                    {
+        -:  445:                        // uint 8
+        -:  446:                        oa->write_character(to_char_type(0xCC));
+        -:  447:                        write_number(static_cast<std::uint8_t>(j.m_data.m_value.number_integer));
+        -:  448:                    }
+        -:  449:                    else if (j.m_data.m_value.number_unsigned <= (std::numeric_limits<std::uint16_t>::max)())
+        -:  450:                    {
+        -:  451:                        // uint 16
+        -:  452:                        oa->write_character(to_char_type(0xCD));
+        -:  453:                        write_number(static_cast<std::uint16_t>(j.m_data.m_value.number_integer));
+        -:  454:                    }
+        -:  455:                    else if (j.m_data.m_value.number_unsigned <= (std::numeric_limits<std::uint32_t>::max)())
+        -:  456:                    {
+        -:  457:                        // uint 32
+        -:  458:                        oa->write_character(to_char_type(0xCE));
+        -:  459:                        write_number(static_cast<std::uint32_t>(j.m_data.m_value.number_integer));
+        -:  460:                    }
+        -:  461:                    else if (j.m_data.m_value.number_unsigned <= (std::numeric_limits<std::uint64_t>::max)())
+        -:  462:                    {
+        -:  463:                        // uint 64
+        -:  464:                        oa->write_character(to_char_type(0xCF));
+        -:  465:                        write_number(static_cast<std::uint64_t>(j.m_data.m_value.number_integer));
+        -:  466:                    }
+        -:  467:                }
+        -:  468:                else
+        -:  469:                {
+        -:  470:                    if (j.m_data.m_value.number_integer >= -32)
+        -:  471:                    {
+        -:  472:                        // negative fixnum
+        -:  473:                        write_number(static_cast<std::int8_t>(j.m_data.m_value.number_integer));
+        -:  474:                    }
+        -:  475:                    else if (j.m_data.m_value.number_integer >= (std::numeric_limits<std::int8_t>::min)() &&
+        -:  476:                             j.m_data.m_value.number_integer <= (std::numeric_limits<std::int8_t>::max)())
+        -:  477:                    {
+        -:  478:                        // int 8
+        -:  479:                        oa->write_character(to_char_type(0xD0));
+        -:  480:                        write_number(static_cast<std::int8_t>(j.m_data.m_value.number_integer));
+        -:  481:                    }
+        -:  482:                    else if (j.m_data.m_value.number_integer >= (std::numeric_limits<std::int16_t>::min)() &&
+        -:  483:                             j.m_data.m_value.number_integer <= (std::numeric_limits<std::int16_t>::max)())
+        -:  484:                    {
+        -:  485:                        // int 16
+        -:  486:                        oa->write_character(to_char_type(0xD1));
+        -:  487:                        write_number(static_cast<std::int16_t>(j.m_data.m_value.number_integer));
+        -:  488:                    }
+        -:  489:                    else if (j.m_data.m_value.number_integer >= (std::numeric_limits<std::int32_t>::min)() &&
+        -:  490:                             j.m_data.m_value.number_integer <= (std::numeric_limits<std::int32_t>::max)())
+        -:  491:                    {
+        -:  492:                        // int 32
+        -:  493:                        oa->write_character(to_char_type(0xD2));
+        -:  494:                        write_number(static_cast<std::int32_t>(j.m_data.m_value.number_integer));
+        -:  495:                    }
+        -:  496:                    else if (j.m_data.m_value.number_integer >= (std::numeric_limits<std::int64_t>::min)() &&
+        -:  497:                             j.m_data.m_value.number_integer <= (std::numeric_limits<std::int64_t>::max)())
+        -:  498:                    {
+        -:  499:                        // int 64
+        -:  500:                        oa->write_character(to_char_type(0xD3));
+        -:  501:                        write_number(static_cast<std::int64_t>(j.m_data.m_value.number_integer));
+        -:  502:                    }
+        -:  503:                }
+        -:  504:                break;
+        -:  505:            }
+        -:  506:
+        -:  507:            case value_t::number_unsigned:
+        -:  508:            {
+        -:  509:                if (j.m_data.m_value.number_unsigned < 128)
+        -:  510:                {
+        -:  511:                    // positive fixnum
+        -:  512:                    write_number(static_cast<std::uint8_t>(j.m_data.m_value.number_integer));
+        -:  513:                }
+        -:  514:                else if (j.m_data.m_value.number_unsigned <= (std::numeric_limits<std::uint8_t>::max)())
+        -:  515:                {
+        -:  516:                    // uint 8
+        -:  517:                    oa->write_character(to_char_type(0xCC));
+        -:  518:                    write_number(static_cast<std::uint8_t>(j.m_data.m_value.number_integer));
+        -:  519:                }
+        -:  520:                else if (j.m_data.m_value.number_unsigned <= (std::numeric_limits<std::uint16_t>::max)())
+        -:  521:                {
+        -:  522:                    // uint 16
+        -:  523:                    oa->write_character(to_char_type(0xCD));
+        -:  524:                    write_number(static_cast<std::uint16_t>(j.m_data.m_value.number_integer));
+        -:  525:                }
+        -:  526:                else if (j.m_data.m_value.number_unsigned <= (std::numeric_limits<std::uint32_t>::max)())
+        -:  527:                {
+        -:  528:                    // uint 32
+        -:  529:                    oa->write_character(to_char_type(0xCE));
+        -:  530:                    write_number(static_cast<std::uint32_t>(j.m_data.m_value.number_integer));
+        -:  531:                }
+        -:  532:                else if (j.m_data.m_value.number_unsigned <= (std::numeric_limits<std::uint64_t>::max)())
+        -:  533:                {
+        -:  534:                    // uint 64
+        -:  535:                    oa->write_character(to_char_type(0xCF));
+        -:  536:                    write_number(static_cast<std::uint64_t>(j.m_data.m_value.number_integer));
+        -:  537:                }
+        -:  538:                break;
+        -:  539:            }
+        -:  540:
+        -:  541:            case value_t::number_float:
+        -:  542:            {
+        -:  543:                write_compact_float(j.m_data.m_value.number_float, detail::input_format_t::msgpack);
+        -:  544:                break;
+        -:  545:            }
+        -:  546:
+        -:  547:            case value_t::string:
+        -:  548:            {
+        -:  549:                // step 1: write control byte and the string length
+        -:  550:                const auto N = j.m_data.m_value.string->size();
+        -:  551:                if (N <= 31)
+        -:  552:                {
+        -:  553:                    // fixstr
+        -:  554:                    write_number(static_cast<std::uint8_t>(0xA0 | N));
+        -:  555:                }
+        -:  556:                else if (N <= (std::numeric_limits<std::uint8_t>::max)())
+        -:  557:                {
+        -:  558:                    // str 8
+        -:  559:                    oa->write_character(to_char_type(0xD9));
+        -:  560:                    write_number(static_cast<std::uint8_t>(N));
+        -:  561:                }
+        -:  562:                else if (N <= (std::numeric_limits<std::uint16_t>::max)())
+        -:  563:                {
+        -:  564:                    // str 16
+        -:  565:                    oa->write_character(to_char_type(0xDA));
+        -:  566:                    write_number(static_cast<std::uint16_t>(N));
+        -:  567:                }
+        -:  568:                else if (N <= (std::numeric_limits<std::uint32_t>::max)())
+        -:  569:                {
+        -:  570:                    // str 32
+        -:  571:                    oa->write_character(to_char_type(0xDB));
+        -:  572:                    write_number(static_cast<std::uint32_t>(N));
+        -:  573:                }
+        -:  574:
+        -:  575:                // step 2: write the string
+        -:  576:                oa->write_characters(
+        -:  577:                    reinterpret_cast<const CharType*>(j.m_data.m_value.string->c_str()),
+        -:  578:                    j.m_data.m_value.string->size());
+        -:  579:                break;
+        -:  580:            }
+        -:  581:
+        -:  582:            case value_t::array:
+        -:  583:            {
+        -:  584:                // step 1: write control byte and the array size
+        -:  585:                const auto N = j.m_data.m_value.array->size();
+        -:  586:                if (N <= 15)
+        -:  587:                {
+        -:  588:                    // fixarray
+        -:  589:                    write_number(static_cast<std::uint8_t>(0x90 | N));
+        -:  590:                }
+        -:  591:                else if (N <= (std::numeric_limits<std::uint16_t>::max)())
+        -:  592:                {
+        -:  593:                    // array 16
+        -:  594:                    oa->write_character(to_char_type(0xDC));
+        -:  595:                    write_number(static_cast<std::uint16_t>(N));
+        -:  596:                }
+        -:  597:                else if (N <= (std::numeric_limits<std::uint32_t>::max)())
+        -:  598:                {
+        -:  599:                    // array 32
+        -:  600:                    oa->write_character(to_char_type(0xDD));
+        -:  601:                    write_number(static_cast<std::uint32_t>(N));
+        -:  602:                }
+        -:  603:
+        -:  604:                // step 2: write each element
+        -:  605:                for (const auto& el : *j.m_data.m_value.array)
+        -:  606:                {
+        -:  607:                    write_msgpack(el);
+        -:  608:                }
+        -:  609:                break;
+        -:  610:            }
+        -:  611:
+        -:  612:            case value_t::binary:
+        -:  613:            {
+        -:  614:                // step 0: determine if the binary type has a set subtype to
+        -:  615:                // determine whether or not to use the ext or fixext types
+        -:  616:                const bool use_ext = j.m_data.m_value.binary->has_subtype();
+        -:  617:
+        -:  618:                // step 1: write control byte and the byte string length
+        -:  619:                const auto N = j.m_data.m_value.binary->size();
+        -:  620:                if (N <= (std::numeric_limits<std::uint8_t>::max)())
+        -:  621:                {
+        -:  622:                    std::uint8_t output_type{};
+        -:  623:                    bool fixed = true;
+        -:  624:                    if (use_ext)
+        -:  625:                    {
+        -:  626:                        switch (N)
+        -:  627:                        {
+        -:  628:                            case 1:
+        -:  629:                                output_type = 0xD4; // fixext 1
+        -:  630:                                break;
+        -:  631:                            case 2:
+        -:  632:                                output_type = 0xD5; // fixext 2
+        -:  633:                                break;
+        -:  634:                            case 4:
+        -:  635:                                output_type = 0xD6; // fixext 4
+        -:  636:                                break;
+        -:  637:                            case 8:
+        -:  638:                                output_type = 0xD7; // fixext 8
+        -:  639:                                break;
+        -:  640:                            case 16:
+        -:  641:                                output_type = 0xD8; // fixext 16
+        -:  642:                                break;
+        -:  643:                            default:
+        -:  644:                                output_type = 0xC7; // ext 8
+        -:  645:                                fixed = false;
+        -:  646:                                break;
+        -:  647:                        }
+        -:  648:
+        -:  649:                    }
+        -:  650:                    else
+        -:  651:                    {
+        -:  652:                        output_type = 0xC4; // bin 8
+        -:  653:                        fixed = false;
+        -:  654:                    }
+        -:  655:
+        -:  656:                    oa->write_character(to_char_type(output_type));
+        -:  657:                    if (!fixed)
+        -:  658:                    {
+        -:  659:                        write_number(static_cast<std::uint8_t>(N));
+        -:  660:                    }
+        -:  661:                }
+        -:  662:                else if (N <= (std::numeric_limits<std::uint16_t>::max)())
+        -:  663:                {
+        -:  664:                    const std::uint8_t output_type = use_ext
+        -:  665:                                                     ? 0xC8 // ext 16
+        -:  666:                                                     : 0xC5; // bin 16
+        -:  667:
+        -:  668:                    oa->write_character(to_char_type(output_type));
+        -:  669:                    write_number(static_cast<std::uint16_t>(N));
+        -:  670:                }
+        -:  671:                else if (N <= (std::numeric_limits<std::uint32_t>::max)())
+        -:  672:                {
+        -:  673:                    const std::uint8_t output_type = use_ext
+        -:  674:                                                     ? 0xC9 // ext 32
+        -:  675:                                                     : 0xC6; // bin 32
+        -:  676:
+        -:  677:                    oa->write_character(to_char_type(output_type));
+        -:  678:                    write_number(static_cast<std::uint32_t>(N));
+        -:  679:                }
+        -:  680:
+        -:  681:                // step 1.5: if this is an ext type, write the subtype
+        -:  682:                if (use_ext)
+        -:  683:                {
+        -:  684:                    write_number(static_cast<std::int8_t>(j.m_data.m_value.binary->subtype()));
+        -:  685:                }
+        -:  686:
+        -:  687:                // step 2: write the byte string
+        -:  688:                oa->write_characters(
+        -:  689:                    reinterpret_cast<const CharType*>(j.m_data.m_value.binary->data()),
+        -:  690:                    N);
+        -:  691:
+        -:  692:                break;
+        -:  693:            }
+        -:  694:
+        -:  695:            case value_t::object:
+        -:  696:            {
+        -:  697:                // step 1: write control byte and the object size
+        -:  698:                const auto N = j.m_data.m_value.object->size();
+        -:  699:                if (N <= 15)
+        -:  700:                {
+        -:  701:                    // fixmap
+        -:  702:                    write_number(static_cast<std::uint8_t>(0x80 | (N & 0xF)));
+        -:  703:                }
+        -:  704:                else if (N <= (std::numeric_limits<std::uint16_t>::max)())
+        -:  705:                {
+        -:  706:                    // map 16
+        -:  707:                    oa->write_character(to_char_type(0xDE));
+        -:  708:                    write_number(static_cast<std::uint16_t>(N));
+        -:  709:                }
+        -:  710:                else if (N <= (std::numeric_limits<std::uint32_t>::max)())
+        -:  711:                {
+        -:  712:                    // map 32
+        -:  713:                    oa->write_character(to_char_type(0xDF));
+        -:  714:                    write_number(static_cast<std::uint32_t>(N));
+        -:  715:                }
+        -:  716:
+        -:  717:                // step 2: write each element
+        -:  718:                for (const auto& el : *j.m_data.m_value.object)
+        -:  719:                {
+        -:  720:                    write_msgpack(el.first);
+        -:  721:                    write_msgpack(el.second);
+        -:  722:                }
+        -:  723:                break;
+        -:  724:            }
+        -:  725:
+        -:  726:            case value_t::discarded:
+        -:  727:            default:
+        -:  728:                break;
+        -:  729:        }
+        -:  730:    }
+        -:  731:
+        -:  732:    /*!
+        -:  733:    @param[in] j  JSON value to serialize
+        -:  734:    @param[in] use_count   whether to use '#' prefixes (optimized format)
+        -:  735:    @param[in] use_type    whether to use '$' prefixes (optimized format)
+        -:  736:    @param[in] add_prefix  whether prefixes need to be used for this value
+        -:  737:    @param[in] use_bjdata  whether write in BJData format, default is false
+        -:  738:    */
+        -:  739:    void write_ubjson(const BasicJsonType& j, const bool use_count,
+        -:  740:                      const bool use_type, const bool add_prefix = true,
+        -:  741:                      const bool use_bjdata = false)
+        -:  742:    {
+        -:  743:        switch (j.type())
+        -:  744:        {
+        -:  745:            case value_t::null:
+        -:  746:            {
+        -:  747:                if (add_prefix)
+        -:  748:                {
+        -:  749:                    oa->write_character(to_char_type('Z'));
+        -:  750:                }
+        -:  751:                break;
+        -:  752:            }
+        -:  753:
+        -:  754:            case value_t::boolean:
+        -:  755:            {
+        -:  756:                if (add_prefix)
+        -:  757:                {
+        -:  758:                    oa->write_character(j.m_data.m_value.boolean
+        -:  759:                                        ? to_char_type('T')
+        -:  760:                                        : to_char_type('F'));
+        -:  761:                }
+        -:  762:                break;
+        -:  763:            }
+        -:  764:
+        -:  765:            case value_t::number_integer:
+        -:  766:            {
+        -:  767:                write_number_with_ubjson_prefix(j.m_data.m_value.number_integer, add_prefix, use_bjdata);
+        -:  768:                break;
+        -:  769:            }
+        -:  770:
+        -:  771:            case value_t::number_unsigned:
+        -:  772:            {
+        -:  773:                write_number_with_ubjson_prefix(j.m_data.m_value.number_unsigned, add_prefix, use_bjdata);
+        -:  774:                break;
+        -:  775:            }
+        -:  776:
+        -:  777:            case value_t::number_float:
+        -:  778:            {
+        -:  779:                write_number_with_ubjson_prefix(j.m_data.m_value.number_float, add_prefix, use_bjdata);
+        -:  780:                break;
+        -:  781:            }
+        -:  782:
+        -:  783:            case value_t::string:
+        -:  784:            {
+        -:  785:                if (add_prefix)
+        -:  786:                {
+        -:  787:                    oa->write_character(to_char_type('S'));
+        -:  788:                }
+        -:  789:                write_number_with_ubjson_prefix(j.m_data.m_value.string->size(), true, use_bjdata);
+        -:  790:                oa->write_characters(
+        -:  791:                    reinterpret_cast<const CharType*>(j.m_data.m_value.string->c_str()),
+        -:  792:                    j.m_data.m_value.string->size());
+        -:  793:                break;
+        -:  794:            }
+        -:  795:
+        -:  796:            case value_t::array:
+        -:  797:            {
+        -:  798:                if (add_prefix)
+        -:  799:                {
+        -:  800:                    oa->write_character(to_char_type('['));
+        -:  801:                }
+        -:  802:
+        -:  803:                bool prefix_required = true;
+        -:  804:                if (use_type && !j.m_data.m_value.array->empty())
+        -:  805:                {
+        -:  806:                    JSON_ASSERT(use_count);
+        -:  807:                    const CharType first_prefix = ubjson_prefix(j.front(), use_bjdata);
+        -:  808:                    const bool same_prefix = std::all_of(j.begin() + 1, j.end(),
+        -:  809:                                                         [this, first_prefix, use_bjdata](const BasicJsonType & v)
+        -:  810:                    {
+        -:  811:                        return ubjson_prefix(v, use_bjdata) == first_prefix;
+        -:  812:                    });
+        -:  813:
+        -:  814:                    std::vector<CharType> bjdx = {'[', '{', 'S', 'H', 'T', 'F', 'N', 'Z'}; // excluded markers in bjdata optimized type
+        -:  815:
+        -:  816:                    if (same_prefix && !(use_bjdata && std::find(bjdx.begin(), bjdx.end(), first_prefix) != bjdx.end()))
+        -:  817:                    {
+        -:  818:                        prefix_required = false;
+        -:  819:                        oa->write_character(to_char_type('$'));
+        -:  820:                        oa->write_character(first_prefix);
+        -:  821:                    }
+        -:  822:                }
+        -:  823:
+        -:  824:                if (use_count)
+        -:  825:                {
+        -:  826:                    oa->write_character(to_char_type('#'));
+        -:  827:                    write_number_with_ubjson_prefix(j.m_data.m_value.array->size(), true, use_bjdata);
+        -:  828:                }
+        -:  829:
+        -:  830:                for (const auto& el : *j.m_data.m_value.array)
+        -:  831:                {
+        -:  832:                    write_ubjson(el, use_count, use_type, prefix_required, use_bjdata);
+        -:  833:                }
+        -:  834:
+        -:  835:                if (!use_count)
+        -:  836:                {
+        -:  837:                    oa->write_character(to_char_type(']'));
+        -:  838:                }
+        -:  839:
+        -:  840:                break;
+        -:  841:            }
+        -:  842:
+        -:  843:            case value_t::binary:
+        -:  844:            {
+        -:  845:                if (add_prefix)
+        -:  846:                {
+        -:  847:                    oa->write_character(to_char_type('['));
+        -:  848:                }
+        -:  849:
+        -:  850:                if (use_type && !j.m_data.m_value.binary->empty())
+        -:  851:                {
+        -:  852:                    JSON_ASSERT(use_count);
+        -:  853:                    oa->write_character(to_char_type('$'));
+        -:  854:                    oa->write_character('U');
+        -:  855:                }
+        -:  856:
+        -:  857:                if (use_count)
+        -:  858:                {
+        -:  859:                    oa->write_character(to_char_type('#'));
+        -:  860:                    write_number_with_ubjson_prefix(j.m_data.m_value.binary->size(), true, use_bjdata);
+        -:  861:                }
+        -:  862:
+        -:  863:                if (use_type)
+        -:  864:                {
+        -:  865:                    oa->write_characters(
+        -:  866:                        reinterpret_cast<const CharType*>(j.m_data.m_value.binary->data()),
+        -:  867:                        j.m_data.m_value.binary->size());
+        -:  868:                }
+        -:  869:                else
+        -:  870:                {
+        -:  871:                    for (size_t i = 0; i < j.m_data.m_value.binary->size(); ++i)
+        -:  872:                    {
+        -:  873:                        oa->write_character(to_char_type('U'));
+        -:  874:                        oa->write_character(j.m_data.m_value.binary->data()[i]);
+        -:  875:                    }
+        -:  876:                }
+        -:  877:
+        -:  878:                if (!use_count)
+        -:  879:                {
+        -:  880:                    oa->write_character(to_char_type(']'));
+        -:  881:                }
+        -:  882:
+        -:  883:                break;
+        -:  884:            }
+        -:  885:
+        -:  886:            case value_t::object:
+        -:  887:            {
+        -:  888:                if (use_bjdata && j.m_data.m_value.object->size() == 3 && j.m_data.m_value.object->find("_ArrayType_") != j.m_data.m_value.object->end() && j.m_data.m_value.object->find("_ArraySize_") != j.m_data.m_value.object->end() && j.m_data.m_value.object->find("_ArrayData_") != j.m_data.m_value.object->end())
+        -:  889:                {
+        -:  890:                    if (!write_bjdata_ndarray(*j.m_data.m_value.object, use_count, use_type))  // decode bjdata ndarray in the JData format (https://github.com/NeuroJSON/jdata)
+        -:  891:                    {
+        -:  892:                        break;
+        -:  893:                    }
+        -:  894:                }
+        -:  895:
+        -:  896:                if (add_prefix)
+        -:  897:                {
+        -:  898:                    oa->write_character(to_char_type('{'));
+        -:  899:                }
+        -:  900:
+        -:  901:                bool prefix_required = true;
+        -:  902:                if (use_type && !j.m_data.m_value.object->empty())
+        -:  903:                {
+        -:  904:                    JSON_ASSERT(use_count);
+        -:  905:                    const CharType first_prefix = ubjson_prefix(j.front(), use_bjdata);
+        -:  906:                    const bool same_prefix = std::all_of(j.begin(), j.end(),
+        -:  907:                                                         [this, first_prefix, use_bjdata](const BasicJsonType & v)
+        -:  908:                    {
+        -:  909:                        return ubjson_prefix(v, use_bjdata) == first_prefix;
+        -:  910:                    });
+        -:  911:
+        -:  912:                    std::vector<CharType> bjdx = {'[', '{', 'S', 'H', 'T', 'F', 'N', 'Z'}; // excluded markers in bjdata optimized type
+        -:  913:
+        -:  914:                    if (same_prefix && !(use_bjdata && std::find(bjdx.begin(), bjdx.end(), first_prefix) != bjdx.end()))
+        -:  915:                    {
+        -:  916:                        prefix_required = false;
+        -:  917:                        oa->write_character(to_char_type('$'));
+        -:  918:                        oa->write_character(first_prefix);
+        -:  919:                    }
+        -:  920:                }
+        -:  921:
+        -:  922:                if (use_count)
+        -:  923:                {
+        -:  924:                    oa->write_character(to_char_type('#'));
+        -:  925:                    write_number_with_ubjson_prefix(j.m_data.m_value.object->size(), true, use_bjdata);
+        -:  926:                }
+        -:  927:
+        -:  928:                for (const auto& el : *j.m_data.m_value.object)
+        -:  929:                {
+        -:  930:                    write_number_with_ubjson_prefix(el.first.size(), true, use_bjdata);
+        -:  931:                    oa->write_characters(
+        -:  932:                        reinterpret_cast<const CharType*>(el.first.c_str()),
+        -:  933:                        el.first.size());
+        -:  934:                    write_ubjson(el.second, use_count, use_type, prefix_required, use_bjdata);
+        -:  935:                }
+        -:  936:
+        -:  937:                if (!use_count)
+        -:  938:                {
+        -:  939:                    oa->write_character(to_char_type('}'));
+        -:  940:                }
+        -:  941:
+        -:  942:                break;
+        -:  943:            }
+        -:  944:
+        -:  945:            case value_t::discarded:
+        -:  946:            default:
+        -:  947:                break;
+        -:  948:        }
+        -:  949:    }
+        -:  950:
+        -:  951:  private:
+        -:  952:    //////////
+        -:  953:    // BSON //
+        -:  954:    //////////
+        -:  955:
+        -:  956:    /*!
+        -:  957:    @return The size of a BSON document entry header, including the id marker
+        -:  958:            and the entry name size (and its null-terminator).
+        -:  959:    */
+        -:  960:    static std::size_t calc_bson_entry_header_size(const string_t& name, const BasicJsonType& j)
+        -:  961:    {
+        -:  962:        const auto it = name.find(static_cast<typename string_t::value_type>(0));
+        -:  963:        if (JSON_HEDLEY_UNLIKELY(it != BasicJsonType::string_t::npos))
+        -:  964:        {
+        -:  965:            JSON_THROW(out_of_range::create(409, concat("BSON key cannot contain code point U+0000 (at byte ", std::to_string(it), ")"), &j));
+        -:  966:            static_cast<void>(j);
+        -:  967:        }
+        -:  968:
+        -:  969:        return /*id*/ 1ul + name.size() + /*zero-terminator*/1u;
+        -:  970:    }
+        -:  971:
+        -:  972:    /*!
+        -:  973:    @brief Writes the given @a element_type and @a name to the output adapter
+        -:  974:    */
+        -:  975:    void write_bson_entry_header(const string_t& name,
+        -:  976:                                 const std::uint8_t element_type)
+        -:  977:    {
+        -:  978:        oa->write_character(to_char_type(element_type)); // boolean
+        -:  979:        oa->write_characters(
+        -:  980:            reinterpret_cast<const CharType*>(name.c_str()),
+        -:  981:            name.size() + 1u);
+        -:  982:    }
+        -:  983:
+        -:  984:    /*!
+        -:  985:    @brief Writes a BSON element with key @a name and boolean value @a value
+        -:  986:    */
+        -:  987:    void write_bson_boolean(const string_t& name,
+        -:  988:                            const bool value)
+        -:  989:    {
+        -:  990:        write_bson_entry_header(name, 0x08);
+        -:  991:        oa->write_character(value ? to_char_type(0x01) : to_char_type(0x00));
+        -:  992:    }
+        -:  993:
+        -:  994:    /*!
+        -:  995:    @brief Writes a BSON element with key @a name and double value @a value
+        -:  996:    */
+        -:  997:    void write_bson_double(const string_t& name,
+        -:  998:                           const double value)
+        -:  999:    {
+        -: 1000:        write_bson_entry_header(name, 0x01);
+        -: 1001:        write_number<double>(value, true);
+        -: 1002:    }
+        -: 1003:
+        -: 1004:    /*!
+        -: 1005:    @return The size of the BSON-encoded string in @a value
+        -: 1006:    */
+        -: 1007:    static std::size_t calc_bson_string_size(const string_t& value)
+        -: 1008:    {
+        -: 1009:        return sizeof(std::int32_t) + value.size() + 1ul;
+        -: 1010:    }
+        -: 1011:
+        -: 1012:    /*!
+        -: 1013:    @brief Writes a BSON element with key @a name and string value @a value
+        -: 1014:    */
+        -: 1015:    void write_bson_string(const string_t& name,
+        -: 1016:                           const string_t& value)
+        -: 1017:    {
+        -: 1018:        write_bson_entry_header(name, 0x02);
+        -: 1019:
+        -: 1020:        write_number<std::int32_t>(static_cast<std::int32_t>(value.size() + 1ul), true);
+        -: 1021:        oa->write_characters(
+        -: 1022:            reinterpret_cast<const CharType*>(value.c_str()),
+        -: 1023:            value.size() + 1);
+        -: 1024:    }
+        -: 1025:
+        -: 1026:    /*!
+        -: 1027:    @brief Writes a BSON element with key @a name and null value
+        -: 1028:    */
+        -: 1029:    void write_bson_null(const string_t& name)
+        -: 1030:    {
+        -: 1031:        write_bson_entry_header(name, 0x0A);
+        -: 1032:    }
+        -: 1033:
+        -: 1034:    /*!
+        -: 1035:    @return The size of the BSON-encoded integer @a value
+        -: 1036:    */
+        -: 1037:    static std::size_t calc_bson_integer_size(const std::int64_t value)
+        -: 1038:    {
+        -: 1039:        return (std::numeric_limits<std::int32_t>::min)() <= value && value <= (std::numeric_limits<std::int32_t>::max)()
+        -: 1040:               ? sizeof(std::int32_t)
+        -: 1041:               : sizeof(std::int64_t);
+        -: 1042:    }
+        -: 1043:
+        -: 1044:    /*!
+        -: 1045:    @brief Writes a BSON element with key @a name and integer @a value
+        -: 1046:    */
+        -: 1047:    void write_bson_integer(const string_t& name,
+        -: 1048:                            const std::int64_t value)
+        -: 1049:    {
+        -: 1050:        if ((std::numeric_limits<std::int32_t>::min)() <= value && value <= (std::numeric_limits<std::int32_t>::max)())
+        -: 1051:        {
+        -: 1052:            write_bson_entry_header(name, 0x10); // int32
+        -: 1053:            write_number<std::int32_t>(static_cast<std::int32_t>(value), true);
+        -: 1054:        }
+        -: 1055:        else
+        -: 1056:        {
+        -: 1057:            write_bson_entry_header(name, 0x12); // int64
+        -: 1058:            write_number<std::int64_t>(static_cast<std::int64_t>(value), true);
+        -: 1059:        }
+        -: 1060:    }
+        -: 1061:
+        -: 1062:    /*!
+        -: 1063:    @return The size of the BSON-encoded unsigned integer in @a j
+        -: 1064:    */
+        -: 1065:    static constexpr std::size_t calc_bson_unsigned_size(const std::uint64_t value) noexcept
+        -: 1066:    {
+        -: 1067:        return (value <= static_cast<std::uint64_t>((std::numeric_limits<std::int32_t>::max)()))
+        -: 1068:               ? sizeof(std::int32_t)
+        -: 1069:               : sizeof(std::int64_t);
+        -: 1070:    }
+        -: 1071:
+        -: 1072:    /*!
+        -: 1073:    @brief Writes a BSON element with key @a name and unsigned @a value
+        -: 1074:    */
+        -: 1075:    void write_bson_unsigned(const string_t& name,
+        -: 1076:                             const BasicJsonType& j)
+        -: 1077:    {
+        -: 1078:        if (j.m_data.m_value.number_unsigned <= static_cast<std::uint64_t>((std::numeric_limits<std::int32_t>::max)()))
+        -: 1079:        {
+        -: 1080:            write_bson_entry_header(name, 0x10 /* int32 */);
+        -: 1081:            write_number<std::int32_t>(static_cast<std::int32_t>(j.m_data.m_value.number_unsigned), true);
+        -: 1082:        }
+        -: 1083:        else if (j.m_data.m_value.number_unsigned <= static_cast<std::uint64_t>((std::numeric_limits<std::int64_t>::max)()))
+        -: 1084:        {
+        -: 1085:            write_bson_entry_header(name, 0x12 /* int64 */);
+        -: 1086:            write_number<std::int64_t>(static_cast<std::int64_t>(j.m_data.m_value.number_unsigned), true);
+        -: 1087:        }
+        -: 1088:        else
+        -: 1089:        {
+        -: 1090:            JSON_THROW(out_of_range::create(407, concat("integer number ", std::to_string(j.m_data.m_value.number_unsigned), " cannot be represented by BSON as it does not fit int64"), &j));
+        -: 1091:        }
+        -: 1092:    }
+        -: 1093:
+        -: 1094:    /*!
+        -: 1095:    @brief Writes a BSON element with key @a name and object @a value
+        -: 1096:    */
+        -: 1097:    void write_bson_object_entry(const string_t& name,
+        -: 1098:                                 const typename BasicJsonType::object_t& value)
+        -: 1099:    {
+        -: 1100:        write_bson_entry_header(name, 0x03); // object
+        -: 1101:        write_bson_object(value);
+        -: 1102:    }
+        -: 1103:
+        -: 1104:    /*!
+        -: 1105:    @return The size of the BSON-encoded array @a value
+        -: 1106:    */
+        -: 1107:    static std::size_t calc_bson_array_size(const typename BasicJsonType::array_t& value)
+        -: 1108:    {
+        -: 1109:        std::size_t array_index = 0ul;
+        -: 1110:
+        -: 1111:        const std::size_t embedded_document_size = std::accumulate(std::begin(value), std::end(value), static_cast<std::size_t>(0), [&array_index](std::size_t result, const typename BasicJsonType::array_t::value_type & el)
+        -: 1112:        {
+        -: 1113:            return result + calc_bson_element_size(std::to_string(array_index++), el);
+        -: 1114:        });
+        -: 1115:
+        -: 1116:        return sizeof(std::int32_t) + embedded_document_size + 1ul;
+        -: 1117:    }
+        -: 1118:
+        -: 1119:    /*!
+        -: 1120:    @return The size of the BSON-encoded binary array @a value
+        -: 1121:    */
+        -: 1122:    static std::size_t calc_bson_binary_size(const typename BasicJsonType::binary_t& value)
+        -: 1123:    {
+        -: 1124:        return sizeof(std::int32_t) + value.size() + 1ul;
+        -: 1125:    }
+        -: 1126:
+        -: 1127:    /*!
+        -: 1128:    @brief Writes a BSON element with key @a name and array @a value
+        -: 1129:    */
+        -: 1130:    void write_bson_array(const string_t& name,
+        -: 1131:                          const typename BasicJsonType::array_t& value)
+        -: 1132:    {
+        -: 1133:        write_bson_entry_header(name, 0x04); // array
+        -: 1134:        write_number<std::int32_t>(static_cast<std::int32_t>(calc_bson_array_size(value)), true);
+        -: 1135:
+        -: 1136:        std::size_t array_index = 0ul;
+        -: 1137:
+        -: 1138:        for (const auto& el : value)
+        -: 1139:        {
+        -: 1140:            write_bson_element(std::to_string(array_index++), el);
+        -: 1141:        }
+        -: 1142:
+        -: 1143:        oa->write_character(to_char_type(0x00));
+        -: 1144:    }
+        -: 1145:
+        -: 1146:    /*!
+        -: 1147:    @brief Writes a BSON element with key @a name and binary value @a value
+        -: 1148:    */
+        -: 1149:    void write_bson_binary(const string_t& name,
+        -: 1150:                           const binary_t& value)
+        -: 1151:    {
+        -: 1152:        write_bson_entry_header(name, 0x05);
+        -: 1153:
+        -: 1154:        write_number<std::int32_t>(static_cast<std::int32_t>(value.size()), true);
+        -: 1155:        write_number(value.has_subtype() ? static_cast<std::uint8_t>(value.subtype()) : static_cast<std::uint8_t>(0x00));
+        -: 1156:
+        -: 1157:        oa->write_characters(reinterpret_cast<const CharType*>(value.data()), value.size());
+        -: 1158:    }
+        -: 1159:
+        -: 1160:    /*!
+        -: 1161:    @brief Calculates the size necessary to serialize the JSON value @a j with its @a name
+        -: 1162:    @return The calculated size for the BSON document entry for @a j with the given @a name.
+        -: 1163:    */
+        -: 1164:    static std::size_t calc_bson_element_size(const string_t& name,
+        -: 1165:            const BasicJsonType& j)
+        -: 1166:    {
+        -: 1167:        const auto header_size = calc_bson_entry_header_size(name, j);
+        -: 1168:        switch (j.type())
+        -: 1169:        {
+        -: 1170:            case value_t::object:
+        -: 1171:                return header_size + calc_bson_object_size(*j.m_data.m_value.object);
+        -: 1172:
+        -: 1173:            case value_t::array:
+        -: 1174:                return header_size + calc_bson_array_size(*j.m_data.m_value.array);
+        -: 1175:
+        -: 1176:            case value_t::binary:
+        -: 1177:                return header_size + calc_bson_binary_size(*j.m_data.m_value.binary);
+        -: 1178:
+        -: 1179:            case value_t::boolean:
+        -: 1180:                return header_size + 1ul;
+        -: 1181:
+        -: 1182:            case value_t::number_float:
+        -: 1183:                return header_size + 8ul;
+        -: 1184:
+        -: 1185:            case value_t::number_integer:
+        -: 1186:                return header_size + calc_bson_integer_size(j.m_data.m_value.number_integer);
+        -: 1187:
+        -: 1188:            case value_t::number_unsigned:
+        -: 1189:                return header_size + calc_bson_unsigned_size(j.m_data.m_value.number_unsigned);
+        -: 1190:
+        -: 1191:            case value_t::string:
+        -: 1192:                return header_size + calc_bson_string_size(*j.m_data.m_value.string);
+        -: 1193:
+        -: 1194:            case value_t::null:
+        -: 1195:                return header_size + 0ul;
+        -: 1196:
+        -: 1197:            // LCOV_EXCL_START
+        -: 1198:            case value_t::discarded:
+        -: 1199:            default:
+        -: 1200:                JSON_ASSERT(false); // NOLINT(cert-dcl03-c,hicpp-static-assert,misc-static-assert)
+        -: 1201:                return 0ul;
+        -: 1202:                // LCOV_EXCL_STOP
+        -: 1203:        }
+        -: 1204:    }
+        -: 1205:
+        -: 1206:    /*!
+        -: 1207:    @brief Serializes the JSON value @a j to BSON and associates it with the
+        -: 1208:           key @a name.
+        -: 1209:    @param name The name to associate with the JSON entity @a j within the
+        -: 1210:                current BSON document
+        -: 1211:    */
+        -: 1212:    void write_bson_element(const string_t& name,
+        -: 1213:                            const BasicJsonType& j)
+        -: 1214:    {
+        -: 1215:        switch (j.type())
+        -: 1216:        {
+        -: 1217:            case value_t::object:
+        -: 1218:                return write_bson_object_entry(name, *j.m_data.m_value.object);
+        -: 1219:
+        -: 1220:            case value_t::array:
+        -: 1221:                return write_bson_array(name, *j.m_data.m_value.array);
+        -: 1222:
+        -: 1223:            case value_t::binary:
+        -: 1224:                return write_bson_binary(name, *j.m_data.m_value.binary);
+        -: 1225:
+        -: 1226:            case value_t::boolean:
+        -: 1227:                return write_bson_boolean(name, j.m_data.m_value.boolean);
+        -: 1228:
+        -: 1229:            case value_t::number_float:
+        -: 1230:                return write_bson_double(name, j.m_data.m_value.number_float);
+        -: 1231:
+        -: 1232:            case value_t::number_integer:
+        -: 1233:                return write_bson_integer(name, j.m_data.m_value.number_integer);
+        -: 1234:
+        -: 1235:            case value_t::number_unsigned:
+        -: 1236:                return write_bson_unsigned(name, j);
+        -: 1237:
+        -: 1238:            case value_t::string:
+        -: 1239:                return write_bson_string(name, *j.m_data.m_value.string);
+        -: 1240:
+        -: 1241:            case value_t::null:
+        -: 1242:                return write_bson_null(name);
+        -: 1243:
+        -: 1244:            // LCOV_EXCL_START
+        -: 1245:            case value_t::discarded:
+        -: 1246:            default:
+        -: 1247:                JSON_ASSERT(false); // NOLINT(cert-dcl03-c,hicpp-static-assert,misc-static-assert)
+        -: 1248:                return;
+        -: 1249:                // LCOV_EXCL_STOP
+        -: 1250:        }
+        -: 1251:    }
+        -: 1252:
+        -: 1253:    /*!
+        -: 1254:    @brief Calculates the size of the BSON serialization of the given
+        -: 1255:           JSON-object @a j.
+        -: 1256:    @param[in] value  JSON value to serialize
+        -: 1257:    @pre       value.type() == value_t::object
+        -: 1258:    */
+        -: 1259:    static std::size_t calc_bson_object_size(const typename BasicJsonType::object_t& value)
+        -: 1260:    {
+        -: 1261:        const std::size_t document_size = std::accumulate(value.begin(), value.end(), static_cast<std::size_t>(0),
+        -: 1262:                                          [](size_t result, const typename BasicJsonType::object_t::value_type & el)
+        -: 1263:        {
+        -: 1264:            return result += calc_bson_element_size(el.first, el.second);
+        -: 1265:        });
+        -: 1266:
+        -: 1267:        return sizeof(std::int32_t) + document_size + 1ul;
+        -: 1268:    }
+        -: 1269:
+        -: 1270:    /*!
+        -: 1271:    @param[in] value  JSON value to serialize
+        -: 1272:    @pre       value.type() == value_t::object
+        -: 1273:    */
+        -: 1274:    void write_bson_object(const typename BasicJsonType::object_t& value)
+        -: 1275:    {
+        -: 1276:        write_number<std::int32_t>(static_cast<std::int32_t>(calc_bson_object_size(value)), true);
+        -: 1277:
+        -: 1278:        for (const auto& el : value)
+        -: 1279:        {
+        -: 1280:            write_bson_element(el.first, el.second);
+        -: 1281:        }
+        -: 1282:
+        -: 1283:        oa->write_character(to_char_type(0x00));
+        -: 1284:    }
+        -: 1285:
+        -: 1286:    //////////
+        -: 1287:    // CBOR //
+        -: 1288:    //////////
+        -: 1289:
+        -: 1290:    static constexpr CharType get_cbor_float_prefix(float /*unused*/)
+        -: 1291:    {
+        -: 1292:        return to_char_type(0xFA);  // Single-Precision Float
+        -: 1293:    }
+        -: 1294:
+        -: 1295:    static constexpr CharType get_cbor_float_prefix(double /*unused*/)
+        -: 1296:    {
+        -: 1297:        return to_char_type(0xFB);  // Double-Precision Float
+        -: 1298:    }
+        -: 1299:
+        -: 1300:    /////////////
+        -: 1301:    // MsgPack //
+        -: 1302:    /////////////
+        -: 1303:
+        -: 1304:    static constexpr CharType get_msgpack_float_prefix(float /*unused*/)
+        -: 1305:    {
+        -: 1306:        return to_char_type(0xCA);  // float 32
+        -: 1307:    }
+        -: 1308:
+        -: 1309:    static constexpr CharType get_msgpack_float_prefix(double /*unused*/)
+        -: 1310:    {
+        -: 1311:        return to_char_type(0xCB);  // float 64
+        -: 1312:    }
+        -: 1313:
+        -: 1314:    ////////////
+        -: 1315:    // UBJSON //
+        -: 1316:    ////////////
+        -: 1317:
+        -: 1318:    // UBJSON: write number (floating point)
+        -: 1319:    template<typename NumberType, typename std::enable_if<
+        -: 1320:                 std::is_floating_point<NumberType>::value, int>::type = 0>
+        -: 1321:    void write_number_with_ubjson_prefix(const NumberType n,
+        -: 1322:                                         const bool add_prefix,
+        -: 1323:                                         const bool use_bjdata)
+        -: 1324:    {
+        -: 1325:        if (add_prefix)
+        -: 1326:        {
+        -: 1327:            oa->write_character(get_ubjson_float_prefix(n));
+        -: 1328:        }
+        -: 1329:        write_number(n, use_bjdata);
+        -: 1330:    }
+        -: 1331:
+        -: 1332:    // UBJSON: write number (unsigned integer)
+        -: 1333:    template<typename NumberType, typename std::enable_if<
+        -: 1334:                 std::is_unsigned<NumberType>::value, int>::type = 0>
+        -: 1335:    void write_number_with_ubjson_prefix(const NumberType n,
+        -: 1336:                                         const bool add_prefix,
+        -: 1337:                                         const bool use_bjdata)
+        -: 1338:    {
+        -: 1339:        if (n <= static_cast<std::uint64_t>((std::numeric_limits<std::int8_t>::max)()))
+        -: 1340:        {
+        -: 1341:            if (add_prefix)
+        -: 1342:            {
+        -: 1343:                oa->write_character(to_char_type('i'));  // int8
+        -: 1344:            }
+        -: 1345:            write_number(static_cast<std::uint8_t>(n), use_bjdata);
+        -: 1346:        }
+        -: 1347:        else if (n <= (std::numeric_limits<std::uint8_t>::max)())
+        -: 1348:        {
+        -: 1349:            if (add_prefix)
+        -: 1350:            {
+        -: 1351:                oa->write_character(to_char_type('U'));  // uint8
+        -: 1352:            }
+        -: 1353:            write_number(static_cast<std::uint8_t>(n), use_bjdata);
+        -: 1354:        }
+        -: 1355:        else if (n <= static_cast<std::uint64_t>((std::numeric_limits<std::int16_t>::max)()))
+        -: 1356:        {
+        -: 1357:            if (add_prefix)
+        -: 1358:            {
+        -: 1359:                oa->write_character(to_char_type('I'));  // int16
+        -: 1360:            }
+        -: 1361:            write_number(static_cast<std::int16_t>(n), use_bjdata);
+        -: 1362:        }
+        -: 1363:        else if (use_bjdata && n <= static_cast<uint64_t>((std::numeric_limits<uint16_t>::max)()))
+        -: 1364:        {
+        -: 1365:            if (add_prefix)
+        -: 1366:            {
+        -: 1367:                oa->write_character(to_char_type('u'));  // uint16 - bjdata only
+        -: 1368:            }
+        -: 1369:            write_number(static_cast<std::uint16_t>(n), use_bjdata);
+        -: 1370:        }
+        -: 1371:        else if (n <= static_cast<std::uint64_t>((std::numeric_limits<std::int32_t>::max)()))
+        -: 1372:        {
+        -: 1373:            if (add_prefix)
+        -: 1374:            {
+        -: 1375:                oa->write_character(to_char_type('l'));  // int32
+        -: 1376:            }
+        -: 1377:            write_number(static_cast<std::int32_t>(n), use_bjdata);
+        -: 1378:        }
+        -: 1379:        else if (use_bjdata && n <= static_cast<uint64_t>((std::numeric_limits<uint32_t>::max)()))
+        -: 1380:        {
+        -: 1381:            if (add_prefix)
+        -: 1382:            {
+        -: 1383:                oa->write_character(to_char_type('m'));  // uint32 - bjdata only
+        -: 1384:            }
+        -: 1385:            write_number(static_cast<std::uint32_t>(n), use_bjdata);
+        -: 1386:        }
+        -: 1387:        else if (n <= static_cast<std::uint64_t>((std::numeric_limits<std::int64_t>::max)()))
+        -: 1388:        {
+        -: 1389:            if (add_prefix)
+        -: 1390:            {
+        -: 1391:                oa->write_character(to_char_type('L'));  // int64
+        -: 1392:            }
+        -: 1393:            write_number(static_cast<std::int64_t>(n), use_bjdata);
+        -: 1394:        }
+        -: 1395:        else if (use_bjdata && n <= (std::numeric_limits<uint64_t>::max)())
+        -: 1396:        {
+        -: 1397:            if (add_prefix)
+        -: 1398:            {
+        -: 1399:                oa->write_character(to_char_type('M'));  // uint64 - bjdata only
+        -: 1400:            }
+        -: 1401:            write_number(static_cast<std::uint64_t>(n), use_bjdata);
+        -: 1402:        }
+        -: 1403:        else
+        -: 1404:        {
+        -: 1405:            if (add_prefix)
+        -: 1406:            {
+        -: 1407:                oa->write_character(to_char_type('H'));  // high-precision number
+        -: 1408:            }
+        -: 1409:
+        -: 1410:            const auto number = BasicJsonType(n).dump();
+        -: 1411:            write_number_with_ubjson_prefix(number.size(), true, use_bjdata);
+        -: 1412:            for (std::size_t i = 0; i < number.size(); ++i)
+        -: 1413:            {
+        -: 1414:                oa->write_character(to_char_type(static_cast<std::uint8_t>(number[i])));
+        -: 1415:            }
+        -: 1416:        }
+        -: 1417:    }
+        -: 1418:
+        -: 1419:    // UBJSON: write number (signed integer)
+        -: 1420:    template < typename NumberType, typename std::enable_if <
+        -: 1421:                   std::is_signed<NumberType>::value&&
+        -: 1422:                   !std::is_floating_point<NumberType>::value, int >::type = 0 >
+        -: 1423:    void write_number_with_ubjson_prefix(const NumberType n,
+        -: 1424:                                         const bool add_prefix,
+        -: 1425:                                         const bool use_bjdata)
+        -: 1426:    {
+        -: 1427:        if ((std::numeric_limits<std::int8_t>::min)() <= n && n <= (std::numeric_limits<std::int8_t>::max)())
+        -: 1428:        {
+        -: 1429:            if (add_prefix)
+        -: 1430:            {
+        -: 1431:                oa->write_character(to_char_type('i'));  // int8
+        -: 1432:            }
+        -: 1433:            write_number(static_cast<std::int8_t>(n), use_bjdata);
+        -: 1434:        }
+        -: 1435:        else if (static_cast<std::int64_t>((std::numeric_limits<std::uint8_t>::min)()) <= n && n <= static_cast<std::int64_t>((std::numeric_limits<std::uint8_t>::max)()))
+        -: 1436:        {
+        -: 1437:            if (add_prefix)
+        -: 1438:            {
+        -: 1439:                oa->write_character(to_char_type('U'));  // uint8
+        -: 1440:            }
+        -: 1441:            write_number(static_cast<std::uint8_t>(n), use_bjdata);
+        -: 1442:        }
+        -: 1443:        else if ((std::numeric_limits<std::int16_t>::min)() <= n && n <= (std::numeric_limits<std::int16_t>::max)())
+        -: 1444:        {
+        -: 1445:            if (add_prefix)
+        -: 1446:            {
+        -: 1447:                oa->write_character(to_char_type('I'));  // int16
+        -: 1448:            }
+        -: 1449:            write_number(static_cast<std::int16_t>(n), use_bjdata);
+        -: 1450:        }
+        -: 1451:        else if (use_bjdata && (static_cast<std::int64_t>((std::numeric_limits<std::uint16_t>::min)()) <= n && n <= static_cast<std::int64_t>((std::numeric_limits<std::uint16_t>::max)())))
+        -: 1452:        {
+        -: 1453:            if (add_prefix)
+        -: 1454:            {
+        -: 1455:                oa->write_character(to_char_type('u'));  // uint16 - bjdata only
+        -: 1456:            }
+        -: 1457:            write_number(static_cast<uint16_t>(n), use_bjdata);
+        -: 1458:        }
+        -: 1459:        else if ((std::numeric_limits<std::int32_t>::min)() <= n && n <= (std::numeric_limits<std::int32_t>::max)())
+        -: 1460:        {
+        -: 1461:            if (add_prefix)
+        -: 1462:            {
+        -: 1463:                oa->write_character(to_char_type('l'));  // int32
+        -: 1464:            }
+        -: 1465:            write_number(static_cast<std::int32_t>(n), use_bjdata);
+        -: 1466:        }
+        -: 1467:        else if (use_bjdata && (static_cast<std::int64_t>((std::numeric_limits<std::uint32_t>::min)()) <= n && n <= static_cast<std::int64_t>((std::numeric_limits<std::uint32_t>::max)())))
+        -: 1468:        {
+        -: 1469:            if (add_prefix)
+        -: 1470:            {
+        -: 1471:                oa->write_character(to_char_type('m'));  // uint32 - bjdata only
+        -: 1472:            }
+        -: 1473:            write_number(static_cast<uint32_t>(n), use_bjdata);
+        -: 1474:        }
+        -: 1475:        else if ((std::numeric_limits<std::int64_t>::min)() <= n && n <= (std::numeric_limits<std::int64_t>::max)())
+        -: 1476:        {
+        -: 1477:            if (add_prefix)
+        -: 1478:            {
+        -: 1479:                oa->write_character(to_char_type('L'));  // int64
+        -: 1480:            }
+        -: 1481:            write_number(static_cast<std::int64_t>(n), use_bjdata);
+        -: 1482:        }
+        -: 1483:        // LCOV_EXCL_START
+        -: 1484:        else
+        -: 1485:        {
+        -: 1486:            if (add_prefix)
+        -: 1487:            {
+        -: 1488:                oa->write_character(to_char_type('H'));  // high-precision number
+        -: 1489:            }
+        -: 1490:
+        -: 1491:            const auto number = BasicJsonType(n).dump();
+        -: 1492:            write_number_with_ubjson_prefix(number.size(), true, use_bjdata);
+        -: 1493:            for (std::size_t i = 0; i < number.size(); ++i)
+        -: 1494:            {
+        -: 1495:                oa->write_character(to_char_type(static_cast<std::uint8_t>(number[i])));
+        -: 1496:            }
+        -: 1497:        }
+        -: 1498:        // LCOV_EXCL_STOP
+        -: 1499:    }
+        -: 1500:
+        -: 1501:    /*!
+        -: 1502:    @brief determine the type prefix of container values
+        -: 1503:    */
+        -: 1504:    CharType ubjson_prefix(const BasicJsonType& j, const bool use_bjdata) const noexcept
+        -: 1505:    {
+        -: 1506:        switch (j.type())
+        -: 1507:        {
+        -: 1508:            case value_t::null:
+        -: 1509:                return 'Z';
+        -: 1510:
+        -: 1511:            case value_t::boolean:
+        -: 1512:                return j.m_data.m_value.boolean ? 'T' : 'F';
+        -: 1513:
+        -: 1514:            case value_t::number_integer:
+        -: 1515:            {
+        -: 1516:                if ((std::numeric_limits<std::int8_t>::min)() <= j.m_data.m_value.number_integer && j.m_data.m_value.number_integer <= (std::numeric_limits<std::int8_t>::max)())
+        -: 1517:                {
+        -: 1518:                    return 'i';
+        -: 1519:                }
+        -: 1520:                if ((std::numeric_limits<std::uint8_t>::min)() <= j.m_data.m_value.number_integer && j.m_data.m_value.number_integer <= (std::numeric_limits<std::uint8_t>::max)())
+        -: 1521:                {
+        -: 1522:                    return 'U';
+        -: 1523:                }
+        -: 1524:                if ((std::numeric_limits<std::int16_t>::min)() <= j.m_data.m_value.number_integer && j.m_data.m_value.number_integer <= (std::numeric_limits<std::int16_t>::max)())
+        -: 1525:                {
+        -: 1526:                    return 'I';
+        -: 1527:                }
+        -: 1528:                if (use_bjdata && ((std::numeric_limits<std::uint16_t>::min)() <= j.m_data.m_value.number_integer && j.m_data.m_value.number_integer <= (std::numeric_limits<std::uint16_t>::max)()))
+        -: 1529:                {
+        -: 1530:                    return 'u';
+        -: 1531:                }
+        -: 1532:                if ((std::numeric_limits<std::int32_t>::min)() <= j.m_data.m_value.number_integer && j.m_data.m_value.number_integer <= (std::numeric_limits<std::int32_t>::max)())
+        -: 1533:                {
+        -: 1534:                    return 'l';
+        -: 1535:                }
+        -: 1536:                if (use_bjdata && ((std::numeric_limits<std::uint32_t>::min)() <= j.m_data.m_value.number_integer && j.m_data.m_value.number_integer <= (std::numeric_limits<std::uint32_t>::max)()))
+        -: 1537:                {
+        -: 1538:                    return 'm';
+        -: 1539:                }
+        -: 1540:                if ((std::numeric_limits<std::int64_t>::min)() <= j.m_data.m_value.number_integer && j.m_data.m_value.number_integer <= (std::numeric_limits<std::int64_t>::max)())
+        -: 1541:                {
+        -: 1542:                    return 'L';
+        -: 1543:                }
+        -: 1544:                // anything else is treated as high-precision number
+        -: 1545:                return 'H'; // LCOV_EXCL_LINE
+        -: 1546:            }
+        -: 1547:
+        -: 1548:            case value_t::number_unsigned:
+        -: 1549:            {
+        -: 1550:                if (j.m_data.m_value.number_unsigned <= static_cast<std::uint64_t>((std::numeric_limits<std::int8_t>::max)()))
+        -: 1551:                {
+        -: 1552:                    return 'i';
+        -: 1553:                }
+        -: 1554:                if (j.m_data.m_value.number_unsigned <= static_cast<std::uint64_t>((std::numeric_limits<std::uint8_t>::max)()))
+        -: 1555:                {
+        -: 1556:                    return 'U';
+        -: 1557:                }
+        -: 1558:                if (j.m_data.m_value.number_unsigned <= static_cast<std::uint64_t>((std::numeric_limits<std::int16_t>::max)()))
+        -: 1559:                {
+        -: 1560:                    return 'I';
+        -: 1561:                }
+        -: 1562:                if (use_bjdata && j.m_data.m_value.number_unsigned <= static_cast<std::uint64_t>((std::numeric_limits<std::uint16_t>::max)()))
+        -: 1563:                {
+        -: 1564:                    return 'u';
+        -: 1565:                }
+        -: 1566:                if (j.m_data.m_value.number_unsigned <= static_cast<std::uint64_t>((std::numeric_limits<std::int32_t>::max)()))
+        -: 1567:                {
+        -: 1568:                    return 'l';
+        -: 1569:                }
+        -: 1570:                if (use_bjdata && j.m_data.m_value.number_unsigned <= static_cast<std::uint64_t>((std::numeric_limits<std::uint32_t>::max)()))
+        -: 1571:                {
+        -: 1572:                    return 'm';
+        -: 1573:                }
+        -: 1574:                if (j.m_data.m_value.number_unsigned <= static_cast<std::uint64_t>((std::numeric_limits<std::int64_t>::max)()))
+        -: 1575:                {
+        -: 1576:                    return 'L';
+        -: 1577:                }
+        -: 1578:                if (use_bjdata && j.m_data.m_value.number_unsigned <= (std::numeric_limits<std::uint64_t>::max)())
+        -: 1579:                {
+        -: 1580:                    return 'M';
+        -: 1581:                }
+        -: 1582:                // anything else is treated as high-precision number
+        -: 1583:                return 'H'; // LCOV_EXCL_LINE
+        -: 1584:            }
+        -: 1585:
+        -: 1586:            case value_t::number_float:
+        -: 1587:                return get_ubjson_float_prefix(j.m_data.m_value.number_float);
+        -: 1588:
+        -: 1589:            case value_t::string:
+        -: 1590:                return 'S';
+        -: 1591:
+        -: 1592:            case value_t::array: // fallthrough
+        -: 1593:            case value_t::binary:
+        -: 1594:                return '[';
+        -: 1595:
+        -: 1596:            case value_t::object:
+        -: 1597:                return '{';
+        -: 1598:
+        -: 1599:            case value_t::discarded:
+        -: 1600:            default:  // discarded values
+        -: 1601:                return 'N';
+        -: 1602:        }
+        -: 1603:    }
+        -: 1604:
+        -: 1605:    static constexpr CharType get_ubjson_float_prefix(float /*unused*/)
+        -: 1606:    {
+        -: 1607:        return 'd';  // float 32
+        -: 1608:    }
+        -: 1609:
+        -: 1610:    static constexpr CharType get_ubjson_float_prefix(double /*unused*/)
+        -: 1611:    {
+        -: 1612:        return 'D';  // float 64
+        -: 1613:    }
+        -: 1614:
+        -: 1615:    /*!
+        -: 1616:    @return false if the object is successfully converted to a bjdata ndarray, true if the type or size is invalid
+        -: 1617:    */
+        -: 1618:    bool write_bjdata_ndarray(const typename BasicJsonType::object_t& value, const bool use_count, const bool use_type)
+        -: 1619:    {
+        -: 1620:        std::map<string_t, CharType> bjdtype = {{"uint8", 'U'},  {"int8", 'i'},  {"uint16", 'u'}, {"int16", 'I'},
+        -: 1621:            {"uint32", 'm'}, {"int32", 'l'}, {"uint64", 'M'}, {"int64", 'L'}, {"single", 'd'}, {"double", 'D'}, {"char", 'C'}
+        -: 1622:        };
+        -: 1623:
+        -: 1624:        string_t key = "_ArrayType_";
+        -: 1625:        auto it = bjdtype.find(static_cast<string_t>(value.at(key)));
+        -: 1626:        if (it == bjdtype.end())
+        -: 1627:        {
+        -: 1628:            return true;
+        -: 1629:        }
+        -: 1630:        CharType dtype = it->second;
+        -: 1631:
+        -: 1632:        key = "_ArraySize_";
+        -: 1633:        std::size_t len = (value.at(key).empty() ? 0 : 1);
+        -: 1634:        for (const auto& el : value.at(key))
+        -: 1635:        {
+        -: 1636:            len *= static_cast<std::size_t>(el.m_data.m_value.number_unsigned);
+        -: 1637:        }
+        -: 1638:
+        -: 1639:        key = "_ArrayData_";
+        -: 1640:        if (value.at(key).size() != len)
+        -: 1641:        {
+        -: 1642:            return true;
+        -: 1643:        }
+        -: 1644:
+        -: 1645:        oa->write_character('[');
+        -: 1646:        oa->write_character('$');
+        -: 1647:        oa->write_character(dtype);
+        -: 1648:        oa->write_character('#');
+        -: 1649:
+        -: 1650:        key = "_ArraySize_";
+        -: 1651:        write_ubjson(value.at(key), use_count, use_type, true,  true);
+        -: 1652:
+        -: 1653:        key = "_ArrayData_";
+        -: 1654:        if (dtype == 'U' || dtype == 'C')
+        -: 1655:        {
+        -: 1656:            for (const auto& el : value.at(key))
+        -: 1657:            {
+        -: 1658:                write_number(static_cast<std::uint8_t>(el.m_data.m_value.number_unsigned), true);
+        -: 1659:            }
+        -: 1660:        }
+        -: 1661:        else if (dtype == 'i')
+        -: 1662:        {
+        -: 1663:            for (const auto& el : value.at(key))
+        -: 1664:            {
+        -: 1665:                write_number(static_cast<std::int8_t>(el.m_data.m_value.number_integer), true);
+        -: 1666:            }
+        -: 1667:        }
+        -: 1668:        else if (dtype == 'u')
+        -: 1669:        {
+        -: 1670:            for (const auto& el : value.at(key))
+        -: 1671:            {
+        -: 1672:                write_number(static_cast<std::uint16_t>(el.m_data.m_value.number_unsigned), true);
+        -: 1673:            }
+        -: 1674:        }
+        -: 1675:        else if (dtype == 'I')
+        -: 1676:        {
+        -: 1677:            for (const auto& el : value.at(key))
+        -: 1678:            {
+        -: 1679:                write_number(static_cast<std::int16_t>(el.m_data.m_value.number_integer), true);
+        -: 1680:            }
+        -: 1681:        }
+        -: 1682:        else if (dtype == 'm')
+        -: 1683:        {
+        -: 1684:            for (const auto& el : value.at(key))
+        -: 1685:            {
+        -: 1686:                write_number(static_cast<std::uint32_t>(el.m_data.m_value.number_unsigned), true);
+        -: 1687:            }
+        -: 1688:        }
+        -: 1689:        else if (dtype == 'l')
+        -: 1690:        {
+        -: 1691:            for (const auto& el : value.at(key))
+        -: 1692:            {
+        -: 1693:                write_number(static_cast<std::int32_t>(el.m_data.m_value.number_integer), true);
+        -: 1694:            }
+        -: 1695:        }
+        -: 1696:        else if (dtype == 'M')
+        -: 1697:        {
+        -: 1698:            for (const auto& el : value.at(key))
+        -: 1699:            {
+        -: 1700:                write_number(static_cast<std::uint64_t>(el.m_data.m_value.number_unsigned), true);
+        -: 1701:            }
+        -: 1702:        }
+        -: 1703:        else if (dtype == 'L')
+        -: 1704:        {
+        -: 1705:            for (const auto& el : value.at(key))
+        -: 1706:            {
+        -: 1707:                write_number(static_cast<std::int64_t>(el.m_data.m_value.number_integer), true);
+        -: 1708:            }
+        -: 1709:        }
+        -: 1710:        else if (dtype == 'd')
+        -: 1711:        {
+        -: 1712:            for (const auto& el : value.at(key))
+        -: 1713:            {
+        -: 1714:                write_number(static_cast<float>(el.m_data.m_value.number_float), true);
+        -: 1715:            }
+        -: 1716:        }
+        -: 1717:        else if (dtype == 'D')
+        -: 1718:        {
+        -: 1719:            for (const auto& el : value.at(key))
+        -: 1720:            {
+        -: 1721:                write_number(static_cast<double>(el.m_data.m_value.number_float), true);
+        -: 1722:            }
+        -: 1723:        }
+        -: 1724:        return false;
+        -: 1725:    }
+        -: 1726:
+        -: 1727:    ///////////////////////
+        -: 1728:    // Utility functions //
+        -: 1729:    ///////////////////////
+        -: 1730:
+        -: 1731:    /*
+        -: 1732:    @brief write a number to output input
+        -: 1733:    @param[in] n number of type @a NumberType
+        -: 1734:    @param[in] OutputIsLittleEndian Set to true if output data is
+        -: 1735:                                 required to be little endian
+        -: 1736:    @tparam NumberType the type of the number
+        -: 1737:
+        -: 1738:    @note This function needs to respect the system's endianness, because bytes
+        -: 1739:          in CBOR, MessagePack, and UBJSON are stored in network order (big
+        -: 1740:          endian) and therefore need reordering on little endian systems.
+        -: 1741:          On the other hand, BSON and BJData use little endian and should reorder
+        -: 1742:          on big endian systems.
+        -: 1743:    */
+        -: 1744:    template<typename NumberType>
+        -: 1745:    void write_number(const NumberType n, const bool OutputIsLittleEndian = false)
+        -: 1746:    {
+        -: 1747:        // step 1: write number to array of length NumberType
+        -: 1748:        std::array<CharType, sizeof(NumberType)> vec{};
+        -: 1749:        std::memcpy(vec.data(), &n, sizeof(NumberType));
+        -: 1750:
+        -: 1751:        // step 2: write array to output (with possible reordering)
+        -: 1752:        if (is_little_endian != OutputIsLittleEndian)
+        -: 1753:        {
+        -: 1754:            // reverse byte order prior to conversion if necessary
+        -: 1755:            std::reverse(vec.begin(), vec.end());
+        -: 1756:        }
+        -: 1757:
+        -: 1758:        oa->write_characters(vec.data(), sizeof(NumberType));
+        -: 1759:    }
+        -: 1760:
+        -: 1761:    void write_compact_float(const number_float_t n, detail::input_format_t format)
+        -: 1762:    {
+        -: 1763:#ifdef __GNUC__
+        -: 1764:#pragma GCC diagnostic push
+        -: 1765:#pragma GCC diagnostic ignored "-Wfloat-equal"
+        -: 1766:#endif
+        -: 1767:        if (static_cast<double>(n) >= static_cast<double>(std::numeric_limits<float>::lowest()) &&
+        -: 1768:                static_cast<double>(n) <= static_cast<double>((std::numeric_limits<float>::max)()) &&
+        -: 1769:                static_cast<double>(static_cast<float>(n)) == static_cast<double>(n))
+        -: 1770:        {
+        -: 1771:            oa->write_character(format == detail::input_format_t::cbor
+        -: 1772:                                ? get_cbor_float_prefix(static_cast<float>(n))
+        -: 1773:                                : get_msgpack_float_prefix(static_cast<float>(n)));
+        -: 1774:            write_number(static_cast<float>(n));
+        -: 1775:        }
+        -: 1776:        else
+        -: 1777:        {
+        -: 1778:            oa->write_character(format == detail::input_format_t::cbor
+        -: 1779:                                ? get_cbor_float_prefix(n)
+        -: 1780:                                : get_msgpack_float_prefix(n));
+        -: 1781:            write_number(n);
+        -: 1782:        }
+        -: 1783:#ifdef __GNUC__
+        -: 1784:#pragma GCC diagnostic pop
+        -: 1785:#endif
+        -: 1786:    }
+        -: 1787:
+        -: 1788:  public:
+        -: 1789:    // The following to_char_type functions are implement the conversion
+        -: 1790:    // between uint8_t and CharType. In case CharType is not unsigned,
+        -: 1791:    // such a conversion is required to allow values greater than 128.
+        -: 1792:    // See <https://github.com/nlohmann/json/issues/1286> for a discussion.
+        -: 1793:    template < typename C = CharType,
+        -: 1794:               enable_if_t < std::is_signed<C>::value && std::is_signed<char>::value > * = nullptr >
+        -: 1795:    static constexpr CharType to_char_type(std::uint8_t x) noexcept
+        -: 1796:    {
+        -: 1797:        return *reinterpret_cast<char*>(&x);
+        -: 1798:    }
+        -: 1799:
+        -: 1800:    template < typename C = CharType,
+        -: 1801:               enable_if_t < std::is_signed<C>::value && std::is_unsigned<char>::value > * = nullptr >
+        -: 1802:    static CharType to_char_type(std::uint8_t x) noexcept
+        -: 1803:    {
+        -: 1804:        static_assert(sizeof(std::uint8_t) == sizeof(CharType), "size of CharType must be equal to std::uint8_t");
+        -: 1805:        static_assert(std::is_trivial<CharType>::value, "CharType must be trivial");
+        -: 1806:        CharType result;
+        -: 1807:        std::memcpy(&result, &x, sizeof(x));
+        -: 1808:        return result;
+        -: 1809:    }
+        -: 1810:
+        -: 1811:    template<typename C = CharType,
+        -: 1812:             enable_if_t<std::is_unsigned<C>::value>* = nullptr>
+        -: 1813:    static constexpr CharType to_char_type(std::uint8_t x) noexcept
+        -: 1814:    {
+        -: 1815:        return x;
+        -: 1816:    }
+        -: 1817:
+        -: 1818:    template < typename InputCharType, typename C = CharType,
+        -: 1819:               enable_if_t <
+        -: 1820:                   std::is_signed<C>::value &&
+        -: 1821:                   std::is_signed<char>::value &&
+        -: 1822:                   std::is_same<char, typename std::remove_cv<InputCharType>::type>::value
+        -: 1823:                   > * = nullptr >
+function _ZN8nlohmann16json_abi_v3_11_36detail13binary_writerINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEbxydSaNS0_14adl_serializerES5_IhSaIhEEvEEcE12to_char_typeIccLPv0EEEcT_ called 0 returned 0% blocks executed 0%
+    #####: 1824:    static constexpr CharType to_char_type(InputCharType x) noexcept
+        -: 1825:    {
+    #####: 1826:        return x;
+    %%%%%: 1826-block  0
+        -: 1827:    }
+        -: 1828:
+        -: 1829:  private:
+        -: 1830:    /// whether we can assume little endianness
+        -: 1831:    const bool is_little_endian = little_endianness();
+        -: 1832:
+        -: 1833:    /// the output
+        -: 1834:    output_adapter_t<CharType> oa = nullptr;
+        -: 1835:};
+        -: 1836:
+        -: 1837:}  // namespace detail
+        -: 1838:NLOHMANN_JSON_NAMESPACE_END

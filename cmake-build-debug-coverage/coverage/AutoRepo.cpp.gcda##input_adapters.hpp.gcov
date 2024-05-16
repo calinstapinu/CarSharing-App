@@ -1,0 +1,522 @@
+        -:    0:Source:C:/Users/rares/CLionProjects/OOP/Json-test/include/nlohmann/detail/input/input_adapters.hpp
+        -:    0:Graph:C:\Users\rares\CLionProjects\OOP\Json-test\cmake-build-debug-coverage\CMakeFiles\Json_test.dir\Repositories\AutoRepo\AutoRepo.cpp.gcno
+        -:    0:Data:C:\Users\rares\CLionProjects\OOP\Json-test\cmake-build-debug-coverage\CMakeFiles\Json_test.dir\Repositories\AutoRepo\AutoRepo.cpp.gcda
+        -:    0:Runs:1
+        -:    1://     __ _____ _____ _____
+        -:    2://  __|  |   __|     |   | |  JSON for Modern C++
+        -:    3:// |  |  |__   |  |  | | | |  version 3.11.3
+        -:    4:// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+        -:    5://
+        -:    6:// SPDX-FileCopyrightText: 2013-2023 Niels Lohmann <https://nlohmann.me>
+        -:    7:// SPDX-License-Identifier: MIT
+        -:    8:
+        -:    9:#pragma once
+        -:   10:
+        -:   11:#include <array> // array
+        -:   12:#include <cstddef> // size_t
+        -:   13:#include <cstring> // strlen
+        -:   14:#include <iterator> // begin, end, iterator_traits, random_access_iterator_tag, distance, next
+        -:   15:#include <memory> // shared_ptr, make_shared, addressof
+        -:   16:#include <numeric> // accumulate
+        -:   17:#include <string> // string, char_traits
+        -:   18:#include <type_traits> // enable_if, is_base_of, is_pointer, is_integral, remove_pointer
+        -:   19:#include <utility> // pair, declval
+        -:   20:
+        -:   21:#ifndef JSON_NO_IO
+        -:   22:    #include <cstdio>   // FILE *
+        -:   23:    #include <istream>  // istream
+        -:   24:#endif                  // JSON_NO_IO
+        -:   25:
+        -:   26:#include <nlohmann/detail/iterators/iterator_traits.hpp>
+        -:   27:#include <nlohmann/detail/macro_scope.hpp>
+        -:   28:#include <nlohmann/detail/meta/type_traits.hpp>
+        -:   29:
+        -:   30:NLOHMANN_JSON_NAMESPACE_BEGIN
+        -:   31:namespace detail
+        -:   32:{
+        -:   33:
+        -:   34:/// the supported input formats
+        -:   35:enum class input_format_t { json, cbor, msgpack, ubjson, bson, bjdata };
+        -:   36:
+        -:   37:////////////////////
+        -:   38:// input adapters //
+        -:   39:////////////////////
+        -:   40:
+        -:   41:#ifndef JSON_NO_IO
+        -:   42:/*!
+        -:   43:Input adapter for stdio file access. This adapter read only 1 byte and do not use any
+        -:   44: buffer. This adapter is a very low level adapter.
+        -:   45:*/
+        -:   46:class file_input_adapter
+        -:   47:{
+        -:   48:  public:
+        -:   49:    using char_type = char;
+        -:   50:
+        -:   51:    JSON_HEDLEY_NON_NULL(2)
+        -:   52:    explicit file_input_adapter(std::FILE* f) noexcept
+        -:   53:        : m_file(f)
+        -:   54:    {
+        -:   55:        JSON_ASSERT(m_file != nullptr);
+        -:   56:    }
+        -:   57:
+        -:   58:    // make class move-only
+        -:   59:    file_input_adapter(const file_input_adapter&) = delete;
+        -:   60:    file_input_adapter(file_input_adapter&&) noexcept = default;
+        -:   61:    file_input_adapter& operator=(const file_input_adapter&) = delete;
+        -:   62:    file_input_adapter& operator=(file_input_adapter&&) = delete;
+        -:   63:    ~file_input_adapter() = default;
+        -:   64:
+        -:   65:    std::char_traits<char>::int_type get_character() noexcept
+        -:   66:    {
+        -:   67:        return std::fgetc(m_file);
+        -:   68:    }
+        -:   69:
+        -:   70:  private:
+        -:   71:    /// the file pointer to read from
+        -:   72:    std::FILE* m_file;
+        -:   73:};
+        -:   74:
+        -:   75:/*!
+        -:   76:Input adapter for a (caching) istream. Ignores a UFT Byte Order Mark at
+        -:   77:beginning of input. Does not support changing the underlying std::streambuf
+        -:   78:in mid-input. Maintains underlying std::istream and std::streambuf to support
+        -:   79:subsequent use of standard std::istream operations to process any input
+        -:   80:characters following those used in parsing the JSON input.  Clears the
+        -:   81:std::istream flags; any input errors (e.g., EOF) will be detected by the first
+        -:   82:subsequent call for input from the std::istream.
+        -:   83:*/
+        -:   84:class input_stream_adapter
+        -:   85:{
+        -:   86:  public:
+        -:   87:    using char_type = char;
+        -:   88:
+function _ZN8nlohmann16json_abi_v3_11_36detail20input_stream_adapterD1Ev called 12 returned 100% blocks executed 100%
+       12:   89:    ~input_stream_adapter()
+        -:   90:    {
+        -:   91:        // clear stream flags; we use underlying streambuf I/O, do not
+        -:   92:        // maintain ifstream flags, except eof
+       12:   93:        if (is != nullptr)
+       12:   93-block  0
+branch  0 taken 6 (fallthrough)
+branch  1 taken 6
+        -:   94:        {
+        6:   95:            is->clear(is->rdstate() & std::ios::eofbit);
+        6:   95-block  0
+call    0 returned 6
+call    1 returned 6
+call    2 returned 6
+        -:   96:        }
+       12:   97:    }
+        -:   98:
+function _ZN8nlohmann16json_abi_v3_11_36detail20input_stream_adapterC1ERSi called 6 returned 100% blocks executed 100%
+        6:   99:    explicit input_stream_adapter(std::istream& i)
+        6:  100:        : is(&i), sb(i.rdbuf())
+        6:  100-block  0
+call    0 returned 6
+        6:  101:    {}
+        -:  102:
+        -:  103:    // delete because of pointer members
+        -:  104:    input_stream_adapter(const input_stream_adapter&) = delete;
+        -:  105:    input_stream_adapter& operator=(input_stream_adapter&) = delete;
+        -:  106:    input_stream_adapter& operator=(input_stream_adapter&&) = delete;
+        -:  107:
+function _ZN8nlohmann16json_abi_v3_11_36detail20input_stream_adapterC1EOS2_ called 6 returned 100% blocks executed 100%
+        6:  108:    input_stream_adapter(input_stream_adapter&& rhs) noexcept
+        6:  109:        : is(rhs.is), sb(rhs.sb)
+        -:  110:    {
+        6:  111:        rhs.is = nullptr;
+        6:  112:        rhs.sb = nullptr;
+        6:  113:    }
+        -:  114:
+        -:  115:    // std::istream/std::streambuf use std::char_traits<char>::to_int_type, to
+        -:  116:    // ensure that std::char_traits<char>::eof() and the character 0xFF do not
+        -:  117:    // end up as the same value, e.g. 0xFFFFFFFF.
+function _ZN8nlohmann16json_abi_v3_11_36detail20input_stream_adapter13get_characterEv called 2214 returned 100% blocks executed 62%
+     2214:  118:    std::char_traits<char>::int_type get_character()
+        -:  119:    {
+     2214:  120:        auto res = sb->sbumpc();
+     2214:  120-block  0
+call    0 returned 2214
+        -:  121:        // set eof manually, as we don't use the istream interface.
+     2214:  122:        if (JSON_HEDLEY_UNLIKELY(res == std::char_traits<char>::eof()))
+call    0 returned 2214
+branch  1 taken 0 (fallthrough)
+branch  2 taken 2214
+        -:  123:        {
+    #####:  124:            is->clear(is->rdstate() | std::ios::eofbit);
+    %%%%%:  124-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+        -:  125:        }
+     2214:  126:        return res;
+     2214:  126-block  0
+        -:  127:    }
+        -:  128:
+        -:  129:  private:
+        -:  130:    /// the associated input stream
+        -:  131:    std::istream* is = nullptr;
+        -:  132:    std::streambuf* sb = nullptr;
+        -:  133:};
+        -:  134:#endif  // JSON_NO_IO
+        -:  135:
+        -:  136:// General-purpose iterator-based adapter. It might not be as fast as
+        -:  137:// theoretically possible for some containers, but it is extremely versatile.
+        -:  138:template<typename IteratorType>
+        -:  139:class iterator_input_adapter
+        -:  140:{
+        -:  141:  public:
+        -:  142:    using char_type = typename std::iterator_traits<IteratorType>::value_type;
+        -:  143:
+        -:  144:    iterator_input_adapter(IteratorType first, IteratorType last)
+        -:  145:        : current(std::move(first)), end(std::move(last))
+        -:  146:    {}
+        -:  147:
+        -:  148:    typename char_traits<char_type>::int_type get_character()
+        -:  149:    {
+        -:  150:        if (JSON_HEDLEY_LIKELY(current != end))
+        -:  151:        {
+        -:  152:            auto result = char_traits<char_type>::to_int_type(*current);
+        -:  153:            std::advance(current, 1);
+        -:  154:            return result;
+        -:  155:        }
+        -:  156:
+        -:  157:        return char_traits<char_type>::eof();
+        -:  158:    }
+        -:  159:
+        -:  160:  private:
+        -:  161:    IteratorType current;
+        -:  162:    IteratorType end;
+        -:  163:
+        -:  164:    template<typename BaseInputAdapter, size_t T>
+        -:  165:    friend struct wide_string_input_helper;
+        -:  166:
+        -:  167:    bool empty() const
+        -:  168:    {
+        -:  169:        return current == end;
+        -:  170:    }
+        -:  171:};
+        -:  172:
+        -:  173:template<typename BaseInputAdapter, size_t T>
+        -:  174:struct wide_string_input_helper;
+        -:  175:
+        -:  176:template<typename BaseInputAdapter>
+        -:  177:struct wide_string_input_helper<BaseInputAdapter, 4>
+        -:  178:{
+        -:  179:    // UTF-32
+        -:  180:    static void fill_buffer(BaseInputAdapter& input,
+        -:  181:                            std::array<std::char_traits<char>::int_type, 4>& utf8_bytes,
+        -:  182:                            size_t& utf8_bytes_index,
+        -:  183:                            size_t& utf8_bytes_filled)
+        -:  184:    {
+        -:  185:        utf8_bytes_index = 0;
+        -:  186:
+        -:  187:        if (JSON_HEDLEY_UNLIKELY(input.empty()))
+        -:  188:        {
+        -:  189:            utf8_bytes[0] = std::char_traits<char>::eof();
+        -:  190:            utf8_bytes_filled = 1;
+        -:  191:        }
+        -:  192:        else
+        -:  193:        {
+        -:  194:            // get the current character
+        -:  195:            const auto wc = input.get_character();
+        -:  196:
+        -:  197:            // UTF-32 to UTF-8 encoding
+        -:  198:            if (wc < 0x80)
+        -:  199:            {
+        -:  200:                utf8_bytes[0] = static_cast<std::char_traits<char>::int_type>(wc);
+        -:  201:                utf8_bytes_filled = 1;
+        -:  202:            }
+        -:  203:            else if (wc <= 0x7FF)
+        -:  204:            {
+        -:  205:                utf8_bytes[0] = static_cast<std::char_traits<char>::int_type>(0xC0u | ((static_cast<unsigned int>(wc) >> 6u) & 0x1Fu));
+        -:  206:                utf8_bytes[1] = static_cast<std::char_traits<char>::int_type>(0x80u | (static_cast<unsigned int>(wc) & 0x3Fu));
+        -:  207:                utf8_bytes_filled = 2;
+        -:  208:            }
+        -:  209:            else if (wc <= 0xFFFF)
+        -:  210:            {
+        -:  211:                utf8_bytes[0] = static_cast<std::char_traits<char>::int_type>(0xE0u | ((static_cast<unsigned int>(wc) >> 12u) & 0x0Fu));
+        -:  212:                utf8_bytes[1] = static_cast<std::char_traits<char>::int_type>(0x80u | ((static_cast<unsigned int>(wc) >> 6u) & 0x3Fu));
+        -:  213:                utf8_bytes[2] = static_cast<std::char_traits<char>::int_type>(0x80u | (static_cast<unsigned int>(wc) & 0x3Fu));
+        -:  214:                utf8_bytes_filled = 3;
+        -:  215:            }
+        -:  216:            else if (wc <= 0x10FFFF)
+        -:  217:            {
+        -:  218:                utf8_bytes[0] = static_cast<std::char_traits<char>::int_type>(0xF0u | ((static_cast<unsigned int>(wc) >> 18u) & 0x07u));
+        -:  219:                utf8_bytes[1] = static_cast<std::char_traits<char>::int_type>(0x80u | ((static_cast<unsigned int>(wc) >> 12u) & 0x3Fu));
+        -:  220:                utf8_bytes[2] = static_cast<std::char_traits<char>::int_type>(0x80u | ((static_cast<unsigned int>(wc) >> 6u) & 0x3Fu));
+        -:  221:                utf8_bytes[3] = static_cast<std::char_traits<char>::int_type>(0x80u | (static_cast<unsigned int>(wc) & 0x3Fu));
+        -:  222:                utf8_bytes_filled = 4;
+        -:  223:            }
+        -:  224:            else
+        -:  225:            {
+        -:  226:                // unknown character
+        -:  227:                utf8_bytes[0] = static_cast<std::char_traits<char>::int_type>(wc);
+        -:  228:                utf8_bytes_filled = 1;
+        -:  229:            }
+        -:  230:        }
+        -:  231:    }
+        -:  232:};
+        -:  233:
+        -:  234:template<typename BaseInputAdapter>
+        -:  235:struct wide_string_input_helper<BaseInputAdapter, 2>
+        -:  236:{
+        -:  237:    // UTF-16
+        -:  238:    static void fill_buffer(BaseInputAdapter& input,
+        -:  239:                            std::array<std::char_traits<char>::int_type, 4>& utf8_bytes,
+        -:  240:                            size_t& utf8_bytes_index,
+        -:  241:                            size_t& utf8_bytes_filled)
+        -:  242:    {
+        -:  243:        utf8_bytes_index = 0;
+        -:  244:
+        -:  245:        if (JSON_HEDLEY_UNLIKELY(input.empty()))
+        -:  246:        {
+        -:  247:            utf8_bytes[0] = std::char_traits<char>::eof();
+        -:  248:            utf8_bytes_filled = 1;
+        -:  249:        }
+        -:  250:        else
+        -:  251:        {
+        -:  252:            // get the current character
+        -:  253:            const auto wc = input.get_character();
+        -:  254:
+        -:  255:            // UTF-16 to UTF-8 encoding
+        -:  256:            if (wc < 0x80)
+        -:  257:            {
+        -:  258:                utf8_bytes[0] = static_cast<std::char_traits<char>::int_type>(wc);
+        -:  259:                utf8_bytes_filled = 1;
+        -:  260:            }
+        -:  261:            else if (wc <= 0x7FF)
+        -:  262:            {
+        -:  263:                utf8_bytes[0] = static_cast<std::char_traits<char>::int_type>(0xC0u | ((static_cast<unsigned int>(wc) >> 6u)));
+        -:  264:                utf8_bytes[1] = static_cast<std::char_traits<char>::int_type>(0x80u | (static_cast<unsigned int>(wc) & 0x3Fu));
+        -:  265:                utf8_bytes_filled = 2;
+        -:  266:            }
+        -:  267:            else if (0xD800 > wc || wc >= 0xE000)
+        -:  268:            {
+        -:  269:                utf8_bytes[0] = static_cast<std::char_traits<char>::int_type>(0xE0u | ((static_cast<unsigned int>(wc) >> 12u)));
+        -:  270:                utf8_bytes[1] = static_cast<std::char_traits<char>::int_type>(0x80u | ((static_cast<unsigned int>(wc) >> 6u) & 0x3Fu));
+        -:  271:                utf8_bytes[2] = static_cast<std::char_traits<char>::int_type>(0x80u | (static_cast<unsigned int>(wc) & 0x3Fu));
+        -:  272:                utf8_bytes_filled = 3;
+        -:  273:            }
+        -:  274:            else
+        -:  275:            {
+        -:  276:                if (JSON_HEDLEY_UNLIKELY(!input.empty()))
+        -:  277:                {
+        -:  278:                    const auto wc2 = static_cast<unsigned int>(input.get_character());
+        -:  279:                    const auto charcode = 0x10000u + (((static_cast<unsigned int>(wc) & 0x3FFu) << 10u) | (wc2 & 0x3FFu));
+        -:  280:                    utf8_bytes[0] = static_cast<std::char_traits<char>::int_type>(0xF0u | (charcode >> 18u));
+        -:  281:                    utf8_bytes[1] = static_cast<std::char_traits<char>::int_type>(0x80u | ((charcode >> 12u) & 0x3Fu));
+        -:  282:                    utf8_bytes[2] = static_cast<std::char_traits<char>::int_type>(0x80u | ((charcode >> 6u) & 0x3Fu));
+        -:  283:                    utf8_bytes[3] = static_cast<std::char_traits<char>::int_type>(0x80u | (charcode & 0x3Fu));
+        -:  284:                    utf8_bytes_filled = 4;
+        -:  285:                }
+        -:  286:                else
+        -:  287:                {
+        -:  288:                    utf8_bytes[0] = static_cast<std::char_traits<char>::int_type>(wc);
+        -:  289:                    utf8_bytes_filled = 1;
+        -:  290:                }
+        -:  291:            }
+        -:  292:        }
+        -:  293:    }
+        -:  294:};
+        -:  295:
+        -:  296:// Wraps another input adapter to convert wide character types into individual bytes.
+        -:  297:template<typename BaseInputAdapter, typename WideCharType>
+        -:  298:class wide_string_input_adapter
+        -:  299:{
+        -:  300:  public:
+        -:  301:    using char_type = char;
+        -:  302:
+        -:  303:    wide_string_input_adapter(BaseInputAdapter base)
+        -:  304:        : base_adapter(base) {}
+        -:  305:
+        -:  306:    typename std::char_traits<char>::int_type get_character() noexcept
+        -:  307:    {
+        -:  308:        // check if buffer needs to be filled
+        -:  309:        if (utf8_bytes_index == utf8_bytes_filled)
+        -:  310:        {
+        -:  311:            fill_buffer<sizeof(WideCharType)>();
+        -:  312:
+        -:  313:            JSON_ASSERT(utf8_bytes_filled > 0);
+        -:  314:            JSON_ASSERT(utf8_bytes_index == 0);
+        -:  315:        }
+        -:  316:
+        -:  317:        // use buffer
+        -:  318:        JSON_ASSERT(utf8_bytes_filled > 0);
+        -:  319:        JSON_ASSERT(utf8_bytes_index < utf8_bytes_filled);
+        -:  320:        return utf8_bytes[utf8_bytes_index++];
+        -:  321:    }
+        -:  322:
+        -:  323:  private:
+        -:  324:    BaseInputAdapter base_adapter;
+        -:  325:
+        -:  326:    template<size_t T>
+        -:  327:    void fill_buffer()
+        -:  328:    {
+        -:  329:        wide_string_input_helper<BaseInputAdapter, T>::fill_buffer(base_adapter, utf8_bytes, utf8_bytes_index, utf8_bytes_filled);
+        -:  330:    }
+        -:  331:
+        -:  332:    /// a buffer for UTF-8 bytes
+        -:  333:    std::array<std::char_traits<char>::int_type, 4> utf8_bytes = {{0, 0, 0, 0}};
+        -:  334:
+        -:  335:    /// index to the utf8_codes array for the next valid byte
+        -:  336:    std::size_t utf8_bytes_index = 0;
+        -:  337:    /// number of valid bytes in the utf8_codes array
+        -:  338:    std::size_t utf8_bytes_filled = 0;
+        -:  339:};
+        -:  340:
+        -:  341:template<typename IteratorType, typename Enable = void>
+        -:  342:struct iterator_input_adapter_factory
+        -:  343:{
+        -:  344:    using iterator_type = IteratorType;
+        -:  345:    using char_type = typename std::iterator_traits<iterator_type>::value_type;
+        -:  346:    using adapter_type = iterator_input_adapter<iterator_type>;
+        -:  347:
+        -:  348:    static adapter_type create(IteratorType first, IteratorType last)
+        -:  349:    {
+        -:  350:        return adapter_type(std::move(first), std::move(last));
+        -:  351:    }
+        -:  352:};
+        -:  353:
+        -:  354:template<typename T>
+        -:  355:struct is_iterator_of_multibyte
+        -:  356:{
+        -:  357:    using value_type = typename std::iterator_traits<T>::value_type;
+        -:  358:    enum
+        -:  359:    {
+        -:  360:        value = sizeof(value_type) > 1
+        -:  361:    };
+        -:  362:};
+        -:  363:
+        -:  364:template<typename IteratorType>
+        -:  365:struct iterator_input_adapter_factory<IteratorType, enable_if_t<is_iterator_of_multibyte<IteratorType>::value>>
+        -:  366:{
+        -:  367:    using iterator_type = IteratorType;
+        -:  368:    using char_type = typename std::iterator_traits<iterator_type>::value_type;
+        -:  369:    using base_adapter_type = iterator_input_adapter<iterator_type>;
+        -:  370:    using adapter_type = wide_string_input_adapter<base_adapter_type, char_type>;
+        -:  371:
+        -:  372:    static adapter_type create(IteratorType first, IteratorType last)
+        -:  373:    {
+        -:  374:        return adapter_type(base_adapter_type(std::move(first), std::move(last)));
+        -:  375:    }
+        -:  376:};
+        -:  377:
+        -:  378:// General purpose iterator-based input
+        -:  379:template<typename IteratorType>
+        -:  380:typename iterator_input_adapter_factory<IteratorType>::adapter_type input_adapter(IteratorType first, IteratorType last)
+        -:  381:{
+        -:  382:    using factory_type = iterator_input_adapter_factory<IteratorType>;
+        -:  383:    return factory_type::create(first, last);
+        -:  384:}
+        -:  385:
+        -:  386:// Convenience shorthand from container to iterator
+        -:  387:// Enables ADL on begin(container) and end(container)
+        -:  388:// Encloses the using declarations in namespace for not to leak them to outside scope
+        -:  389:
+        -:  390:namespace container_input_adapter_factory_impl
+        -:  391:{
+        -:  392:
+        -:  393:using std::begin;
+        -:  394:using std::end;
+        -:  395:
+        -:  396:template<typename ContainerType, typename Enable = void>
+        -:  397:struct container_input_adapter_factory {};
+        -:  398:
+        -:  399:template<typename ContainerType>
+        -:  400:struct container_input_adapter_factory< ContainerType,
+        -:  401:       void_t<decltype(begin(std::declval<ContainerType>()), end(std::declval<ContainerType>()))>>
+        -:  402:       {
+        -:  403:           using adapter_type = decltype(input_adapter(begin(std::declval<ContainerType>()), end(std::declval<ContainerType>())));
+        -:  404:
+        -:  405:           static adapter_type create(const ContainerType& container)
+        -:  406:{
+        -:  407:    return input_adapter(begin(container), end(container));
+        -:  408:}
+        -:  409:       };
+        -:  410:
+        -:  411:}  // namespace container_input_adapter_factory_impl
+        -:  412:
+        -:  413:template<typename ContainerType>
+        -:  414:typename container_input_adapter_factory_impl::container_input_adapter_factory<ContainerType>::adapter_type input_adapter(const ContainerType& container)
+        -:  415:{
+        -:  416:    return container_input_adapter_factory_impl::container_input_adapter_factory<ContainerType>::create(container);
+        -:  417:}
+        -:  418:
+        -:  419:#ifndef JSON_NO_IO
+        -:  420:// Special cases with fast paths
+        -:  421:inline file_input_adapter input_adapter(std::FILE* file)
+        -:  422:{
+        -:  423:    return file_input_adapter(file);
+        -:  424:}
+        -:  425:
+function _ZN8nlohmann16json_abi_v3_11_36detail13input_adapterERSi called 6 returned 100% blocks executed 100%
+        6:  426:inline input_stream_adapter input_adapter(std::istream& stream)
+        -:  427:{
+        6:  428:    return input_stream_adapter(stream);
+        6:  428-block  0
+call    0 returned 6
+        -:  429:}
+        -:  430:
+        -:  431:inline input_stream_adapter input_adapter(std::istream&& stream)
+        -:  432:{
+        -:  433:    return input_stream_adapter(stream);
+        -:  434:}
+        -:  435:#endif  // JSON_NO_IO
+        -:  436:
+        -:  437:using contiguous_bytes_input_adapter = decltype(input_adapter(std::declval<const char*>(), std::declval<const char*>()));
+        -:  438:
+        -:  439:// Null-delimited strings, and the like.
+        -:  440:template < typename CharT,
+        -:  441:           typename std::enable_if <
+        -:  442:               std::is_pointer<CharT>::value&&
+        -:  443:               !std::is_array<CharT>::value&&
+        -:  444:               std::is_integral<typename std::remove_pointer<CharT>::type>::value&&
+        -:  445:               sizeof(typename std::remove_pointer<CharT>::type) == 1,
+        -:  446:               int >::type = 0 >
+        -:  447:contiguous_bytes_input_adapter input_adapter(CharT b)
+        -:  448:{
+        -:  449:    auto length = std::strlen(reinterpret_cast<const char*>(b));
+        -:  450:    const auto* ptr = reinterpret_cast<const char*>(b);
+        -:  451:    return input_adapter(ptr, ptr + length);
+        -:  452:}
+        -:  453:
+        -:  454:template<typename T, std::size_t N>
+        -:  455:auto input_adapter(T (&array)[N]) -> decltype(input_adapter(array, array + N)) // NOLINT(cppcoreguidelines-avoid-c-arrays,hicpp-avoid-c-arrays,modernize-avoid-c-arrays)
+        -:  456:{
+        -:  457:    return input_adapter(array, array + N);
+        -:  458:}
+        -:  459:
+        -:  460:// This class only handles inputs of input_buffer_adapter type.
+        -:  461:// It's required so that expressions like {ptr, len} can be implicitly cast
+        -:  462:// to the correct adapter.
+        -:  463:class span_input_adapter
+        -:  464:{
+        -:  465:  public:
+        -:  466:    template < typename CharT,
+        -:  467:               typename std::enable_if <
+        -:  468:                   std::is_pointer<CharT>::value&&
+        -:  469:                   std::is_integral<typename std::remove_pointer<CharT>::type>::value&&
+        -:  470:                   sizeof(typename std::remove_pointer<CharT>::type) == 1,
+        -:  471:                   int >::type = 0 >
+        -:  472:    span_input_adapter(CharT b, std::size_t l)
+        -:  473:        : ia(reinterpret_cast<const char*>(b), reinterpret_cast<const char*>(b) + l) {}
+        -:  474:
+        -:  475:    template<class IteratorType,
+        -:  476:             typename std::enable_if<
+        -:  477:                 std::is_same<typename iterator_traits<IteratorType>::iterator_category, std::random_access_iterator_tag>::value,
+        -:  478:                 int>::type = 0>
+        -:  479:    span_input_adapter(IteratorType first, IteratorType last)
+        -:  480:        : ia(input_adapter(first, last)) {}
+        -:  481:
+        -:  482:    contiguous_bytes_input_adapter&& get()
+        -:  483:    {
+        -:  484:        return std::move(ia); // NOLINT(hicpp-move-const-arg,performance-move-const-arg)
+        -:  485:    }
+        -:  486:
+        -:  487:  private:
+        -:  488:    contiguous_bytes_input_adapter ia;
+        -:  489:};
+        -:  490:
+        -:  491:}  // namespace detail
+        -:  492:NLOHMANN_JSON_NAMESPACE_END
