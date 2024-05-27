@@ -6,7 +6,7 @@
 
 
 void test_add_car() {
-    AutoRepo repo("TestsAutoRepo/tests.json");
+    AutoRepo repo("AutoRepo/TestsAutoRepo/tests.json");
     Auto car("ABC123", "ModelX", "Tesla", 2023, 10000, 200, "Electric", "Automatik", "Black");
     Auto car2("AFF245", "ModelX", "Tesla", 2023, 10000, 200, "Electric", "Automatik", "Black", "Damaged");
     Auto car3("AFF246", "ModelX", "Tesla", 2023, 555, 200, "Electric", "Automatik", "Black", "Damaged");
@@ -28,7 +28,7 @@ void test_add_car() {
 }
 
 void test_remove_car() {
-    AutoRepo repo("TestsAutoRepo/tests.json");
+    AutoRepo repo("AutoRepo/TestsAutoRepo/tests.json");
     Auto car("ABC123", "ModelX", "Tesla", 2023, 10000, 200, "Electric", "Automatik", "Black");
 
     repo.add_car(car);
@@ -61,7 +61,7 @@ void test_remove_car() {
 }
 
 void test_modify_car1() {
-    AutoRepo repo("TestsAutoRepo/tests.json");
+    AutoRepo repo("AutoRepo/TestsAutoRepo/tests.json");
     Auto car("ABC123", "ModelX", "Tesla", 2023, 10000, 200, "Electric", "Automatik", "Black");
 
     repo.add_car(car);
@@ -107,7 +107,7 @@ void test_modify_car1() {
 }
 
 void test_modify_car2() {
-    AutoRepo repo("TestsAutoRepo/tests.json");
+    AutoRepo repo("AutoRepo/TestsAutoRepo/tests.json");
     Auto car("ABC123", "ModelX", "Tesla", 2023, 10000, 200, "Electric", "Automatik", "Black");
 
     repo.add_car(car);
@@ -148,7 +148,7 @@ void test_modify_car2() {
 
 
 void test_verify_car() {
-    AutoRepo repo("TestsAutoRepo/tests.json");
+    AutoRepo repo("AutoRepo/TestsAutoRepo/tests.json");
 
     Auto invalid_car("", "ModelX", "Tesla", 2023, 10000, 200, "Electric", "Automatik", "Black");
     try {

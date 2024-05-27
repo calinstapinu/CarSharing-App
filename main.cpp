@@ -13,7 +13,7 @@ int main() {
     // ruleaza testele
     run_tests_auto_repo();
     // masinile json se afla in "cars.json"
-    AutoRepo cr("cars.json"); // la initializare, se deschide fisierul cars.json in Repo
+    AutoRepo cr("AutoRepo/cars.json"); // la initializare, se deschide fisierul cars.json in Repo
     AutoController cc(cr); // AutoController
 
     return 0;
