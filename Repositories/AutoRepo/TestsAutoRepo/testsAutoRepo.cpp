@@ -220,4 +220,5 @@ void run_tests_auto_repo(){
     test_modify_car1();
     test_modify_car2();
     test_verify_car();
+    std::cout << "All AutoRepo tests finished successfully." << std::endl;
 }
