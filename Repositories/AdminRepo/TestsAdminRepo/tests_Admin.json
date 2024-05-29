@@ -1,0 +1,131 @@
+[
+    {
+        "Birthday": {
+            "day": 20,
+            "month": "january",
+            "year": 2000
+        },
+        "Email": "invalidemail.com",
+        "First Name": "Alice",
+        "Initials": "AS",
+        "Is Active": "false",
+        "Last Name": "Smith",
+        "Notes": "Notes",
+        "Password": "password456",
+        "Position": "HR",
+        "Salary": "50",
+        "is Active": true
+    },
+    {
+        "Birthday": {
+            "day": 20,
+            "month": "january",
+            "year": 2000
+        },
+        "Email": "alice.smith@example.com",
+        "First Name": "Alice",
+        "Initials": "AS",
+        "Last Name": "Smith",
+        "Notes": "Notes",
+        "Password": "password456",
+        "Position": "HR",
+        "Salary": 1500,
+        "is Active": true
+    },
+    {
+        "Birthday": {
+            "day": 12,
+            "month": "june",
+            "year": 2004
+        },
+        "Email": "petre@gmail.com",
+        "First Name": "Petre",
+        "Initials": "PI",
+        "Last Name": "Ioana",
+        "Notes": "",
+        "Password": "password",
+        "Position": "manager",
+        "Salary": 1200,
+        "is Active": false
+    },
+    {
+        "Birthday": {
+            "day": 20,
+            "month": "january",
+            "year": 2000
+        },
+        "Email": "alice.smith@example.com",
+        "First Name": "Alice",
+        "Initials": "AS",
+        "Last Name": "Smith",
+        "Notes": "Notes",
+        "Password": "password456",
+        "Position": "HR",
+        "Salary": 1500,
+        "is Active": true
+    },
+    {
+        "Birthday": {
+            "day": 20,
+            "month": "january",
+            "year": 2000
+        },
+        "Email": "alice.smith@example.com",
+        "First Name": "Alice",
+        "Initials": "AS",
+        "Last Name": "Smith",
+        "Notes": "Notes",
+        "Password": "password456",
+        "Position": "HR",
+        "Salary": 1500,
+        "is Active": true
+    },
+    {
+        "Birthday": {
+            "day": 12,
+            "month": "june",
+            "year": 2004
+        },
+        "Email": "petre@gmail.com",
+        "First Name": "Petre",
+        "Initials": "PI",
+        "Last Name": "Ioana",
+        "Notes": "",
+        "Password": "password",
+        "Position": "manager",
+        "Salary": 1200,
+        "is Active": false
+    },
+    {
+        "Birthday": {
+            "day": 20,
+            "month": "january",
+            "year": 2000
+        },
+        "Email": "alice.smith@example.com",
+        "First Name": "Alice",
+        "Initials": "AS",
+        "Last Name": "Smith",
+        "Notes": "Notes",
+        "Password": "password456",
+        "Position": "HR",
+        "Salary": 1500,
+        "is Active": true
+    },
+    {
+        "Birthday": {
+            "day": 20,
+            "month": "january",
+            "year": 2000
+        },
+        "Email": "alice.smith@example.com",
+        "First Name": "Alice",
+        "Initials": "AS",
+        "Last Name": "Smith",
+        "Notes": "Notes",
+        "Password": "password456",
+        "Position": "HR",
+        "Salary": 1500,
+        "is Active": true
+    }
+]
