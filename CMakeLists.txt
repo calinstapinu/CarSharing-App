@@ -36,4 +36,10 @@ add_executable(Json_test main.cpp
         Repositories/CustomerRepo/CustomerRepo.h
         Repositories/CustomerRepo/TestsCustomerRepo/testCustomerRepo.cpp
         Repositories/CustomerRepo/TestsCustomerRepo/testCustomerRepo.h
+        Domain/Admin.cpp
+        Domain/Admin.h
+        Repositories/AdminRepo/AdminRepo.cpp
+        Repositories/AdminRepo/AdminRepo.h
+        Repositories/AdminRepo/TestsAdminRepo/testsAdminRepo.cpp
+        Repositories/AdminRepo/TestsAdminRepo/testsAdminRepo.h
 )
