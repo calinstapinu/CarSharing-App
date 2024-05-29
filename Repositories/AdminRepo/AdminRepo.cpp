@@ -30,7 +30,7 @@ void AdminRepo::write_to_file(std::string& filename) {
 
 
 bool AdminRepo::verify_admin(Admin& admin) const {
-    if(admin.getIsActive()==false || admin.getEmail()=="")
+    if(admin.getEmail().empty())
         return false;
     return true;
 }
@@ -49,7 +49,8 @@ json & AdminRepo::get_admin_json() {
 }
 
 void AdminRepo::add_admin(Admin &admin) {
-    verify_admin(admin);
+    if(!verify_admin(admin))
+        throw std::runtime_error("Invalid admin details");
     admin.validateEmail(admin.getEmail());
     admin.validateSalary(admin.getSalary());
     json j;
@@ -69,12 +70,9 @@ void AdminRepo::add_admin(Admin &admin) {
 
 void AdminRepo::remove_admin(const std::string &identifier) {
     auto it=std::find_if(admins.begin(),admins.end(),[&](const json& adm){
-        return adm["Initials"]==identifier;
+        return adm["Email"]==identifier;
     });
     if(it!=admins.end()) {
-        if((*it)["is Active"]) {
-            throw std::runtime_error("Cannot remove an active admin");
-        }
         admins.erase(it);
         save();
     } else
@@ -90,7 +88,7 @@ bool AdminRepo::search_admin(const std::string email) const {
 
 void AdminRepo::modify_admin(std::string identifier, std::string attribute, std::string value) {
     auto it=std::find_if(admins.begin(),admins.end(),[&](const json& adm){
-        return adm["Initials"]==identifier;
+        return adm["Email"]==identifier;
     });
     if(it!=admins.end()) {
         if(attribute=="First Name")
@@ -105,12 +103,14 @@ void AdminRepo::modify_admin(std::string identifier, std::string attribute, std:
             (*it)["Birthday"]=value;
         else if(attribute=="Initials")
             (*it)["Initials"]=value;
-        else if(attribute=="Salary")
-            (*it)["Salary"]=value;
+        else if(attribute=="Salary") {
+            int salary=std::stoi(value);
+            (*it)["Salary"]=salary;
+        }
         else if(attribute=="Notes")
             (*it)["Notes"]=value;
-        else if(attribute=="Is Active")
-            (*it)["Is Active"]=value;
+        else if(attribute=="is Active")
+            (*it)["is Active"]=(value=="true");
         else if(attribute=="Password")
             (*it)["Password"]=value;
         else
