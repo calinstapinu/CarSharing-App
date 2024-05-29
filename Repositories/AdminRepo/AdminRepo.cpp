@@ -68,16 +68,32 @@ void AdminRepo::add_admin(Admin &admin) {
     write_to_file(filename);
 }
 
-void AdminRepo::remove_admin(const std::string &identifier) {
-    auto it=std::find_if(admins.begin(),admins.end(),[&](const json& adm){
-        return adm["Email"]==identifier;
+//void AdminRepo::remove_admin(const std::string &identifier) {
+//    auto it=std::find_if(admins.begin(),admins.end(),[&](const json& adm){
+//        return adm["Email"]==identifier;
+//    });
+//    if(it!=admins.end()) {
+//        admins.erase(it);
+//        save();
+//    } else
+//        throw std::runtime_error("Admin not found");
+//}
+
+void AdminRepo::remove_admin(const std::string& identifier) {
+    auto it = std::find_if(admins.begin(), admins.end(), [&](const json& adm) {
+        return adm["Email"] == identifier;
     });
-    if(it!=admins.end()) {
+    if (it != admins.end()) {
         admins.erase(it);
         save();
-    } else
+    } else {
         throw std::runtime_error("Admin not found");
+    }
 }
+
+
+
+
 
 bool AdminRepo::search_admin(const std::string email) const {
     for(auto adm: admins)
@@ -120,3 +136,4 @@ void AdminRepo::modify_admin(std::string identifier, std::string attribute, std:
     else
         throw std::runtime_error("Admin not found");
 }
+
