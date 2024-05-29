@@ -7,22 +7,6 @@
 
 using namespace std;
 
-// Utility functions
-std::string orderStatusToString(OrderStatus status) {
-    switch (status) {
-        case OrderStatus::Reservation: return "Reservation";
-        case OrderStatus::Order: return "Order";
-        case OrderStatus::Completed: return "Completed";
-        default: throw std::runtime_error("Invalid OrderStatus.");
-    }
-}
-
-OrderStatus stringToOrderStatus(const std::string& status) {
-    if (status == "Reservation") return OrderStatus::Reservation;
-    if (status == "Order") return OrderStatus::Order;
-    if (status == "Completed") return OrderStatus::Completed;
-    throw std::runtime_error("Invalid OrderStatus string.");
-}
 
 // Constructor
 OrderRepo::OrderRepo(const std::string& filename) {

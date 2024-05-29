@@ -5,7 +5,6 @@
 #include <string>
 
 void test_add_order() {
-    std::cout << "Starting test_add_order..." << std::endl;
     OrderRepo repo("OrderRepo/TestsOrderRepo/tests.json");
     Order order1(1, "2024-05-27", OrderStatus::Reservation, "Car1", "2024-06-01", "2024-06-10", "Customer1", "Employee1", 300, "Remark1");
     Order order2(2, "2024-05-28", OrderStatus::Order, "Car2", "2024-06-05", "2024-06-12", "Customer2", "Employee2", 500, "Remark2");
@@ -25,11 +24,9 @@ void test_add_order() {
     assert(!repo.search_order(1));
     assert(!repo.search_order(2));
     assert(!repo.search_order(3));
-    std::cout << "test_add_order finished successfully." << std::endl;
 }
 
 void test_remove_order() {
-    //std::cout << "Starting test_remove_order..." << std::endl;
     OrderRepo repo("OrderRepo/TestsOrderRepo/tests.json");
     Order order(1, "2024-05-27", OrderStatus::Reservation, "Car1", "2024-06-01", "2024-06-10", "Customer1", "Employee1", 300, "Remark1");
 
@@ -60,11 +57,9 @@ void test_remove_order() {
 
     repo.remove_order(3);
     assert(!repo.search_order(3));
-    std::cout << "test_remove_order finished successfully." << std::endl;
 }
 
 void test_modify_order() {
-    std::cout << "Starting test_modify_order..." << std::endl;
     OrderRepo repo("OrderRepo/TestsOrderRepo/tests.json");
     Order order(1, "2024-05-27", OrderStatus::Reservation, "Car1", "2024-06-01", "2024-06-10", "Customer1", "Employee1", 300, "Remark1");
 
@@ -107,11 +102,9 @@ void test_modify_order() {
     assert(found);
 
     repo.remove_order(1);
-    std::cout << "test_modify_order finished successfully." << std::endl;
 }
 
 void test_verify_order() {
-    std::cout << "Starting test_verify_order..." << std::endl;
     OrderRepo repo("OrderRepo/TestsOrderRepo/tests.json");
 
     Order invalid_order(0, "2024-05-27", OrderStatus::Reservation, "Car1", "2024-06-01", "2024-06-10", "Customer1", "Employee1", 300, "Remark1");
@@ -133,11 +126,10 @@ void test_verify_order() {
     assert(repo.search_order(1));
 
     repo.remove_order(1);
-    std::cout << "test_verify_order finished successfully." << std::endl;
+
 }
 
 void run_tests_order_repo() {
-    std::cout << "Starting OrderRepo tests..." << std::endl;
     test_add_order();
     test_remove_order();
     test_modify_order();

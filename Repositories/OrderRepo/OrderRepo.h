@@ -9,6 +9,23 @@
 
 using json = nlohmann::json;
 
+// Declare conversion functions as inline to avoid multiple definitions
+inline std::string orderStatusToString(OrderStatus status) {
+    switch (status) {
+        case OrderStatus::Reservation: return "Reservation";
+        case OrderStatus::Order: return "Order";
+        case OrderStatus::Completed: return "Completed";
+        default: return "Unknown";
+    }
+}
+
+inline OrderStatus stringToOrderStatus(const std::string& status) {
+    if (status == "Reservation") return OrderStatus::Reservation;
+    if (status == "Order") return OrderStatus::Order;
+    if (status == "Completed") return OrderStatus::Completed;
+    throw std::runtime_error("Invalid OrderStatus string.");
+}
+
 class OrderRepo {
 private:
     json orders; // JSON array to store orders

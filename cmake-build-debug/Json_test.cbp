@@ -86,16 +86,22 @@
 		<Unit filename="/Users/calin/Desktop/pro/Controllers/AutoController/AutoController.h">
 			<Option target="Json_test"/>
 		</Unit>
+		<Unit filename="/Users/calin/Desktop/pro/Controllers/OrderController/OrderController.cpp">
+			<Option target="Json_test"/>
+		</Unit>
+		<Unit filename="/Users/calin/Desktop/pro/Controllers/OrderController/OrderController.h">
+			<Option target="Json_test"/>
+		</Unit>
+		<Unit filename="/Users/calin/Desktop/pro/Controllers/OrderController/TestsOrderController/testOrderController.cpp">
+			<Option target="Json_test"/>
+		</Unit>
+		<Unit filename="/Users/calin/Desktop/pro/Controllers/OrderController/TestsOrderController/testOrderController.h">
+			<Option target="Json_test"/>
+		</Unit>
 		<Unit filename="/Users/calin/Desktop/pro/Domain/Auto.cpp">
 			<Option target="Json_test"/>
 		</Unit>
 		<Unit filename="/Users/calin/Desktop/pro/Domain/Auto.h">
-			<Option target="Json_test"/>
-		</Unit>
-		<Unit filename="/Users/calin/Desktop/pro/Domain/Mitarbeiter.cpp">
-			<Option target="Json_test"/>
-		</Unit>
-		<Unit filename="/Users/calin/Desktop/pro/Domain/Mitarbeiter.h">
 			<Option target="Json_test"/>
 		</Unit>
 		<Unit filename="/Users/calin/Desktop/pro/Domain/Order.cpp">
@@ -114,12 +120,6 @@
 			<Option target="Json_test"/>
 		</Unit>
 		<Unit filename="/Users/calin/Desktop/pro/Repositories/AutoRepo/TestsAutoRepo/testsAutoRepo.h">
-			<Option target="Json_test"/>
-		</Unit>
-		<Unit filename="/Users/calin/Desktop/pro/Repositories/MitarbeiterRepo/TestsMitarbeiterRepo/MitarbeiterRepo.cpp">
-			<Option target="Json_test"/>
-		</Unit>
-		<Unit filename="/Users/calin/Desktop/pro/Repositories/MitarbeiterRepo/TestsMitarbeiterRepo/MitarbeiterRepo.h">
 			<Option target="Json_test"/>
 		</Unit>
 		<Unit filename="/Users/calin/Desktop/pro/Repositories/OrderRepo/OrderRepo.cpp">
