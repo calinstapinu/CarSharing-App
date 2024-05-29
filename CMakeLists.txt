@@ -24,4 +24,10 @@ add_executable(Json_test main.cpp
         Controllers/OrderController/OrderController.h
         Controllers/OrderController/TestsOrderController/testOrderController.cpp
         Controllers/OrderController/TestsOrderController/testOrderController.h
+        Domain/Mitarbeiter.cpp
+        Domain/Mitarbeiter.h
+        Repositories/MitarbeiterRepo/MitarbeiterRepo.cpp
+        Repositories/MitarbeiterRepo/MitarbeiterRepo.h
+        Repositories/MitarbeiterRepo/TestsMitarbeiterRepo/testMitarbeiterRepo.cpp
+        Repositories/MitarbeiterRepo/TestsMitarbeiterRepo/testMitarbeiterRepo.h
 )
