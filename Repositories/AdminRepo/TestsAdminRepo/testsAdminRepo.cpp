@@ -21,11 +21,11 @@ void tests_add_and_remove_admin() {
 
     repo.modify_admin("petre@gmail.com","is Active","false");
     repo.remove_admin("petre@gmail.com");
-    assert(repo.search_admin("petre@gmail.com"));
+    assert(!repo.search_admin("petre@gmail.com"));
 
     repo.modify_admin("puscas@gmail.com","is Active","false");
     repo.remove_admin("puscas@gmail.com");
-    assert(repo.search_admin("puscas@gmail.com"));
+    assert(!repo.search_admin("puscas@gmail.com"));
 
     try {
         repo.remove_admin("puscas@gmail.com");
@@ -38,7 +38,7 @@ void tests_add_and_remove_admin() {
 
     repo.modify_admin("puscas@gmail.com","is Active","false");
     repo.remove_admin("puscas@gmail.com");
-    assert(repo.search_admin("puscas@gmail.com"));
+    assert(!repo.search_admin("puscas@gmail.com"));
 }
 
 void test_modify_admin() {
