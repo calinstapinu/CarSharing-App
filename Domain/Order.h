@@ -2,6 +2,7 @@
 #define CARSHARINGAPP_ORDER_H
 
 #include <string>
+#include "nlohmann/json.hpp"
 
 enum class OrderStatus { Reservation, Order, Completed };
 
@@ -34,6 +35,7 @@ public:
     std::string getEmployee() const;
     double getTotalAmount() const;
     std::string getRemark() const;
+
 
     // Setters
     void setOrderDate(const std::string& ordDate);

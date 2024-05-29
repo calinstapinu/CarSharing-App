@@ -1,5 +1,4 @@
 #include <cassert>
-#include <iostream>
 #include "../OrderRepo.h"
 #include "../../../Domain/Order.h"
 #include "../../../include/nlohmann/json.hpp"
@@ -30,7 +29,7 @@ void test_add_order() {
 }
 
 void test_remove_order() {
-    std::cout << "Starting test_remove_order..." << std::endl;
+    //std::cout << "Starting test_remove_order..." << std::endl;
     OrderRepo repo("OrderRepo/TestsOrderRepo/tests.json");
     Order order(1, "2024-05-27", OrderStatus::Reservation, "Car1", "2024-06-01", "2024-06-10", "Customer1", "Employee1", 300, "Remark1");
 

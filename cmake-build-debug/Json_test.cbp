@@ -8,119 +8,139 @@
 		<Option virtualFolders="CMake Files\;"/>
 		<Build>
 			<Target title="all">
-				<Option working_dir="/Users/alexandrapetrea/Documents/GitHub/Proiect_713_1/cmake-build-debug"/>
+				<Option working_dir="/Users/calin/Desktop/pro/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/Users/alexandrapetrea/Documents/GitHub/Proiect_713_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/alexandrapetrea/Documents/GitHub/Proiect_713_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/Users/alexandrapetrea/Documents/GitHub/Proiect_713_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/alexandrapetrea/Documents/GitHub/Proiect_713_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/calin/Desktop/pro/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/calin/Desktop/pro/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/calin/Desktop/pro/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/calin/Desktop/pro/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="Json_test">
-				<Option output="/Users/alexandrapetrea/Documents/GitHub/Proiect_713_1/cmake-build-debug/Json_test" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/Users/alexandrapetrea/Documents/GitHub/Proiect_713_1/cmake-build-debug"/>
+				<Option output="/Users/calin/Desktop/pro/cmake-build-debug/Json_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/calin/Desktop/pro/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add directory="/Users/alexandrapetrea/Documents/GitHub/Proiect_713_1/include"/>
-					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/include"/>
-					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/Users/calin/Desktop/pro/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
 					<Add directory="/System/Library/Frameworks"/>
 					<Add directory="/Library/Frameworks"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/Users/alexandrapetrea/Documents/GitHub/Proiect_713_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 Json_test"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/alexandrapetrea/Documents/GitHub/Proiect_713_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/Users/alexandrapetrea/Documents/GitHub/Proiect_713_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/alexandrapetrea/Documents/GitHub/Proiect_713_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/calin/Desktop/pro/cmake-build-debug/Makefile&quot;  VERBOSE=1 Json_test"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/calin/Desktop/pro/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/calin/Desktop/pro/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/calin/Desktop/pro/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="Json_test/fast">
-				<Option output="/Users/alexandrapetrea/Documents/GitHub/Proiect_713_1/cmake-build-debug/Json_test" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/Users/alexandrapetrea/Documents/GitHub/Proiect_713_1/cmake-build-debug"/>
+				<Option output="/Users/calin/Desktop/pro/cmake-build-debug/Json_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/calin/Desktop/pro/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add directory="/Users/alexandrapetrea/Documents/GitHub/Proiect_713_1/include"/>
-					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/include"/>
-					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/Users/calin/Desktop/pro/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
 					<Add directory="/System/Library/Frameworks"/>
 					<Add directory="/Library/Frameworks"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/Users/alexandrapetrea/Documents/GitHub/Proiect_713_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 Json_test/fast"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/alexandrapetrea/Documents/GitHub/Proiect_713_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/Users/alexandrapetrea/Documents/GitHub/Proiect_713_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/alexandrapetrea/Documents/GitHub/Proiect_713_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/calin/Desktop/pro/cmake-build-debug/Makefile&quot;  VERBOSE=1 Json_test/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/calin/Desktop/pro/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/calin/Desktop/pro/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/calin/Desktop/pro/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="edit_cache">
-				<Option working_dir="/Users/alexandrapetrea/Documents/GitHub/Proiect_713_1/cmake-build-debug"/>
+				<Option working_dir="/Users/calin/Desktop/pro/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/Users/alexandrapetrea/Documents/GitHub/Proiect_713_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/alexandrapetrea/Documents/GitHub/Proiect_713_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/Users/alexandrapetrea/Documents/GitHub/Proiect_713_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/alexandrapetrea/Documents/GitHub/Proiect_713_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/calin/Desktop/pro/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/calin/Desktop/pro/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/calin/Desktop/pro/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/calin/Desktop/pro/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="rebuild_cache">
-				<Option working_dir="/Users/alexandrapetrea/Documents/GitHub/Proiect_713_1/cmake-build-debug"/>
+				<Option working_dir="/Users/calin/Desktop/pro/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/Users/alexandrapetrea/Documents/GitHub/Proiect_713_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/alexandrapetrea/Documents/GitHub/Proiect_713_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/Users/alexandrapetrea/Documents/GitHub/Proiect_713_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/alexandrapetrea/Documents/GitHub/Proiect_713_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/calin/Desktop/pro/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/calin/Desktop/pro/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/calin/Desktop/pro/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/calin/Desktop/pro/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/Users/alexandrapetrea/Documents/GitHub/Proiect_713_1/Controllers/AutoController/AutoController.cpp">
+		<Unit filename="/Users/calin/Desktop/pro/Controllers/AutoController/AutoController.cpp">
 			<Option target="Json_test"/>
 		</Unit>
-		<Unit filename="/Users/alexandrapetrea/Documents/GitHub/Proiect_713_1/Controllers/AutoController/AutoController.h">
+		<Unit filename="/Users/calin/Desktop/pro/Controllers/AutoController/AutoController.h">
 			<Option target="Json_test"/>
 		</Unit>
-		<Unit filename="/Users/alexandrapetrea/Documents/GitHub/Proiect_713_1/Domain/Auto.cpp">
+		<Unit filename="/Users/calin/Desktop/pro/Domain/Auto.cpp">
 			<Option target="Json_test"/>
 		</Unit>
-		<Unit filename="/Users/alexandrapetrea/Documents/GitHub/Proiect_713_1/Domain/Auto.h">
+		<Unit filename="/Users/calin/Desktop/pro/Domain/Auto.h">
 			<Option target="Json_test"/>
 		</Unit>
-		<Unit filename="/Users/alexandrapetrea/Documents/GitHub/Proiect_713_1/Domain/Mitarbeiter.cpp">
+		<Unit filename="/Users/calin/Desktop/pro/Domain/Mitarbeiter.cpp">
 			<Option target="Json_test"/>
 		</Unit>
-		<Unit filename="/Users/alexandrapetrea/Documents/GitHub/Proiect_713_1/Domain/Mitarbeiter.h">
+		<Unit filename="/Users/calin/Desktop/pro/Domain/Mitarbeiter.h">
 			<Option target="Json_test"/>
 		</Unit>
-		<Unit filename="/Users/alexandrapetrea/Documents/GitHub/Proiect_713_1/Repositories/AutoRepo/AutoRepo.cpp">
+		<Unit filename="/Users/calin/Desktop/pro/Domain/Order.cpp">
 			<Option target="Json_test"/>
 		</Unit>
-		<Unit filename="/Users/alexandrapetrea/Documents/GitHub/Proiect_713_1/Repositories/AutoRepo/AutoRepo.h">
+		<Unit filename="/Users/calin/Desktop/pro/Domain/Order.h">
 			<Option target="Json_test"/>
 		</Unit>
-		<Unit filename="/Users/alexandrapetrea/Documents/GitHub/Proiect_713_1/Repositories/AutoRepo/TestsAutoRepo/testsAutoRepo.cpp">
+		<Unit filename="/Users/calin/Desktop/pro/Repositories/AutoRepo/AutoRepo.cpp">
 			<Option target="Json_test"/>
 		</Unit>
-		<Unit filename="/Users/alexandrapetrea/Documents/GitHub/Proiect_713_1/Repositories/AutoRepo/TestsAutoRepo/testsAutoRepo.h">
+		<Unit filename="/Users/calin/Desktop/pro/Repositories/AutoRepo/AutoRepo.h">
 			<Option target="Json_test"/>
 		</Unit>
-		<Unit filename="/Users/alexandrapetrea/Documents/GitHub/Proiect_713_1/Repositories/MitarbeiterRepo/TestsMitarbeiterRepo/MitarbeiterRepo.cpp">
+		<Unit filename="/Users/calin/Desktop/pro/Repositories/AutoRepo/TestsAutoRepo/testsAutoRepo.cpp">
 			<Option target="Json_test"/>
 		</Unit>
-		<Unit filename="/Users/alexandrapetrea/Documents/GitHub/Proiect_713_1/Repositories/MitarbeiterRepo/TestsMitarbeiterRepo/MitarbeiterRepo.h">
+		<Unit filename="/Users/calin/Desktop/pro/Repositories/AutoRepo/TestsAutoRepo/testsAutoRepo.h">
 			<Option target="Json_test"/>
 		</Unit>
-		<Unit filename="/Users/alexandrapetrea/Documents/GitHub/Proiect_713_1/include/nlohmann/adl_serializer.hpp">
+		<Unit filename="/Users/calin/Desktop/pro/Repositories/MitarbeiterRepo/TestsMitarbeiterRepo/MitarbeiterRepo.cpp">
 			<Option target="Json_test"/>
 		</Unit>
-		<Unit filename="/Users/alexandrapetrea/Documents/GitHub/Proiect_713_1/main.cpp">
+		<Unit filename="/Users/calin/Desktop/pro/Repositories/MitarbeiterRepo/TestsMitarbeiterRepo/MitarbeiterRepo.h">
 			<Option target="Json_test"/>
 		</Unit>
-		<Unit filename="/Users/alexandrapetrea/Documents/GitHub/Proiect_713_1/CMakeLists.txt">
+		<Unit filename="/Users/calin/Desktop/pro/Repositories/OrderRepo/OrderRepo.cpp">
+			<Option target="Json_test"/>
+		</Unit>
+		<Unit filename="/Users/calin/Desktop/pro/Repositories/OrderRepo/OrderRepo.h">
+			<Option target="Json_test"/>
+		</Unit>
+		<Unit filename="/Users/calin/Desktop/pro/Repositories/OrderRepo/TestsOrderRepo/testOrderRepo.cpp">
+			<Option target="Json_test"/>
+		</Unit>
+		<Unit filename="/Users/calin/Desktop/pro/Repositories/OrderRepo/TestsOrderRepo/testOrderRepo.h">
+			<Option target="Json_test"/>
+		</Unit>
+		<Unit filename="/Users/calin/Desktop/pro/include/nlohmann/adl_serializer.hpp">
+			<Option target="Json_test"/>
+		</Unit>
+		<Unit filename="/Users/calin/Desktop/pro/main.cpp">
+			<Option target="Json_test"/>
+		</Unit>
+		<Unit filename="/Users/calin/Desktop/pro/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>
 	</Project>
