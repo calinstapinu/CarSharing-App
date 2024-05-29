@@ -1,0 +1,110 @@
+[
+  {
+    "orderNumber": 1,
+    "orderDate": "2024-05-27",
+    "status": "Reservation",
+    "car": "AF24ASF",
+    "start": "2024-06-01",
+    "end": "2024-06-10",
+    "customer": "Customer1",
+    "employee": "Employee1",
+    "totalAmount": 185.5,
+    "remark": ""
+  },
+  {
+    "orderNumber": 2,
+    "orderDate": "2024-05-28",
+    "status": "Order",
+    "car": "FAD23FG",
+    "start": "2024-06-05",
+    "end": "2024-06-12",
+    "customer": "Customer2",
+    "employee": "Employee2",
+    "totalAmount": 175.0,
+    "remark": ""
+  },
+  {
+    "orderNumber": 3,
+    "orderDate": "2024-05-29",
+    "status": "Completed",
+    "car": "VAFS242",
+    "start": "2024-06-10",
+    "end": "2024-06-15",
+    "customer": "Customer3",
+    "employee": "Employee3",
+    "totalAmount": 97.5,
+    "remark": "Damaged front wing"
+  },
+  {
+    "orderNumber": 4,
+    "orderDate": "2024-05-30",
+    "status": "Order",
+    "car": "ASGGDFG",
+    "start": "2024-06-12",
+    "end": "2024-06-18",
+    "customer": "Customer4",
+    "employee": "Employee4",
+    "totalAmount": 126.0,
+    "remark": ""
+  },
+  {
+    "orderNumber": 5,
+    "orderDate": "2024-05-31",
+    "status": "Reservation",
+    "car": "GHF45SF",
+    "start": "2024-06-20",
+    "end": "2024-06-25",
+    "customer": "Customer5",
+    "employee": "Employee5",
+    "totalAmount": 87.5,
+    "remark": ""
+  },
+  {
+    "orderNumber": 6,
+    "orderDate": "2024-06-01",
+    "status": "Order",
+    "car": "BASF24H",
+    "start": "2024-06-15",
+    "end": "2024-06-20",
+    "customer": "Customer6",
+    "employee": "Employee6",
+    "totalAmount": 100.0,
+    "remark": ""
+  },
+  {
+    "orderNumber": 7,
+    "orderDate": "2024-06-02",
+    "status": "Completed",
+    "car": "AG24GTD",
+    "start": "2024-06-18",
+    "end": "2024-06-22",
+    "customer": "Customer7",
+    "employee": "Employee7",
+    "totalAmount": 112.0,
+    "remark": ""
+  },
+  {
+    "orderNumber": 8,
+    "orderDate": "2024-06-03",
+    "status": "Order",
+    "car": "JJHAF29",
+    "start": "2024-06-25",
+    "end": "2024-06-30",
+    "customer": "Customer8",
+    "employee": "Employee8",
+    "totalAmount": 160.0,
+    "remark": ""
+  },
+  {
+    "orderNumber": 9,
+    "orderDate": "2024-06-04",
+    "status": "Reservation",
+    "car": "TYA45S",
+    "start": "2024-06-27",
+    "end": "2024-07-03",
+    "customer": "Customer9",
+    "employee": "Employee9",
+    "totalAmount": 161.0,
+    "remark": "Damaged back"
+  }
+]
