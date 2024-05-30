@@ -1,27 +1,14 @@
-
-#pragma once
+#ifndef MITARBEITER_H
+#define MITARBEITER_H
 
 #include <string>
+#include <tuple>
 
-using namespace std;
-
-class Mitarbeiter{
-private:
-
-    std::string firstName;
-    std::string lastName;
-    std::string email;
-    std::string position;
-    std::string abbreviation;
-    std::string remarks;
-    std::string birthDate;
-    double salary;
-    bool isActive;
-    bool isAdmin;
-    std::string password;
-
+class Mitarbeiter {
 public:
     Mitarbeiter(const std::string& lastName, const std::string& firstName, const std::string& email, const std::string& position, const std::string& abbreviation, const std::string& birthDateString, double salary, const std::string& remarks, bool isAdmin);
+
+    // Getters
     std::string getLastName() const;
     std::string getFirstName() const;
     std::string getEmail() const;
@@ -32,29 +19,37 @@ public:
     double getSalary() const;
     bool getIsActive() const;
     bool getIsAdmin() const;
-    std::string getPassword() const;
 
-    void setLastName(const std::string& lastName);
-    void setFirstName(const std::string& firstName);
-    void setEmail(const std::string& email);
-    void setPosition(const std::string& position);
-    void setAbbreviation(const std::string& abbreviation);
-    void setRemarks(const std::string& remarks);
-    void setBirthDate(const std::string& birthDateString);
+    // Setters
+    void setLastName(const std::string &lastName);
+    void setFirstName(const std::string &firstName);
+    void setEmail(const std::string &email);
+    void setPosition(const std::string &position);
+    void setAbbreviation(const std::string &abbreviation);
+    void setRemarks(const std::string &remarks);
+    void setBirthDate(const std::string &birthDateString);
     void setSalary(double salary);
     void setActive(bool isActive);
     void setAdmin(bool isAdmin);
-    void setPassword(const std::string& password);
 
-    static std::tuple<int, int, int> parseDate(std::string date);
-    static int howManyDays(std::string date);
-
-
-    static void validateEmail(const std::string& email);
+    static void validateEmail(const std::string &email);
     static void validateSalary(double salary);
-    static void validateAge(const std::string& birthDate);
+    static void validateAge(const std::string &birthDate);
 
+private:
+    std::string lastName;
+    std::string firstName;
+    std::string email;
+    std::string position;
+    std::string abbreviation;
+    std::string birthDate;
+    double salary;
+    std::string remarks;
+    bool isActive;
+    bool isAdmin;
 
-    void display() const;
-
+    static std::tuple<int, int, int> parseDate(const std::string& date);
+    static int howManyDays(const std::string& date);
 };
+
+#endif // MITARBEITER_H
