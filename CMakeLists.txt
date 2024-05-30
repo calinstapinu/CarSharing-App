@@ -48,4 +48,8 @@ add_executable(Json_test main.cpp
         Controllers/AdminController/TestsAdminController/testsAdminController.h
         Controllers/CustomerController/CustomerController.cpp
         Controllers/CustomerController/CustomerController.h
+        Controllers/MitarbeiterController/MitarbeiterController.cpp
+        Controllers/MitarbeiterController/MitarbeiterController.h
+        Controllers/MitarbeiterController/TestsMitarbeiterController/testsMitarbeiterController.cpp
+        Controllers/MitarbeiterController/TestsMitarbeiterController/testsMitarbeiterController.h
 )

@@ -8,25 +8,22 @@
 #include <typeinfo>
 #include <iostream>
 
-
 MitarbeiterRepo::MitarbeiterRepo(const std::string& filename) {
     this->filename = filename;
     this->read_from_file(this->filename);
 }
 
-void MitarbeiterRepo::write_to_file(const string &filename) {
+void MitarbeiterRepo::write_to_file(const std::string &filename) {
     std::ofstream file(filename);
     if (file.is_open()) {
         file << this->mitarbeiter.dump(4); // Pretty print with an indent of 4 spaces
         file.close();
         return;
     }
-    throw runtime_error("Unable to open file: " + filename);
-
+    throw std::runtime_error("Unable to open file: " + filename);
 }
 
-
-void MitarbeiterRepo::read_from_file(const string &filename) {
+void MitarbeiterRepo::read_from_file(const std::string &filename) {
     std::ifstream file(filename);
     if (!file.is_open()) {
         std::cerr << "Failed to open file for reading." << std::endl;
@@ -34,33 +31,22 @@ void MitarbeiterRepo::read_from_file(const string &filename) {
     }
 
     json j;
-    file >> j; // se citeste tot array-ul din fisier
+    file >> j;
 
     if (j.is_array())
         for (const auto& carJson : j)
-            this->mitarbeiter.push_back(carJson); // fiecare obiect json din array este
-    file.close();                              // introdus in array
-}
-
-
-bool MitarbeiterRepo::verify_employee(Mitarbeiter employee) const {
-    for (const auto& emp : mitarbeiter) {
-        if (emp["email"] == employee.getEmail()) {
-            return false;
-        }
-        //employee.validateAge(employee.getBirthDate());
-    }
-    return true;
+            this->mitarbeiter.push_back(carJson); //fiecare obiect json din array e introdus in array
+    file.close();
 }
 
 void MitarbeiterRepo::save() {
     write_to_file(filename);
-
 }
 
-json& MitarbeiterRepo::get_mitarbeiter_json() {
+const json& MitarbeiterRepo::get_mitarbeiter_json() const {
     return mitarbeiter;
 }
+
 
 void MitarbeiterRepo::remove_employee(const std::string& identifier) {
     auto it = std::find_if(mitarbeiter.begin(), mitarbeiter.end(), [&](const json& emp) {
@@ -78,9 +64,7 @@ void MitarbeiterRepo::remove_employee(const std::string& identifier) {
     }
 }
 
-
 void MitarbeiterRepo::add_employee(const Mitarbeiter& employee) {
-    //if (!this->verify_employee(employee))throw std::runtime_error("Invalid age");
     json j;
     j["lastName"] = employee.getLastName();
     j["firstName"] = employee.getFirstName();
@@ -116,7 +100,7 @@ void MitarbeiterRepo::modify_employee(const std::string& identifier, const std::
         } else if (attribute == "remarks") {
             (*it)["remarks"] = value;
         } else if (attribute == "birthDate") {
-            (*it)["birthDate"] = value; // This should be converted to the correct format
+            (*it)["birthDate"] = value;
         } else if (attribute == "salary") {
             double salary = std::stod(value);
             Mitarbeiter::validateSalary(salary);
@@ -139,4 +123,13 @@ bool MitarbeiterRepo::search_employee(const std::string& identifier) const {
         return emp["abbreviation"] == identifier;
     });
     return it != mitarbeiter.end();
+}
+
+bool MitarbeiterRepo::verify_employee(const Mitarbeiter& employee) const {
+    for (const auto& emp : mitarbeiter) {
+        if (emp["email"] == employee.getEmail() || emp["abbreviation"] == employee.getAbbreviation()) {
+            return false;
+        }
+    }
+    return true;
 }

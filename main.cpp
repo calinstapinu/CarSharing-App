@@ -11,6 +11,8 @@
 #include "Controllers/OrderController/TestsOrderController/testOrderController.h"
 #include "Controllers/AdminController/AdminController.h"
 #include "Controllers/AdminController/TestsAdminController/testsAdminController.h"
+#include "Controllers/MitarbeiterController/MitarbeiterController.h"
+#include "Controllers/MitarbeiterController/TestsMitarbeiterController/testsMitarbeiterController.h"
 #include "Repositories/MitarbeiterRepo/MitarbeiterRepo.h"
 #include "Repositories/MitarbeiterRepo/TestsMitarbeiterRepo/testMitarbeiterRepo.h"
 #include "Repositories/CustomerRepo/TestsCustomerRepo/testCustomerRepo.h"
@@ -24,11 +26,13 @@ int main() {
     // ruleaza testele
     run_tests_auto_repo();
     run_tests_order_repo();
-    run_tests_order_controller();
     run_tests_mitarbeiter_repo();
     run_tests_customer_repo();
     run_tests_admin_repo();
+    std::cout << "Repo Tests SUCCES!\n\n";
+    run_tests_order_controller();
     run_tests_admin_controller();
+    run_tests_mitarbeiter_controller();
     // masinile json se afla in "cars.json"
     AutoRepo cr("AutoRepo/cars.json"); // la initializare, se deschide fisierul cars.json in Repo
     AutoController cc(cr); // AutoController
