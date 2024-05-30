@@ -52,4 +52,14 @@ add_executable(Json_test main.cpp
         Controllers/MitarbeiterController/MitarbeiterController.h
         Controllers/MitarbeiterController/TestsMitarbeiterController/testsMitarbeiterController.cpp
         Controllers/MitarbeiterController/TestsMitarbeiterController/testsMitarbeiterController.h
+        UI/AutoUI.cpp
+        UI/AutoUI.h
+        UI/CustomerUI.cpp
+        UI/CustomerUI.h
+        UI/FinalUI.cpp
+        UI/FinalUI.h
+        UI/EmployeeUI.cpp
+        UI/EmployeeUI.h
+        UI/OrderUI.cpp
+        UI/OrderUI.h
 )
